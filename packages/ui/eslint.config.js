@@ -61,6 +61,11 @@ export default tseslint.config(
       "custom/one-component-per-folder": "error",
       "custom/fix-raw-tailwind-colors": "error",
       "custom/fix-explicit-any": "error",
+      "custom/enforce-spacing-tokens": "error",
+      "custom/enforce-radius-tokens": "error",
+      "custom/enforce-shadow-tokens": "error",
+      "custom/enforce-typography-tokens": "error",
+      "custom/enforce-motion-tokens": "error",
       "custom/no-magic-numbers": [
         "error",
         {
@@ -131,14 +136,24 @@ export default tseslint.config(
       "custom/no-hardcoded-text": "off",
       "better-tailwindcss/no-restricted-classes": "off",
       "custom/no-arbitrary-color-values": "off",
-      "custom/fix-raw-tailwind-colors": "off"
+      "custom/fix-raw-tailwind-colors": "off",
+      "custom/enforce-spacing-tokens": "off",
+      "custom/enforce-radius-tokens": "off",
+      "custom/enforce-shadow-tokens": "off",
+      "custom/enforce-typography-tokens": "off",
+      "custom/enforce-motion-tokens": "off"
     }
   },
   {
     files: ["**/*.stories.{ts,tsx}"],
     rules: {
       "custom/no-arbitrary-color-values": "off",
-      "custom/fix-raw-tailwind-colors": "off"
+      "custom/fix-raw-tailwind-colors": "off",
+      "custom/enforce-spacing-tokens": "off",
+      "custom/enforce-radius-tokens": "off",
+      "custom/enforce-shadow-tokens": "off",
+      "custom/enforce-typography-tokens": "off",
+      "custom/enforce-motion-tokens": "off"
     }
   }
 );

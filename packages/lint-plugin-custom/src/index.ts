@@ -12,6 +12,11 @@ import fixExplicitAny from "./rules/fix-explicit-any/fix-explicit-any";
 import enforceFileSuffix from "./rules/enforce-file-suffix/enforce-file-suffix";
 import oneComponentPerFolder from "./rules/one-component-per-folder/one-component-per-folder";
 import noMagicNumbers from "./rules/no-magic-numbers/no-magic-numbers";
+import enforceSpacingTokens from "./rules/enforce-spacing-tokens/enforce-spacing-tokens";
+import enforceRadiusTokens from "./rules/enforce-radius-tokens/enforce-radius-tokens";
+import enforceShadowTokens from "./rules/enforce-shadow-tokens/enforce-shadow-tokens";
+import enforceTypographyTokens from "./rules/enforce-typography-tokens/enforce-typography-tokens";
+import enforceMotionTokens from "./rules/enforce-motion-tokens/enforce-motion-tokens";
 
 export default {
   meta: { name: "custom" },
@@ -29,6 +34,11 @@ export default {
     "fix-explicit-any": fixExplicitAny,
     "enforce-file-suffix": enforceFileSuffix,
     "one-component-per-folder": oneComponentPerFolder,
-    "no-magic-numbers": noMagicNumbers
+    "no-magic-numbers": noMagicNumbers,
+    "enforce-spacing-tokens": enforceSpacingTokens,
+    "enforce-radius-tokens": enforceRadiusTokens,
+    "enforce-shadow-tokens": enforceShadowTokens,
+    "enforce-typography-tokens": enforceTypographyTokens,
+    "enforce-motion-tokens": enforceMotionTokens
   }
 };
