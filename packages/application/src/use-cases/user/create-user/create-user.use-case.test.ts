@@ -38,14 +38,10 @@ describe("CreateUserUseCase", () => {
   test("throws UserAlreadyExistsError if email is already taken", async () => {
     await createUserUseCase.execute({ email: "johndoe@gmail.com", firstName: "John", lastName: "Doe", birthday });
 
-    await expect(
-      createUserUseCase.execute({ email: "johndoe@gmail.com", firstName: "Jane", lastName: "Smith", birthday })
-    ).rejects.toThrow(UserAlreadyExistsError);
+    await expect(createUserUseCase.execute({ email: "johndoe@gmail.com", firstName: "Jane", lastName: "Smith", birthday })).rejects.toThrow(UserAlreadyExistsError);
   });
 
   test("throws UserInvalidEmailError if email is not valid", async () => {
-    await expect(
-      createUserUseCase.execute({ email: "not-valid-email", firstName: "John", lastName: "Doe", birthday })
-    ).rejects.toThrow(UserInvalidEmailError);
+    await expect(createUserUseCase.execute({ email: "not-valid-email", firstName: "John", lastName: "Doe", birthday })).rejects.toThrow(UserInvalidEmailError);
   });
 });

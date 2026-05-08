@@ -25,6 +25,7 @@
     "globals": "16.0.0",
     "minimatch": "10.2.4",
     "oxlint": "1.56.0",
+    "tailwindcss": "4.2.4",
     "turbo": "2.8.17",
     "typescript": "6.0.2",
     "typescript-eslint": "8.32.1"

@@ -1,8 +1,8 @@
 import { User, UserAlreadyExistsError, UserEmail } from "@workspace/domain";
 
-import type { IUserRepository } from "@workspace/domain";
 import type { CreateUserDTO } from "@/dtos/user/create-user.dto";
 import type { UserResponseDTO } from "@/dtos/user/user-response.dto";
+import type { IUserRepository } from "@workspace/domain";
 
 import { UserMapper } from "@/mappers/user/user.mapper";
 
