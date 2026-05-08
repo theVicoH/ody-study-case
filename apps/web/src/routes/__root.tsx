@@ -1,15 +1,21 @@
 import React from "react";
 
 import { HeadContent, Outlet, Scripts, createRootRouteWithContext } from "@tanstack/react-router";
+import { GridOverlay } from "@workspace/ui/components/layouts/grid-overlay/grid-overlay.layout";
 import appCss from "@workspace/ui/globals.css?url";
 
 import type { QueryClient } from "@tanstack/react-query";
+
+import { useGridOverlay } from "@/hooks/use-grid-overlay/use-grid-overlay.hook";
+
 
 interface RouterContext {
   queryClient: QueryClient;
 }
 
 const RootComponent = (): React.JSX.Element => {
+  const { visible } = useGridOverlay();
+
   return (
     <html lang="en" className="dark">
       <head>
@@ -17,6 +23,7 @@ const RootComponent = (): React.JSX.Element => {
       </head>
       <body>
         <Outlet />
+        <GridOverlay visible={visible} />
         <Scripts />
       </body>
     </html>
@@ -41,5 +48,3 @@ export const Route = createRootRouteWithContext<RouterContext>()({
   notFoundComponent: NotFound,
   component: RootComponent
 });
-
-
