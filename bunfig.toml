@@ -1,0 +1,9 @@
+[install]
+exact = true
+frozenLockfile = false
+
+[install.lockfile]
+save = true
+
+[install.workspaces]
+hoist = true

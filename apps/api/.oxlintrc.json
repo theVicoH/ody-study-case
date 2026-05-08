@@ -1,0 +1,41 @@
+{
+  "$schema": "https://raw.githubusercontent.com/oxc-project/oxc/main/npm/oxlint/configuration_schema.json",
+  "plugins": ["typescript"],
+  "env": {
+    "node": true,
+    "es2022": true
+  },
+  "rules": {
+    "prefer-const": "error",
+    "no-console": ["error", { "allow": ["warn", "error"] }],
+    "brace-style": ["error", "1tbs", { "allowSingleLine": false }],
+    "object-curly-spacing": ["error", "always"],
+    "operator-linebreak": ["error", "before"],
+    "typescript/consistent-type-imports": [
+      "error",
+      {
+        "prefer": "type-imports",
+        "fixStyle": "separate-type-imports",
+        "disallowTypeAnnotations": true
+      }
+    ],
+    "typescript/explicit-function-return-type": [
+      "error",
+      {
+        "allowExpressions": true,
+        "allowTypedFunctionExpressions": true,
+        "allowHigherOrderFunctions": true,
+        "allowDirectConstAssertionInArrowFunctions": true
+      }
+    ],
+    "typescript/no-explicit-any": "error"
+  },
+  "overrides": [
+    {
+      "files": ["**/*.test.ts"],
+      "rules": {
+        "typescript/explicit-function-return-type": "off"
+      }
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "lib": ["ES2022"],
+    "jsx": "react-jsx",
+    "types": [],
+    "paths": {
+      "@workspace/client": ["./src/index.ts"],
+      "@workspace/client/*": ["./src/*"],
+      "@/*": ["./src/*", "../domain/src/*", "../application/src/*", "../shared/src/*"],
+      "@workspace/domain": ["../domain/src/index.ts"],
+      "@workspace/domain/*": ["../domain/src/*"],
+      "@workspace/application": ["../application/src/index.ts"],
+      "@workspace/application/*": ["../application/src/*"],
+      "@workspace/shared": ["../shared/src/index.ts"],
+      "@workspace/shared/*": ["../shared/src/*"]
+    }
+  },
+  "include": ["."],
+  "exclude": ["node_modules", "dist", "vitest.config.ts", "vitest.config.js"]
+}

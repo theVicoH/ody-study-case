@@ -1,0 +1,53 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "ui": "tui",
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "inputs": ["$TURBO_DEFAULT$", ".env*"],
+      "outputs": [".output/**"]
+    },
+    "lint": {
+      "dependsOn": ["^lint", "@workspace/lint-plugin-custom#build"],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        ".oxlintrc.json",
+        "../../.oxlintrc.json",
+        "../../packages/lint-plugin-custom/dist/**",
+        "../../packages/lint-plugin-custom/src/**"
+      ]
+    },
+    "lint:fix": {
+      "dependsOn": ["^lint:fix", "@workspace/lint-plugin-custom#build"],
+      "cache": false
+    },
+    "format": {
+      "dependsOn": ["^format"]
+    },
+    "typecheck": {
+      "dependsOn": ["^typecheck"]
+    },
+    "test": {
+      "dependsOn": ["^build"],
+      "inputs": ["$TURBO_DEFAULT$", "vitest.config.*"],
+      "cache": false
+    },
+    "test:coverage": {
+      "dependsOn": ["^build"],
+      "inputs": ["$TURBO_DEFAULT$", "vitest.config.*"],
+      "outputs": ["coverage/**"],
+      "cache": false
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "storybook": {
+      "cache": false,
+      "persistent": true
+    },
+    "storybook:build": {
+      "outputs": ["storybook-static/**"]
+    }
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "$schema": "https://raw.githubusercontent.com/oxc-project/oxc/main/npm/oxlint/configuration_schema.json",
+  "extends": ["../../.oxlintrc.json"],
+  "settings": {
+    "react": {
+      "version": "19.2.4"
+    }
+  },
+  "overrides": [
+    {
+      "files": ["src/components/**"],
+      "rules": {
+        "react/no-multi-comp": "off",
+        "typescript/explicit-function-return-type": "off"
+      }
+    },
+    {
+      "files": ["src/lib/**"],
+      "rules": {
+        "typescript/explicit-function-return-type": "off"
+      }
+    },
+    {
+      "files": ["**/*.test.ts", "**/*.test.tsx"],
+      "rules": {
+        "react/no-multi-comp": "off",
+        "typescript/explicit-function-return-type": "off"
+      }
+    },
+    {
+      "files": ["**/*.stories.ts", "**/*.stories.tsx"],
+      "rules": {
+        "react/no-multi-comp": "off",
+        "typescript/explicit-function-return-type": "off"
+      }
+    }
+  ]
+}

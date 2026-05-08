@@ -1,0 +1,31 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "jsx": "react-jsx",
+    "types": ["vite/client", "@testing-library/jest-dom"],
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedSideEffectImports": true,
+    "allowJs": true,
+    "paths": {
+      "@/*": [
+        "./src/*",
+        "../../packages/domain/src/*",
+        "../../packages/ui/src/*",
+        "../../packages/shared/src/*"
+      ],
+      "@workspace/client": ["../../packages/client/src/index.ts"],
+      "@workspace/client/*": ["../../packages/client/src/*"],
+      "@workspace/shared": ["../../packages/shared/src/index.ts"],
+      "@workspace/shared/*": ["../../packages/shared/src/*"],
+      "@workspace/ui": ["../../packages/ui/src/index.ts"],
+      "@workspace/ui/*": ["../../packages/ui/src/*"]
+    }
+  },
+  "include": ["**/*.ts", "**/*.tsx", "eslint.config.js", "prettier.config.js", "vite.config.js"],
+  "exclude": ["node_modules", "dist", "vitest.config.ts", "vitest.config.js"]
+}

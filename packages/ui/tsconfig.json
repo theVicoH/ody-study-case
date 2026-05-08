@@ -1,0 +1,17 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "jsx": "react-jsx",
+    "types": [],
+    "paths": {
+      "@workspace/ui": ["./src/index.ts"],
+      "@workspace/ui/*": ["./src/*"],
+      "@/*": ["./src/*", "../domain/src/*", "../shared/src/*"],
+      "@workspace/shared": ["../shared/src/index.ts"],
+      "@workspace/shared/*": ["../shared/src/*"]
+    }
+  },
+  "include": ["."],
+  "exclude": ["node_modules", "dist", "vitest.config.ts", "vitest.config.js"]
+}

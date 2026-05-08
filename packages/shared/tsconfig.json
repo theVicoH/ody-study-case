@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "lib": ["ES2022"],
+    "types": [],
+    "paths": {
+      "@/*": ["./src/*", "../domain/src/*"],
+      "@workspace/shared": ["./src/index.ts"],
+      "@workspace/shared/*": ["./src/*"]
+    }
+  },
+  "include": ["."],
+  "exclude": ["node_modules", "dist", "vitest.config.ts", "vitest.config.js"]
+}

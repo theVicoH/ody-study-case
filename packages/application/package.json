@@ -1,0 +1,25 @@
+{
+  "name": "@workspace/application",
+  "version": "0.0.0",
+  "type": "module",
+  "private": true,
+  "exports": { ".": "./src/index.ts" },
+  "scripts": {
+    "lint": "oxlint --config .oxlintrc.json src/ && eslint src/",
+    "lint:fix": "oxlint --fix --config .oxlintrc.json src/ && eslint --fix src/",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
+  },
+  "dependencies": {
+    "@workspace/domain": "workspace:*"
+  },
+  "devDependencies": {
+    "@workspace/lint-plugin-custom": "workspace:*",
+    "@vitest/coverage-v8": "3.2.4",
+    "vite-tsconfig-paths": "5.1.4",
+    "vitest": "3.2.4",
+    "@workspace/shared": "workspace:*"
+  }
+}

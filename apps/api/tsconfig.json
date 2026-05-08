@@ -1,0 +1,30 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "lib": ["ES2022"],
+    "types": ["bun-types", "vitest/globals"],
+    "jsx": "react-jsx",
+    "jsxImportSource": "hono/jsx",
+    "verbatimModuleSyntax": true,
+    "allowImportingTsExtensions": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "paths": {
+      "@/*": [
+        "./src/*",
+        "../../packages/domain/src/*",
+        "../../packages/database/src/*",
+        "../../packages/shared/src/*"
+      ],
+      "@workspace/database": ["../../packages/database/src/index.ts"],
+      "@workspace/database/*": ["../../packages/database/src/*"],
+      "@workspace/domain": ["../../packages/domain/src/index.ts"],
+      "@workspace/domain/*": ["../../packages/domain/src/*"],
+      "@workspace/shared": ["../../packages/shared/src/index.ts"],
+      "@workspace/shared/*": ["../../packages/shared/src/*"]
+    }
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
+  "exclude": ["node_modules", "dist", "vitest.config.ts", "vitest.config.js"]
+}

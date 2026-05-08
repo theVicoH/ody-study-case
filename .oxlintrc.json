@@ -1,0 +1,66 @@
+{
+  "$schema": "https://raw.githubusercontent.com/oxc-project/oxc/main/npm/oxlint/configuration_schema.json",
+  "plugins": ["react", "typescript"],
+  "env": {
+    "browser": true,
+    "es2022": true
+  },
+  "rules": {
+    "prefer-const": "error",
+    "no-console": ["error", { "allow": ["warn", "error"] }],
+    "brace-style": ["error", "1tbs", { "allowSingleLine": false }],
+    "object-curly-spacing": ["error", "always"],
+    "operator-linebreak": ["error", "before"],
+
+    "typescript/consistent-type-imports": [
+      "error",
+      {
+        "prefer": "type-imports",
+        "fixStyle": "separate-type-imports",
+        "disallowTypeAnnotations": true
+      }
+    ],
+    "typescript/explicit-function-return-type": [
+      "error",
+      {
+        "allowExpressions": true,
+        "allowTypedFunctionExpressions": true,
+        "allowHigherOrderFunctions": true,
+        "allowDirectConstAssertionInArrowFunctions": true
+      }
+    ],
+    "typescript/no-explicit-any": "off",
+
+    "react/no-multi-comp": "error",
+    "react/rules-of-hooks": "error",
+    "react/exhaustive-deps": "off"
+  },
+  "overrides": [
+    {
+      "files": ["src/components/ui/**"],
+      "rules": {
+        "react/no-multi-comp": "off",
+        "typescript/explicit-function-return-type": "off"
+      }
+    },
+    {
+      "files": ["src/routes/**"],
+      "rules": {
+        "react/no-multi-comp": "off"
+      }
+    },
+    {
+      "files": ["**/*.test.ts", "**/*.test.tsx"],
+      "rules": {
+        "react/no-multi-comp": "off"
+      }
+    },
+    {
+      "files": ["**/*.stories.ts", "**/*.stories.tsx"],
+      "rules": {
+        "react/no-multi-comp": "off",
+        "typescript/explicit-function-return-type": "off"
+      }
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+# Dependencies
+node_modules
+.pnp
+.pnp.js
+
+# Local env files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Testing
+coverage
+
+# Turbo
+.turbo
+
+# Vercel
+.vercel
+
+# Build Outputs
+dist
+.output
+.nitro
+.tanstack
+.vinxi
+
+# Debug
+npm-debug.log*
+
+# Misc
+.DS_Store
+*.pem
+
+.vscode
+
+docs
+
+.claude
+.claude-flow
+.swarm
+CLAUDE.md
+ruvector.db
+agentdb.rvf
+agentdb.rvf.lock
+
+apps/**/src/**/*.js
+apps/**/src/**/*.js.map
+apps/**/src/**/*.d.ts
+packages/**/src/**/*.js
+packages/**/src/**/*.js.map
+packages/**/src/**/*.d.ts

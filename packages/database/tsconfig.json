@@ -1,0 +1,16 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "lib": ["ES2022"],
+    "types": ["node"],
+    "paths": {
+      "@/*": ["./src/*", "../domain/src/*", "../shared/src/*"],
+      "@workspace/database": ["./src/index.ts"],
+      "@workspace/database/*": ["./src/*"],
+      "@workspace/shared": ["../shared/src/index.ts"],
+      "@workspace/shared/*": ["../shared/src/*"]
+    }
+  },
+  "include": ["."],
+  "exclude": ["node_modules", "dist", "vitest.config.ts", "vitest.config.js"]
+}
