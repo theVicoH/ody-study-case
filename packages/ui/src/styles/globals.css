@@ -2,6 +2,7 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 @import "@fontsource-variable/inter";
+@import "@fontsource-variable/space-grotesk";
 
 @custom-variant dark (&:is(.dark *));
 @source "../../../apps/**/*.{ts,tsx}";
@@ -9,7 +10,6 @@
 @source "../**/*.{ts,tsx}";
 
 @theme inline {
-    --font-heading: var(--font-sans);
     --color-sidebar-ring: var(--sidebar-ring);
     --color-sidebar-border: var(--sidebar-border);
     --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -42,6 +42,7 @@
     --color-foreground: var(--foreground);
     --color-background: var(--background);
     --radius-none: 0px;
+    --radius-xs: calc(var(--radius) * 0.3);
     --radius-sm: calc(var(--radius) * 0.6);
     --radius-md: calc(var(--radius) * 0.8);
     --radius-lg: var(--radius);
@@ -49,6 +50,7 @@
     --radius-2xl: calc(var(--radius) * 1.8);
     --radius-3xl: calc(var(--radius) * 2.2);
     --radius-4xl: calc(var(--radius) * 2.6);
+    --radius-5xl: calc(var(--radius) * 3.4);
     --radius-full: 9999px;
     --spacing-3xs: var(--space-3xs);
     --spacing-2xs: var(--space-2xs);
@@ -67,6 +69,7 @@
     --shadow-xl: var(--elevation-xl);
     --shadow-primary: var(--elevation-primary);
     --font-sans: 'Inter Variable', sans-serif;
+    --font-heading: 'Space Grotesk Variable', 'Inter Variable', sans-serif;
 }
 
 :root {
@@ -110,6 +113,17 @@
     --elevation-lg: 0 12px 24px -6px oklch(0 0 0 / 0.10), 0 4px 8px -4px oklch(0 0 0 / 0.06);
     --elevation-xl: 0 24px 48px -12px oklch(0 0 0 / 0.14);
     --elevation-primary: 0 8px 24px -8px oklch(0.55 0.258 304 / 0.45);
+    --motion-duration-instant: 0ms;
+    --motion-duration-fast: 150ms;
+    --motion-duration-base: 250ms;
+    --motion-duration-slow: 400ms;
+    --motion-duration-slower: 600ms;
+    --motion-ease-linear: linear;
+    --motion-ease-in: cubic-bezier(0.4, 0, 1, 1);
+    --motion-ease-out: cubic-bezier(0, 0, 0.2, 1);
+    --motion-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+    --motion-ease-emphasized: cubic-bezier(0.2, 0, 0, 1);
+    --motion-ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
     --sidebar: oklch(0.985 0.002 286);
     --sidebar-foreground: oklch(0.145 0.01 286);
     --sidebar-primary: oklch(0.55 0.258 304);
@@ -172,6 +186,7 @@
     --glow-rose: oklch(0.65 0.237 358 / 0.35);
     --glow-violet: oklch(0.626 0.258 304 / 0.35);
     --glow-indigo: oklch(0.585 0.234 277 / 0.3);
+    --glow-blue: oklch(0.6 0.18 250 / 0.3);
 }
 
 @layer base {
@@ -180,7 +195,12 @@
     }
   body {
     @apply bg-background text-foreground;
+    font-family: var(--font-sans);
     font-feature-settings: "ss01", "cv11";
+    }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    font-feature-settings: "ss01", "ss02";
     }
   button:not(:disabled), [role="button"]:not(:disabled) {
     cursor: pointer;
@@ -238,10 +258,9 @@
   .text-gradient-brand {
     background-image: linear-gradient(
       90deg,
-      oklch(0.738 0.175 350) 0%,
-      oklch(0.65 0.237 358) 35%,
-      oklch(0.626 0.258 304) 70%,
-      oklch(0.585 0.234 277) 100%
+      oklch(0.626 0.258 304) 0%,
+      oklch(0.585 0.234 277) 50%,
+      oklch(0.65 0.237 358) 100%
     );
     background-clip: text;
     -webkit-background-clip: text;
@@ -268,4 +287,5 @@
   .glow-rose   { box-shadow: 0 0 80px -10px var(--glow-rose); }
   .glow-violet { box-shadow: 0 0 80px -10px var(--glow-violet); }
   .glow-indigo { box-shadow: 0 0 80px -10px var(--glow-indigo); }
+  .glow-blue   { box-shadow: 0 0 80px -10px var(--glow-blue); }
 }
