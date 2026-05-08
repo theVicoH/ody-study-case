@@ -12,7 +12,17 @@ import type { Meta, StoryObj } from "@storybook/react";
 
 const meta: Meta = {
   title: "UI/Field",
-  tags: ["autodocs"]
+  tags: ["autodocs"],
+  parameters: {
+    layout: "padded"
+  },
+  decorators: [
+    (Story) => (
+      <div className="mx-auto mt-20 w-full max-w-2xl">
+        <Story />
+      </div>
+    )
+  ]
 };
 
 export default meta;
