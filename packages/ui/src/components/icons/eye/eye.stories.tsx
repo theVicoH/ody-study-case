@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import React, { useRef } from "react";
 
 
 import { EyeIcon } from "./eye.icon";
@@ -51,7 +51,7 @@ export const NoAnimation: Story = {
   args: { isAnimated: false, size: 32 }
 };
 
-const ControlledRender = (): JSX.Element => {
+const ControlledRender = (): React.JSX.Element => {
   const ref = useRef<EyeIconHandle>(null);
 
   return (
