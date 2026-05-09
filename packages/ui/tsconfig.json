@@ -9,7 +9,9 @@
       "@workspace/ui/*": ["./src/*"],
       "@/*": ["./src/*", "../domain/src/*", "../shared/src/*"],
       "@workspace/shared": ["../shared/src/index.ts"],
-      "@workspace/shared/*": ["../shared/src/*"]
+      "@workspace/shared/*": ["../shared/src/*"],
+      "@workspace/client": ["../client/src/index.ts"],
+      "@workspace/client/*": ["../client/src/*"]
     }
   },
   "include": ["."],
