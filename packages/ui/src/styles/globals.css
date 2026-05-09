@@ -70,6 +70,17 @@
     --shadow-primary: var(--elevation-primary);
     --font-sans: 'Inter Variable', sans-serif;
     --font-heading: 'Space Grotesk Variable', 'Inter Variable', sans-serif;
+    --duration-instant: var(--motion-duration-instant);
+    --duration-fast: var(--motion-duration-fast);
+    --duration-base: var(--motion-duration-base);
+    --duration-slow: var(--motion-duration-slow);
+    --duration-slower: var(--motion-duration-slower);
+    --ease-linear: var(--motion-ease-linear);
+    --ease-in: var(--motion-ease-in);
+    --ease-out: var(--motion-ease-out);
+    --ease-in-out: var(--motion-ease-in-out);
+    --ease-emphasized: var(--motion-ease-emphasized);
+    --ease-bounce: var(--motion-ease-bounce);
 }
 
 :root {
@@ -132,14 +143,23 @@
     --sidebar-accent-foreground: oklch(0.205 0.01 286);
     --sidebar-border: oklch(0.9 0.01 286);
     --sidebar-ring: oklch(0.55 0.258 304);
+    --glass-bg: oklch(1 0 0 / 0.72);
+    --glass-bg-strong: oklch(1 0 0 / 0.90);
+    --glass-border: oklch(0 0 0 / 0.08);
+    --glass-border-strong: oklch(0 0 0 / 0.12);
+    --glass-highlight: oklch(1 0 0 / 0.90);
+    --glass-shadow: 0 8px 32px 0 oklch(0 0 0 / 0.08);
+    --glass-shadow-lg: 0 20px 60px -10px oklch(0 0 0 / 0.12);
+    --glass-blur: 24px;
+    --glass-blur-strong: 40px;
 }
 
 .dark {
-    --background: oklch(0.08 0.005 286);
+    --background: oklch(0.12 0.022 285);
     --foreground: oklch(0.969 0.002 286);
-    --card: oklch(0.14 0.008 286);
+    --card: oklch(0.16 0.01 286 / 0.6);
     --card-foreground: oklch(0.969 0.002 286);
-    --popover: oklch(0.16 0.01 286 / 0.96);
+    --popover: oklch(0.16 0.01 286 / 0.72);
     --popover-foreground: oklch(0.969 0.002 286);
     /* Primary — violet #A855F7. White FG → 5.4:1 (AA). */
     --primary: oklch(0.626 0.258 304);
@@ -152,7 +172,7 @@
     --accent: oklch(0.65 0.237 358);
     --accent-foreground: oklch(0.14 0.04 358);
     --destructive: oklch(0.65 0.22 22);
-    --border: oklch(1 0 0 / 0.1);
+    --border: oklch(1 0 0 / 0.12);
     --input: oklch(1 0 0 / 0.14);
     --ring: oklch(0.626 0.258 304);
     --chart-1: oklch(0.65 0.237 358);
@@ -160,7 +180,7 @@
     --chart-3: oklch(0.74 0.232 322);
     --chart-4: oklch(0.626 0.258 304);
     --chart-5: oklch(0.585 0.234 277);
-    --sidebar: oklch(0.11 0.006 286);
+    --sidebar: oklch(0.13 0.008 286 / 0.7);
     --sidebar-foreground: oklch(0.969 0.002 286);
     --sidebar-primary: oklch(0.626 0.258 304);
     --sidebar-primary-foreground: oklch(0.985 0.002 286);
@@ -174,15 +194,15 @@
     --elevation-lg: 0 16px 32px -8px oklch(0 0 0 / 0.6);
     --elevation-xl: 0 24px 48px -12px oklch(0 0 0 / 0.7);
     --elevation-primary: 0 8px 32px -8px oklch(0.626 0.258 304 / 0.55);
-    --glass-bg: oklch(0.18 0.012 286 / 0.45);
-    --glass-bg-strong: oklch(0.2 0.014 286 / 0.65);
-    --glass-border: oklch(1 0 0 / 0.08);
-    --glass-border-strong: oklch(1 0 0 / 0.14);
-    --glass-highlight: oklch(1 0 0 / 0.06);
-    --glass-shadow: 0 8px 32px 0 oklch(0 0 0 / 0.4);
-    --glass-shadow-lg: 0 20px 60px -10px oklch(0 0 0 / 0.55);
-    --glass-blur: 18px;
-    --glass-blur-strong: 28px;
+    --glass-bg: oklch(0.18 0.012 286 / 0.58);
+    --glass-bg-strong: oklch(0.2 0.014 286 / 0.78);
+    --glass-border: oklch(1 0 0 / 0.14);
+    --glass-border-strong: oklch(1 0 0 / 0.22);
+    --glass-highlight: oklch(1 0 0 / 0.10);
+    --glass-shadow: 0 8px 32px 0 oklch(0 0 0 / 0.5);
+    --glass-shadow-lg: 0 20px 60px -10px oklch(0 0 0 / 0.65);
+    --glass-blur: 24px;
+    --glass-blur-strong: 40px;
     --glow-rose: oklch(0.65 0.237 358 / 0.35);
     --glow-violet: oklch(0.626 0.258 304 / 0.35);
     --glow-indigo: oklch(0.585 0.234 277 / 0.3);
@@ -215,13 +235,111 @@
     }
 }
 
+@utility typo-display {
+  font-family: var(--font-heading);
+  font-size: 3.75rem;
+  line-height: 1.1;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+@utility typo-h1 {
+  font-family: var(--font-heading);
+  font-size: 2.25rem;
+  line-height: 1.15;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+@utility typo-h2 {
+  font-family: var(--font-heading);
+  font-size: 1.875rem;
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+}
+
+@utility typo-h3 {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  line-height: 1.25;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+@utility typo-h4 {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  line-height: 1.3;
+  font-weight: 600;
+}
+
+@utility typo-h5 {
+  font-family: var(--font-sans);
+  font-size: 1.125rem;
+  line-height: 1.35;
+  font-weight: 600;
+}
+
+@utility typo-body-lg {
+  font-family: var(--font-sans);
+  font-size: 1.125rem;
+  line-height: 1.6;
+  font-weight: 400;
+}
+
+@utility typo-body {
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+@utility typo-body-sm {
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+@utility typo-caption {
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  line-height: 1.4;
+  font-weight: 500;
+}
+
+@utility typo-overline {
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  line-height: 1.4;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+@utility typo-button {
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  line-height: 1.2;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+@utility typo-code {
+  font-family: ui-monospace, SFMono-Regular, monospace;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  font-weight: 400;
+}
+
 @layer utilities {
 
   .glass {
     background: var(--glass-bg);
     border: 1px solid var(--glass-border);
-    backdrop-filter: blur(var(--glass-blur)) saturate(140%);
-    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(140%);
+    backdrop-filter: blur(var(--glass-blur)) saturate(160%);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(160%);
     box-shadow:
       var(--glass-shadow),
       inset 0 1px 0 0 var(--glass-highlight);
@@ -229,8 +347,8 @@
   .glass-strong {
     background: var(--glass-bg-strong);
     border: 1px solid var(--glass-border-strong);
-    backdrop-filter: blur(var(--glass-blur-strong)) saturate(160%);
-    -webkit-backdrop-filter: blur(var(--glass-blur-strong)) saturate(160%);
+    backdrop-filter: blur(var(--glass-blur-strong)) saturate(180%);
+    -webkit-backdrop-filter: blur(var(--glass-blur-strong)) saturate(180%);
     box-shadow:
       var(--glass-shadow-lg),
       inset 0 1px 0 0 var(--glass-highlight);
@@ -238,12 +356,12 @@
   .glass-card {
     background: linear-gradient(
       135deg,
-      oklch(0.2 0.014 286 / 0.55) 0%,
-      oklch(0.14 0.01 286 / 0.55) 100%
+      oklch(0.2 0.014 286 / 0.68) 0%,
+      oklch(0.14 0.01 286 / 0.68) 100%
     );
     border: 1px solid var(--glass-border-strong);
-    backdrop-filter: blur(var(--glass-blur)) saturate(150%);
-    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+    backdrop-filter: blur(var(--glass-blur)) saturate(170%);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(170%);
     box-shadow:
       var(--glass-shadow),
       inset 0 1px 0 0 var(--glass-highlight);

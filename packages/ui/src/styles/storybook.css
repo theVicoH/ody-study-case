@@ -1,0 +1,89 @@
+/* Storybook-only overrides — not included in app builds */
+
+/* ── Light mode (base) ── */
+html body {
+  background: #f8f8fc !important;
+  color: #1a1a2e !important;
+}
+
+.sbdocs-wrapper,
+.sbdocs-content,
+#storybook-docs {
+  background: transparent !important;
+}
+
+.sbdocs h1, .sbdocs h2, .sbdocs h3,
+.sbdocs p, .sbdocs td, .sbdocs th, .sbdocs label {
+  color: #1a1a2e !important;
+}
+
+.sbdocs span:not(.docs-story span):not([class]) {
+  color: #1a1a2e !important;
+}
+
+.docblock-argstable td, .docblock-argstable th {
+  color: #1a1a2e !important;
+  background: transparent !important;
+}
+
+.docblock-argstable input,
+.docblock-argstable select,
+.docblock-argstable textarea {
+  background: #ffffff !important;
+  color: #1a1a2e !important;
+}
+
+/* ── Dark mode ── */
+html.dark body {
+  background:
+    radial-gradient(ellipse 100% 50% at 60% 0%, rgba(120, 60, 220, 0.18) 0%, transparent 60%),
+    #14151f !important;
+  color: #e0e0f0 !important;
+}
+
+html.dark .sbdocs h1, html.dark .sbdocs h2, html.dark .sbdocs h3,
+html.dark .sbdocs p, html.dark .sbdocs td, html.dark .sbdocs th, html.dark .sbdocs label {
+  color: #e0e0f0 !important;
+}
+
+html.dark .sbdocs span:not(.docs-story span):not([class]) {
+  color: #e0e0f0 !important;
+}
+
+/* Args table — dark */
+html.dark .docblock-argstable td,
+html.dark .docblock-argstable th {
+  color: #e0e0f0 !important;
+  border-color: rgba(255, 255, 255, 0.07) !important;
+  background: transparent !important;
+}
+
+html.dark .docblock-argstable input,
+html.dark .docblock-argstable select,
+html.dark .docblock-argstable textarea {
+  background: #1a1b2c !important;
+  color: #e0e0f0 !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Story canvas — dark */
+html.dark .docs-story {
+  background: rgba(26, 27, 44, 0.6) !important;
+  border: 1px solid rgba(168, 85, 247, 0.2) !important;
+  border-radius: 10px !important;
+  overflow: hidden !important;
+}
+
+html.dark .docs-story > div:first-child {
+  background: #111220 !important;
+  border-bottom: 1px solid rgba(168, 85, 247, 0.12) !important;
+}
+
+/* Show code button — dark */
+html.dark button[class*="docblock-code-toggle"],
+html.dark .docblock-code-toggle {
+  background: rgba(168, 85, 247, 0.1) !important;
+  color: #e0e0f0 !important;
+  border: 1px solid rgba(168, 85, 247, 0.22) !important;
+  border-radius: 6px !important;
+}
