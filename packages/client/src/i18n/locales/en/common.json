@@ -1,1 +1,141 @@
-{}
+{
+  "restaurants": {
+    "nav": {
+      "home": "Overview",
+      "stats": "Statistics",
+      "crm": "CRM",
+      "orders": "Orders",
+      "menu": "Menu",
+      "settings": "Settings"
+    },
+    "perf": {
+      "good": "Performing well",
+      "warn": "To watch",
+      "bad": "Underperforming"
+    },
+    "rail": {
+      "allRestaurants": "My restaurants",
+      "groupOverview": "Group overview",
+      "search": "Search restaurants...",
+      "count": "{{count}} restaurants",
+      "viewAll": "View all",
+      "inAlert": "{{count}} in alert"
+    },
+    "sheet": {
+      "close": "Close",
+      "groupView": "Group view",
+      "activeEstablishments": "{{count}} active establishments",
+      "tabPlaceholder": "This tab will be available soon."
+    },
+    "stats": {
+      "restaurants": "Restaurants",
+      "performing": "Performing",
+      "covers": "Covers",
+      "revenue": "Revenue",
+      "orders": "Orders",
+      "rating": "Avg. rating",
+      "performingTrend": "+12%",
+      "perfBreakdown": "Performance breakdown",
+      "today": "Today",
+      "good": "Performing",
+      "warn": "To watch",
+      "bad": "Alert",
+      "establishmentDetails": "Establishment details",
+      "revenue7j": "Revenue (7 days)",
+      "covers7j": "Covers (7 days)",
+      "avgTicket": "Avg. ticket",
+      "fillRate": "Fill rate",
+      "weeklyRevenue": "Weekly revenue",
+      "last7Days": "Last 7 days",
+      "affluence": "Affluence by slot",
+      "hoursVsDays": "Hours × days",
+      "topDishes": "Top dishes",
+      "sold": "sold",
+      "openOrders": "Open orders",
+      "revenueTrend": "Revenue trend",
+      "trend24h": "Last 24h",
+      "todayCovers": "Today's covers",
+      "groupRevenue": "Est. group revenue"
+    },
+    "crm": {
+      "search": "Search a customer...",
+      "newCustomer": "New customer",
+      "registeredCustomers": "Registered customers",
+      "vip": "VIP",
+      "thisMonth": "+34 this month",
+      "vipPercent": "8%",
+      "visits": "{{count}} visits",
+      "spent": "€{{amount}} spent",
+      "tagVip": "VIP",
+      "tagRegular": "Regular",
+      "tagNew": "New",
+      "allTags": "All",
+      "avgSpend": "Avg. spend"
+    },
+    "orders": {
+      "search": "Search an order...",
+      "newOrder": "New order",
+      "filter": "Filter",
+      "filterAll": "All",
+      "filterNew": "New",
+      "filterPreparing": "Preparing",
+      "filterReady": "Ready",
+      "filterServed": "Served",
+      "filterPaid": "Paid",
+      "items": "{{count}} items · €{{total}}",
+      "statusNew": "New",
+      "statusPreparing": "Preparing",
+      "statusReady": "Ready",
+      "statusServed": "Served",
+      "statusPaid": "Paid",
+      "table": "T{{number}}",
+      "totalRevenue": "Revenue in progress",
+      "emptyFilter": "No orders match this filter."
+    },
+    "menu": {
+      "search": "Search a dish...",
+      "addDish": "Add a dish",
+      "filterAll": "All categories",
+      "filterEntrees": "Starters",
+      "filterPlats": "Mains",
+      "filterDesserts": "Desserts",
+      "filterBoissons": "Drinks",
+      "filterCarte": "Today's menu",
+      "available": "Available",
+      "unavailable": "Unavailable",
+      "totalItems": "Total items",
+      "availableItems": "Available",
+      "emptyCategory": "No dishes in this category."
+    },
+    "settings": {
+      "generalInfo": "General information",
+      "name": "Restaurant name",
+      "address": "Address",
+      "phone": "Phone",
+      "maxCovers": "Max covers",
+      "preferences": "Preferences",
+      "tableService": "Table service",
+      "tableServiceDesc": "Enable tablet ordering",
+      "clickCollect": "Click & collect",
+      "clickCollectDesc": "Accept takeaway orders",
+      "kitchenNotif": "Kitchen notifications",
+      "kitchenNotifDesc": "Beep on new orders",
+      "testMode": "Test mode",
+      "testModeDesc": "No orders sent to kitchen",
+      "save": "Save changes",
+      "saved": "Saved!",
+      "email": "Email",
+      "openingHours": "Opening hours",
+      "openingHoursDesc": "Mon – Sun · 12:00 – 14:30, 19:00 – 22:30"
+    },
+    "brand": "ODY",
+    "scene": {
+      "sunGroup": "Group · {{count}} restaurants",
+      "sunCta": "Click to explore"
+    },
+    "tip": "drag rotate · scroll zoom · click sun or restaurant"
+  },
+  "common": {
+    "settings": "Settings"
+  }
+}

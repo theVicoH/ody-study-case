@@ -1,1 +1,141 @@
-{}
+{
+  "restaurants": {
+    "nav": {
+      "home": "Vue d'ensemble",
+      "stats": "Statistiques",
+      "crm": "CRM",
+      "orders": "Commandes",
+      "menu": "Menu",
+      "settings": "Paramètres"
+    },
+    "perf": {
+      "good": "Performe bien",
+      "warn": "À surveiller",
+      "bad": "Sous-performe"
+    },
+    "rail": {
+      "allRestaurants": "Mes restaurants",
+      "groupOverview": "Vue d'ensemble du groupe",
+      "search": "Rechercher un restaurant...",
+      "count": "{{count}} restaurants",
+      "viewAll": "Voir plus",
+      "inAlert": "{{count}} en alerte"
+    },
+    "sheet": {
+      "close": "Fermer",
+      "groupView": "Vue groupe",
+      "activeEstablishments": "{{count}} établissements actifs",
+      "tabPlaceholder": "Cet onglet sera bientôt disponible."
+    },
+    "stats": {
+      "restaurants": "Restaurants",
+      "performing": "Performants",
+      "covers": "Couverts",
+      "revenue": "Revenu",
+      "orders": "Commandes",
+      "rating": "Note moyenne",
+      "performingTrend": "+12%",
+      "perfBreakdown": "Répartition de la performance",
+      "today": "Aujourd'hui",
+      "good": "Performants",
+      "warn": "À surveiller",
+      "bad": "En alerte",
+      "establishmentDetails": "Détails de l'établissement",
+      "revenue7j": "Revenu (7 jours)",
+      "covers7j": "Couverts (7 jours)",
+      "avgTicket": "Ticket moyen",
+      "fillRate": "Taux de remplissage",
+      "weeklyRevenue": "Revenu hebdomadaire",
+      "last7Days": "7 derniers jours",
+      "affluence": "Affluence par créneau",
+      "hoursVsDays": "Heures × jours",
+      "topDishes": "Plats les plus vendus",
+      "sold": "vendus",
+      "openOrders": "Commandes en cours",
+      "revenueTrend": "Tendance du CA",
+      "trend24h": "24 dernières h",
+      "todayCovers": "Couverts aujourd'hui",
+      "groupRevenue": "CA groupe estimé"
+    },
+    "crm": {
+      "search": "Rechercher un client...",
+      "newCustomer": "Nouveau client",
+      "registeredCustomers": "Clients enregistrés",
+      "vip": "VIP",
+      "thisMonth": "+34 ce mois",
+      "vipPercent": "8%",
+      "visits": "{{count}} visites",
+      "spent": "€{{amount}} dépensés",
+      "tagVip": "VIP",
+      "tagRegular": "Régulier",
+      "tagNew": "Nouveau",
+      "allTags": "Tous",
+      "avgSpend": "Dépense moy."
+    },
+    "orders": {
+      "search": "Rechercher une commande...",
+      "newOrder": "Nouvelle commande",
+      "filter": "Filtrer",
+      "filterAll": "Toutes",
+      "filterNew": "Nouvelles",
+      "filterPreparing": "En préparation",
+      "filterReady": "Prêtes",
+      "filterServed": "Servies",
+      "filterPaid": "Payées",
+      "items": "{{count}} articles · €{{total}}",
+      "statusNew": "Nouvelle",
+      "statusPreparing": "En prépa",
+      "statusReady": "Prête",
+      "statusServed": "Servie",
+      "statusPaid": "Payée",
+      "table": "T{{number}}",
+      "totalRevenue": "CA en cours",
+      "emptyFilter": "Aucune commande pour ce filtre."
+    },
+    "menu": {
+      "search": "Rechercher un plat...",
+      "addDish": "Ajouter un plat",
+      "filterAll": "Toutes les catégories",
+      "filterEntrees": "Entrées",
+      "filterPlats": "Plats",
+      "filterDesserts": "Desserts",
+      "filterBoissons": "Boissons",
+      "filterCarte": "Carte du jour",
+      "available": "Disponible",
+      "unavailable": "Indisponible",
+      "totalItems": "Total plats",
+      "availableItems": "Disponibles",
+      "emptyCategory": "Aucun plat dans cette catégorie."
+    },
+    "settings": {
+      "generalInfo": "Informations générales",
+      "name": "Nom du restaurant",
+      "address": "Adresse",
+      "phone": "Téléphone",
+      "maxCovers": "Couverts max.",
+      "preferences": "Préférences",
+      "tableService": "Service en salle",
+      "tableServiceDesc": "Activer la prise de commande sur tablette",
+      "clickCollect": "Click & collect",
+      "clickCollectDesc": "Accepter les commandes à emporter",
+      "kitchenNotif": "Notifications cuisine",
+      "kitchenNotifDesc": "Bip sonore à chaque nouvelle commande",
+      "testMode": "Mode test",
+      "testModeDesc": "Aucune commande envoyée à la cuisine",
+      "save": "Enregistrer",
+      "saved": "Enregistré !",
+      "email": "Email",
+      "openingHours": "Horaires d'ouverture",
+      "openingHoursDesc": "Lun – Dim · 12:00 – 14:30, 19:00 – 22:30"
+    },
+    "brand": "ODY",
+    "scene": {
+      "sunGroup": "Groupe · {{count}} restaurants",
+      "sunCta": "Cliquer pour explorer"
+    },
+    "tip": "drag rotate · scroll zoom · click sun ou restaurant"
+  },
+  "common": {
+    "settings": "Paramètres"
+  }
+}
