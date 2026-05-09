@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 const CONTROLLED_SIZE = 40;
 
 const meta: Meta<typeof EyeIcon> = {
-  title: "Icons/EyeIcon",
+  title: "Foundations/Icons/EyeIcon",
   component: EyeIcon,
   tags: ["autodocs"],
   parameters: {

@@ -4,7 +4,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./tool
 import type { Meta, StoryObj } from "@storybook/react";
 
 const meta: Meta = {
-  title: "UI/Tooltip",
+  title: "Components/Primitives/Tooltip",
   tags: ["autodocs"],
   parameters: {
     layout: "centered"

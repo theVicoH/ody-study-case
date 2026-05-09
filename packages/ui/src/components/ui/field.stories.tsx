@@ -11,7 +11,7 @@ import { Input } from "./input";
 import type { Meta, StoryObj } from "@storybook/react";
 
 const meta: Meta = {
-  title: "UI/Field",
+  title: "Components/Primitives/Field",
   tags: ["autodocs"],
   parameters: {
     layout: "centered"

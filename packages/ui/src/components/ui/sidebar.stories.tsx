@@ -16,7 +16,7 @@ import {
 import type { Meta, StoryObj } from "@storybook/react";
 
 const meta: Meta = {
-  title: "UI/Sidebar",
+  title: "Components/Primitives/Sidebar",
   tags: ["autodocs"],
   parameters: {
     layout: "fullscreen"

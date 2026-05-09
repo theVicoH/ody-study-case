@@ -10,7 +10,7 @@ import {
 import type { Meta, StoryObj } from "@storybook/react";
 
 const meta: Meta = {
-  title: "UI/NavigationMenu",
+  title: "Components/Primitives/NavigationMenu",
   tags: ["autodocs"],
   parameters: {
     layout: "padded"

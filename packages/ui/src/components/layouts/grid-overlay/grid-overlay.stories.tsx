@@ -4,7 +4,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 
 
 const meta: Meta<typeof GridOverlay> = {
-  title: "Layouts/GridOverlay",
+  title: "Components/Layouts/GridOverlay",
   component: GridOverlay,
   parameters: {
     layout: "fullscreen"

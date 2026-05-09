@@ -5,7 +5,7 @@ import { Container } from "./container.atom";
 import type { Meta, StoryObj } from "@storybook/react";
 
 const meta: Meta<typeof Container> = {
-  title: "Atoms/Container",
+  title: "Components/Atoms/Container",
   component: Container,
   tags: ["autodocs"],
   parameters: {

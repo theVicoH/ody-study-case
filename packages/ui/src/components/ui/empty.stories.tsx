@@ -11,7 +11,7 @@ import {
 import type { Meta, StoryObj } from "@storybook/react";
 
 const meta: Meta = {
-  title: "UI/Empty",
+  title: "Components/Primitives/Empty",
   tags: ["autodocs"],
   parameters: {
     layout: "padded"

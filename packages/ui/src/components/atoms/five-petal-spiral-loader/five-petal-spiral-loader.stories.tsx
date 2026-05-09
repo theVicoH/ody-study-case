@@ -3,7 +3,7 @@ import { FivePetalSpiralLoader } from "./five-petal-spiral-loader.atom";
 import type { Meta, StoryObj } from "@storybook/react";
 
 const meta: Meta<typeof FivePetalSpiralLoader> = {
-  title: "Atoms/FivePetalSpiralLoader",
+  title: "Components/Atoms/FivePetalSpiralLoader",
   component: FivePetalSpiralLoader,
   tags: ["autodocs"],
   parameters: {

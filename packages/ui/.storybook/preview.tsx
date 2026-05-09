@@ -14,6 +14,19 @@ const preview: Preview = {
     },
     layout: "centered",
     backgrounds: { disable: true },
+    viewport: {
+      defaultViewport: "responsive",
+    },
+    options: {
+      storySort: {
+        order: [
+          "Foundations", ["Introduction", "Principles", "Getting Started", "Theming", "Accessibility", "Icons"],
+          "Tokens", ["Colors", "Typography", "Spacing", "Radius", "Elevation", "Motion", "Glass Surfaces", "Gradients & Effects"],
+          "Components", ["Primitives", "Atoms", "Layouts"],
+          "Patterns",
+        ],
+      },
+    },
   },
   decorators: [
     withThemeByClassName({

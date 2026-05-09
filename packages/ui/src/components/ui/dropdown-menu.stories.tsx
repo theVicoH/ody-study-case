@@ -18,7 +18,7 @@ import {
 import type { Meta, StoryObj } from "@storybook/react";
 
 const meta: Meta = {
-  title: "UI/DropdownMenu",
+  title: "Components/Primitives/DropdownMenu",
   tags: ["autodocs"],
   parameters: {
     layout: "centered"

@@ -12,7 +12,7 @@ import {
 import type { Meta, StoryObj } from "@storybook/react";
 
 const meta: Meta = {
-  title: "UI/Card",
+  title: "Components/Primitives/Card",
   tags: ["autodocs"],
   parameters: {
     layout: "centered"

@@ -12,7 +12,7 @@ import {
 import type { Meta, StoryObj } from "@storybook/react";
 
 const meta: Meta = {
-  title: "UI/Table",
+  title: "Components/Primitives/Table",
   tags: ["autodocs"],
   parameters: {
     layout: "padded"

@@ -6,7 +6,7 @@ import { Toaster } from "./sonner";
 import type { Meta, StoryObj } from "@storybook/react";
 
 const meta: Meta = {
-  title: "UI/Sonner",
+  title: "Components/Primitives/Sonner",
   tags: ["autodocs"],
   parameters: {
     layout: "centered"
