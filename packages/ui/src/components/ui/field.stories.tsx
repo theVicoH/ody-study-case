@@ -14,11 +14,11 @@ const meta: Meta = {
   title: "UI/Field",
   tags: ["autodocs"],
   parameters: {
-    layout: "padded"
+    layout: "centered"
   },
   decorators: [
     (Story) => (
-      <div className="mx-auto mt-20 w-full max-w-2xl">
+      <div className="w-96 p-6">
         <Story />
       </div>
     )

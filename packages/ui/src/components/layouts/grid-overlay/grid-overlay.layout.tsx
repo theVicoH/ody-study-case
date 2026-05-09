@@ -12,9 +12,9 @@ export const GridOverlay = ({ visible }: GridOverlayProps): React.JSX.Element | 
   return (
     <div
       aria-hidden
-      className="pointer-events-none fixed inset-0 z-[9999] px-4 md:px-6 lg:px-8"
+      className="px-3xl md:px-4xl lg:px-4xl pointer-events-none fixed inset-0 z-[9999]"
     >
-      <div className="mx-auto grid h-full max-w-screen-2xl grid-cols-4 gap-4 md:grid-cols-8 md:gap-6 lg:grid-cols-12">
+      <div className="gap-3xl md:gap-4xl mx-auto grid h-full max-w-screen-2xl grid-cols-4 md:grid-cols-8 lg:grid-cols-12">
         {COLS.map((_, i) => (
           <div
             key={i}

@@ -32,7 +32,7 @@ const RootComponent = (): React.JSX.Element => {
 
 const NotFound = (): React.JSX.Element => (
   <div className="flex min-h-svh items-center justify-center">
-    <p className="text-muted-foreground text-sm">404 — Page not found</p>
+    <p className="text-muted-foreground typo-body-sm">404 — Page not found</p>
   </div>
 );
 

@@ -152,6 +152,12 @@
     --glass-shadow-lg: 0 20px 60px -10px oklch(0 0 0 / 0.12);
     --glass-blur: 24px;
     --glass-blur-strong: 40px;
+    --state-warning: oklch(0.70 0.15 80);
+    --state-error: oklch(0.60 0.22 27);
+    --state-info: oklch(0.58 0.18 248);
+    --state-warning-tint: oklch(0.70 0.15 80 / 0.10);
+    --state-error-tint: oklch(0.60 0.22 27 / 0.10);
+    --state-info-tint: oklch(0.58 0.18 248 / 0.10);
 }
 
 .dark {
@@ -207,6 +213,12 @@
     --glow-violet: oklch(0.626 0.258 304 / 0.35);
     --glow-indigo: oklch(0.585 0.234 277 / 0.3);
     --glow-blue: oklch(0.6 0.18 250 / 0.3);
+    --state-warning: oklch(0.78 0.14 80);
+    --state-error: oklch(0.68 0.20 27);
+    --state-info: oklch(0.65 0.17 248);
+    --state-warning-tint: oklch(0.78 0.14 80 / 0.13);
+    --state-error-tint: oklch(0.68 0.20 27 / 0.13);
+    --state-info-tint: oklch(0.65 0.17 248 / 0.13);
 }
 
 @layer base {
@@ -367,6 +379,30 @@
       inset 0 1px 0 0 var(--glass-highlight);
     border-radius: var(--radius-lg);
   }
+  .glass-warning {
+    background-color: var(--glass-bg);
+    background-image: linear-gradient(135deg, var(--state-warning-tint) 0%, transparent 65%);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(var(--glass-blur)) saturate(160%);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(160%);
+    box-shadow: var(--glass-shadow), inset 0 1px 0 0 var(--glass-highlight);
+  }
+  .glass-error {
+    background-color: var(--glass-bg);
+    background-image: linear-gradient(135deg, var(--state-error-tint) 0%, transparent 65%);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(var(--glass-blur)) saturate(160%);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(160%);
+    box-shadow: var(--glass-shadow), inset 0 1px 0 0 var(--glass-highlight);
+  }
+  .glass-info {
+    background-color: var(--glass-bg);
+    background-image: linear-gradient(135deg, var(--state-info-tint) 0%, transparent 65%);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(var(--glass-blur)) saturate(160%);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(160%);
+    box-shadow: var(--glass-shadow), inset 0 1px 0 0 var(--glass-highlight);
+  }
   @supports not (backdrop-filter: blur(1px)) {
     .glass, .glass-strong, .glass-card {
       background: oklch(0.16 0.01 286 / 0.92);
@@ -406,4 +442,19 @@
   .glow-violet { box-shadow: 0 0 80px -10px var(--glow-violet); }
   .glow-indigo { box-shadow: 0 0 80px -10px var(--glow-indigo); }
   .glow-blue   { box-shadow: 0 0 80px -10px var(--glow-blue); }
+
+  .toast-warning,
+  .toast-error,
+  .toast-info {
+    background-image: linear-gradient(135deg, var(--_tint, transparent) 0%, transparent 65%) !important;
+  }
+  .toast-warning {
+    --_tint: var(--state-warning-tint);
+  }
+  .toast-error {
+    --_tint: var(--state-error-tint);
+  }
+  .toast-info {
+    --_tint: var(--state-info-tint);
+  }
 }

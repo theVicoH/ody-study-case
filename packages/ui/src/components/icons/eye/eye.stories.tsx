@@ -1,11 +1,14 @@
 import { useRef } from "react";
 
-import { Button } from "@/components/ui/button";
 
 import { EyeIcon } from "./eye.icon";
 
 import type { EyeIconHandle } from "./eye.icon";
 import type { Meta, StoryObj } from "@storybook/react";
+
+import { Button } from "@/components/ui/button";
+
+const CONTROLLED_SIZE = 40;
 
 const meta: Meta<typeof EyeIcon> = {
   title: "Icons/EyeIcon",
@@ -48,22 +51,24 @@ export const NoAnimation: Story = {
   args: { isAnimated: false, size: 32 }
 };
 
-export const Controlled: Story = {
-  render: () => {
-    const ref = useRef<EyeIconHandle>(null);
+const ControlledRender = (): JSX.Element => {
+  const ref = useRef<EyeIconHandle>(null);
 
-    return (
-      <div className="flex flex-col items-center gap-4">
-        <EyeIcon ref={ref} size={40} />
-        <div className="flex gap-2">
-          <Button size="sm" onClick={() => ref.current?.startAnimation()}>
-            Start
-          </Button>
-          <Button size="sm" variant="outline" onClick={() => ref.current?.stopAnimation()}>
-            Stop
-          </Button>
-        </div>
+  return (
+    <div className="flex flex-col items-center gap-4">
+      <EyeIcon ref={ref} size={CONTROLLED_SIZE} />
+      <div className="flex gap-2">
+        <Button size="sm" onClick={() => ref.current?.startAnimation()}>
+          Start
+        </Button>
+        <Button size="sm" variant="outline" onClick={() => ref.current?.stopAnimation()}>
+          Stop
+        </Button>
       </div>
-    );
-  }
+    </div>
+  );
+};
+
+export const Controlled: Story = {
+  render: () => <ControlledRender />
 };
