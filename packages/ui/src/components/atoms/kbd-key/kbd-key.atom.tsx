@@ -9,7 +9,7 @@ const KbdKey = ({
 }: React.ComponentPropsWithoutRef<"kbd">): React.JSX.Element => (
   <kbd
     className={cn(
-      "bg-foreground/10 text-foreground typo-code px-2xs py-3xs rounded-sm",
+      "glass text-foreground typo-code px-2xs py-3xs rounded-sm",
       className
     )}
     {...props}

@@ -11,7 +11,8 @@ const statusDotVariants = cva(
       status: {
         good: "bg-status-good shadow-[0_0_6px_var(--color-status-good)]",
         warn: "bg-status-warn shadow-[0_0_6px_var(--color-status-warn)]",
-        bad: "bg-status-bad shadow-[0_0_6px_var(--color-status-bad)]"
+        bad: "bg-status-bad shadow-[0_0_6px_var(--color-status-bad)]",
+        disabled: "bg-muted-foreground/40"
       },
       size: {
         sm: "size-1.5",
