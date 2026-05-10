@@ -41,7 +41,6 @@ interface SheetOrdersLabels {
 }
 
 const PERCENT_MULTIPLIER = 100;
-const ICON_SIZE = 16;
 
 interface SheetOrdersProps {
   labels: SheetOrdersLabels;

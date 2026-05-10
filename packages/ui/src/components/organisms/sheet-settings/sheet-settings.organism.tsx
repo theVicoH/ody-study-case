@@ -1,12 +1,11 @@
 import React, { useState } from "react";
 
-import { PencilIcon } from "@/components/icons/pencil/pencil.icon";
-import { PlusIcon } from "@/components/icons/plus/plus.icon";
-import { TrashIcon } from "@/components/icons/trash/trash.icon";
-
 import type { RestaurantSettings, RestaurantTable, TableStatus, TableZone } from "@workspace/client";
 
 import { Muted } from "@/components/atoms/typography/typography.atom";
+import { PencilIcon } from "@/components/icons/pencil/pencil.icon";
+import { PlusIcon } from "@/components/icons/plus/plus.icon";
+import { TrashIcon } from "@/components/icons/trash/trash.icon";
 import {
   Card,
   CardContent,

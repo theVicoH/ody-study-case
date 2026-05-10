@@ -33,29 +33,52 @@ const restaurants = [
   { id: "r3", name: "Café Nord", caption: "22 boulevard Hugo", status: "bad" as const }
 ];
 
-export const Default: Story = {
-  args: {
-    open: true,
-    miniSlot: <div className="bg-foreground/10 size-full" />,
-    miniName: "Bistro Saint-Roch",
-    miniStatus: "good",
-    miniCaption: "Performing well",
-    navItems,
-    activeTabId: "home",
-    onTabChange: () => undefined,
-    groupLabel: "All restaurants",
-    groupOverview: "Group overview",
-    isGroupActive: false,
-    onSelectGroup: () => undefined,
-    restaurants,
-    activeRestaurantId: "r1",
-    onSelectRestaurant: () => undefined
-  },
-  decorators: [
-    (Story) => (
+const defaultArgs = {
+  open: true,
+  miniSlot: <div className="bg-foreground/10 size-full" />,
+  miniName: "Bistro Saint-Roch",
+  miniStatus: "good" as const,
+  miniCaption: "Performing well",
+  navItems,
+  activeTabId: "home",
+  onTabChange: (): void => undefined,
+  groupLabel: "All restaurants",
+  groupOverview: "Group overview",
+  isGroupActive: false,
+  onSelectGroup: (): void => undefined,
+  restaurants,
+  activeRestaurantId: "r1",
+  onSelectRestaurant: (): void => undefined
+};
+
+const sidebarDecorators = [
+  (Story: () => React.JSX.Element): React.JSX.Element => {
+    return (
       <div className="bg-background relative h-screen w-screen">
         <Story />
       </div>
-    )
-  ]
+    );
+  }
+];
+
+export const Default: Story = {
+  args: defaultArgs,
+  decorators: sidebarDecorators
+};
+
+export const Empty: Story = {
+  args: {
+    ...defaultArgs,
+    restaurants: [],
+    activeRestaurantId: null
+  },
+  decorators: sidebarDecorators
+};
+
+export const Error: Story = {
+  render: () => (
+    <div className="border-destructive bg-destructive/10 text-destructive rounded-md border p-4">
+      Failed to load restaurants. Please try again.
+    </div>
+  )
 };

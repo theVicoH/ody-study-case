@@ -3,6 +3,8 @@ import { SheetStats } from "./sheet-stats.organism";
 import type { Meta, StoryObj } from "@storybook/react";
 import type { RestaurantDetailedStats } from "@workspace/client";
 
+import { Skeleton } from "@/components/ui/skeleton";
+
 const meta: Meta<typeof SheetStats> = {
   title: "Components/Organisms/SheetStats",
   component: SheetStats,
@@ -111,4 +113,51 @@ export const Default: Story = {
       </div>
     )
   ]
+};
+
+const emptyStats: RestaurantDetailedStats = {
+  covers: 0,
+  revenue: 0,
+  orders: 0,
+  rating: "—",
+  trend: "0%",
+  todayCovers: 0,
+  todayRevenue: 0,
+  avgTicket: 0,
+  fillRate: 0,
+  weeklyRevenue: [],
+  monthlyRevenue: [],
+  yearlyRevenue: [],
+  heatmap: [],
+  topItems: [],
+  sparklineData: [],
+  customers: 0,
+  openOrders: 0
+};
+
+export const Loading: Story = {
+  render: () => (
+    <div className="space-y-2 p-4">
+      <Skeleton className="h-6 w-1/2" />
+      <Skeleton className="h-24 w-full" />
+      <Skeleton className="h-24 w-full" />
+      <Skeleton className="h-24 w-full" />
+    </div>
+  )
+};
+
+export const Empty: Story = {
+  args: {
+    labels: mockLabels,
+    stats: emptyStats,
+    restaurantId: "restaurant-empty"
+  }
+};
+
+export const Error: Story = {
+  render: () => (
+    <div className="border-destructive bg-destructive/10 text-destructive rounded-md border p-4">
+      Failed to load statistics. Please try again.
+    </div>
+  )
 };

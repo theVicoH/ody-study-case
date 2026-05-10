@@ -23,6 +23,8 @@ import { cn } from "@/lib/utils";
 const ICON_DEFAULT_SIZE = 24;
 const ICON_DEFAULT_DURATION = 1;
 const SVG_VIEWBOX_SIZE = 24;
+const ARROW_SHIFT_PX = -3;
+const ANIMATION_DURATION_FACTOR = 0.4;
 
 export interface ArrowUpIconHandle {
   startAnimation: () => void;

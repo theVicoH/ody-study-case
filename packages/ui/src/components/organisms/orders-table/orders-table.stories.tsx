@@ -61,3 +61,31 @@ export const Narrow: Story = {
     </div>
   )
 };
+
+export const Loading: Story = {
+  render: () => (
+    <div className="h-[500px] w-[700px] space-y-2">
+      <Skeleton className="h-10 w-full" />
+      <Skeleton className="h-10 w-full" />
+      <Skeleton className="h-10 w-full" />
+      <Skeleton className="h-10 w-full" />
+      <Skeleton className="h-10 w-full" />
+    </div>
+  )
+};
+
+export const Empty: Story = {
+  render: () => (
+    <div className="h-[500px] w-[700px]">
+      <OrdersTable orders={[]} labels={labels} pageSize={5} />
+    </div>
+  )
+};
+
+export const Error: Story = {
+  render: () => (
+    <div className="border-destructive bg-destructive/10 text-destructive rounded-md border p-4">
+      Failed to load orders. Please try again.
+    </div>
+  )
+};

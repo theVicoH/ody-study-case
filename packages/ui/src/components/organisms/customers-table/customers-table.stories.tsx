@@ -48,7 +48,7 @@ export const Default: Story = {
 
 export const Loading: Story = {
   render: () => (
-    <div className="space-y-2 h-[500px] w-[700px]">
+    <div className="h-[500px] w-[700px] space-y-2">
       <Skeleton className="h-10 w-full" />
       <Skeleton className="h-10 w-full" />
       <Skeleton className="h-10 w-full" />

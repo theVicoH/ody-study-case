@@ -3,6 +3,8 @@ import { RestaurantsPerfTable } from "./restaurants-perf-table.organism";
 import type { RestaurantPerfRow } from "./restaurants-perf-table.organism";
 import type { Meta, StoryObj } from "@storybook/react";
 
+import { Skeleton } from "@/components/ui/skeleton";
+
 const meta: Meta<typeof RestaurantsPerfTable> = {
   title: "Components/Organisms/RestaurantsPerfTable",
   component: RestaurantsPerfTable,
@@ -38,6 +40,34 @@ export const Default: Story = {
   render: () => (
     <div className="h-[500px] w-[700px]">
       <RestaurantsPerfTable restaurants={RESTAURANTS} labels={labels} />
+    </div>
+  )
+};
+
+export const Loading: Story = {
+  render: () => (
+    <div className="h-[500px] w-[700px] space-y-2">
+      <Skeleton className="h-10 w-full" />
+      <Skeleton className="h-10 w-full" />
+      <Skeleton className="h-10 w-full" />
+      <Skeleton className="h-10 w-full" />
+      <Skeleton className="h-10 w-full" />
+    </div>
+  )
+};
+
+export const Empty: Story = {
+  render: () => (
+    <div className="h-[500px] w-[700px]">
+      <RestaurantsPerfTable restaurants={[]} labels={labels} />
+    </div>
+  )
+};
+
+export const Error: Story = {
+  render: () => (
+    <div className="border-destructive bg-destructive/10 text-destructive rounded-md border p-4">
+      Failed to load restaurants. Please try again.
     </div>
   )
 };

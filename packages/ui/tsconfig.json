@@ -7,7 +7,7 @@
     "paths": {
       "@workspace/ui": ["./src/index.ts"],
       "@workspace/ui/*": ["./src/*"],
-      "@/*": ["./src/*", "../domain/src/*", "../shared/src/*"],
+      "@/*": ["./src/*", "../domain/src/*", "../shared/src/*", "../client/src/*", "../application/src/*"],
       "@workspace/shared": ["../shared/src/index.ts"],
       "@workspace/shared/*": ["../shared/src/*"],
       "@workspace/client": ["../client/src/index.ts"],

@@ -2,6 +2,8 @@ import { SheetSettings } from "./sheet-settings.organism";
 
 import type { Meta, StoryObj } from "@storybook/react";
 
+import { Skeleton } from "@/components/ui/skeleton";
+
 const meta: Meta<typeof SheetSettings> = {
   title: "Components/Organisms/SheetSettings",
   component: SheetSettings,
@@ -113,4 +115,32 @@ export const AllEnabled: Story = {
       { id: "t2", number: 2, capacity: 4, zone: "salle", status: "available" }
     ]
   }
+};
+
+export const Loading: Story = {
+  render: () => (
+    <div className="space-y-2 p-4">
+      <Skeleton className="h-6 w-1/2" />
+      <Skeleton className="h-10 w-full" />
+      <Skeleton className="h-10 w-full" />
+      <Skeleton className="h-10 w-full" />
+      <Skeleton className="h-10 w-full" />
+    </div>
+  )
+};
+
+export const Empty: Story = {
+  args: {
+    labels: LABELS,
+    settings: SETTINGS,
+    tables: []
+  }
+};
+
+export const Error: Story = {
+  render: () => (
+    <div className="border-destructive bg-destructive/10 text-destructive rounded-md border p-4">
+      Failed to load settings. Please try again.
+    </div>
+  )
 };

@@ -1,5 +1,4 @@
 import { Checkbox as CheckboxPrimitive } from "@base-ui/react/checkbox";
-
 import { cn } from "@workspace/ui/lib/utils";
 
 function Checkbox({ className, ...props }: CheckboxPrimitive.Root.Props) {

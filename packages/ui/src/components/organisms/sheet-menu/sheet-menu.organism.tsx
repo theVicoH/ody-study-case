@@ -2,12 +2,10 @@ import React, { useEffect, useMemo, useState } from "react";
 
 import { useTranslation } from "react-i18next";
 
-import { PencilIcon } from "@/components/icons/pencil/pencil.icon";
-import { PlusIcon } from "@/components/icons/plus/plus.icon";
-
 import type { RestaurantMenuItem } from "@workspace/client";
 
-
+import { PencilIcon } from "@/components/icons/pencil/pencil.icon";
+import { PlusIcon } from "@/components/icons/plus/plus.icon";
 import { KpiCard } from "@/components/molecules/kpi-card/kpi-card.molecule";
 import { SearchInput } from "@/components/molecules/search-input/search-input.molecule";
 import { Button } from "@/components/ui/button";

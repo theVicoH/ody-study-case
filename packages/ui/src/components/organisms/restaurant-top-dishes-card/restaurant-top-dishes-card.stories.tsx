@@ -2,6 +2,8 @@ import { RestaurantTopDishesCard } from "./restaurant-top-dishes-card.organism";
 
 import type { Meta, StoryObj } from "@storybook/react";
 
+import { Skeleton } from "@/components/ui/skeleton";
+
 const meta: Meta<typeof RestaurantTopDishesCard> = {
   title: "Components/Organisms/RestaurantTopDishesCard",
   component: RestaurantTopDishesCard,
@@ -41,6 +43,25 @@ export const Empty: Story = {
   render: () => (
     <div className="p-md max-w-md">
       <RestaurantTopDishesCard labels={labels} items={[]} />
+    </div>
+  )
+};
+
+export const Loading: Story = {
+  render: () => (
+    <div className="p-md max-w-md space-y-2">
+      <Skeleton className="h-6 w-1/2" />
+      <Skeleton className="h-10 w-full" />
+      <Skeleton className="h-10 w-full" />
+      <Skeleton className="h-10 w-full" />
+    </div>
+  )
+};
+
+export const Error: Story = {
+  render: () => (
+    <div className="border-destructive bg-destructive/10 text-destructive rounded-md border p-4">
+      Failed to load top dishes. Please try again.
     </div>
   )
 };

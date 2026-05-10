@@ -2,6 +2,8 @@ import { SheetCrm } from "./sheet-crm.organism";
 
 import type { Meta, StoryObj } from "@storybook/react";
 
+import { Skeleton } from "@/components/ui/skeleton";
+
 const meta: Meta<typeof SheetCrm> = {
   title: "Components/Organisms/SheetCrm",
   component: SheetCrm,
@@ -96,4 +98,23 @@ export const Empty: Story = {
     vipCount: 0,
     customers: []
   }
+};
+
+export const Loading: Story = {
+  render: () => (
+    <div className="space-y-2 p-4">
+      <Skeleton className="h-10 w-full" />
+      <Skeleton className="h-10 w-full" />
+      <Skeleton className="h-10 w-full" />
+      <Skeleton className="h-10 w-full" />
+    </div>
+  )
+};
+
+export const Error: Story = {
+  render: () => (
+    <div className="border-destructive bg-destructive/10 text-destructive rounded-md border p-4">
+      Failed to load CRM data. Please try again.
+    </div>
+  )
 };

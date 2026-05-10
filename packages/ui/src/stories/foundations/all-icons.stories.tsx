@@ -80,7 +80,7 @@ export const Default: Story = {
             {icons.map((icon) => (
               <div
                 key={icon.name}
-                className="border-border bg-card gap-sm p-md flex flex-col items-center rounded-lg border transition-colors hover:bg-muted/40"
+                className="border-border bg-card gap-sm p-md hover:bg-muted/40 flex flex-col items-center rounded-lg border transition-colors"
               >
                 <div className="text-foreground">{icon.component}</div>
                 <div className="flex flex-col items-center gap-0.5 text-center">

@@ -25,6 +25,7 @@ const ICON_DEFAULT_DURATION = 1;
 const SVG_VIEWBOX_SIZE = 24;
 const ANIMATION_DURATION_FACTOR = 0.5;
 const STROKE_OPACITY_DIM = 0.5;
+const ARROW_SHIFT_PX = -4;
 
 export interface ArrowLeftIconHandle {
   startAnimation: () => void;
@@ -94,7 +95,7 @@ const ArrowLeftIcon = forwardRef<ArrowLeftIconHandle, ArrowLeftIconProps>((
   const arrowVariants: Variants = {
     normal: { x: 0 },
     animate: {
-      x: [0, -4, 0],
+      x: [0, ARROW_SHIFT_PX, 0],
       transition: { duration: ANIMATION_DURATION_FACTOR * duration, ease: "easeInOut" }
     }
   };

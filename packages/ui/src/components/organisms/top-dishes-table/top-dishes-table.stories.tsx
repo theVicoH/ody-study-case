@@ -2,6 +2,8 @@ import { TopDishesTable } from "./top-dishes-table.organism";
 
 import type { Meta, StoryObj } from "@storybook/react";
 
+import { Skeleton } from "@/components/ui/skeleton";
+
 interface RestaurantTopItem {
   name: string;
   category: string;
@@ -44,6 +46,34 @@ export const Default: Story = {
   render: () => (
     <div className="h-[500px] w-[700px]">
       <TopDishesTable items={ITEMS} labels={labels} />
+    </div>
+  )
+};
+
+export const Loading: Story = {
+  render: () => (
+    <div className="h-[500px] w-[700px] space-y-2">
+      <Skeleton className="h-10 w-full" />
+      <Skeleton className="h-10 w-full" />
+      <Skeleton className="h-10 w-full" />
+      <Skeleton className="h-10 w-full" />
+      <Skeleton className="h-10 w-full" />
+    </div>
+  )
+};
+
+export const Empty: Story = {
+  render: () => (
+    <div className="h-[500px] w-[700px]">
+      <TopDishesTable items={[]} labels={labels} />
+    </div>
+  )
+};
+
+export const Error: Story = {
+  render: () => (
+    <div className="border-destructive bg-destructive/10 text-destructive rounded-md border p-4">
+      Failed to load dishes. Please try again.
     </div>
   )
 };

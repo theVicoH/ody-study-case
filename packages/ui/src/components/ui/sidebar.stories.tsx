@@ -48,9 +48,7 @@ export const Default: Story = {
               <SidebarMenu>
                 {navItems.map((item) => (
                   <SidebarMenuItem key={item.label}>
-                    <SidebarMenuButton asChild>
-                      <a href={item.href}>{item.label}</a>
-                    </SidebarMenuButton>
+                    <SidebarMenuButton render={<a href={item.href}>{item.label}</a>} />
                   </SidebarMenuItem>
                 ))}
               </SidebarMenu>
@@ -85,9 +83,7 @@ export const Collapsed: Story = {
               <SidebarMenu>
                 {navItems.map((item) => (
                   <SidebarMenuItem key={item.label}>
-                    <SidebarMenuButton asChild>
-                      <a href={item.href}>{item.label}</a>
-                    </SidebarMenuButton>
+                    <SidebarMenuButton render={<a href={item.href}>{item.label}</a>} />
                   </SidebarMenuItem>
                 ))}
               </SidebarMenu>

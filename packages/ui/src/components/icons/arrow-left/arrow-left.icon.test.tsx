@@ -3,6 +3,8 @@ import { describe, expect, it } from "vitest";
 
 import { ArrowLeftIcon } from "./arrow-left.icon";
 
+const CUSTOM_SIZE = 32;
+
 describe("ArrowLeftIcon", () => {
   it("renders without crashing", () => {
     const { container } = render(<ArrowLeftIcon />);
@@ -11,7 +13,7 @@ describe("ArrowLeftIcon", () => {
   });
 
   it("applies custom size", () => {
-    const { container } = render(<ArrowLeftIcon size={32} />);
+    const { container } = render(<ArrowLeftIcon size={CUSTOM_SIZE} />);
 
     const svg = container.querySelector("svg");
 

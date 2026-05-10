@@ -4,7 +4,6 @@ import { ArrowDownIcon } from "@/components/icons/arrow-down/arrow-down.icon";
 import { ArrowDownUpIcon } from "@/components/icons/arrow-down-up/arrow-down-up.icon";
 import { ArrowUpIcon } from "@/components/icons/arrow-up/arrow-up.icon";
 import { SlidersHorizontalIcon } from "@/components/icons/sliders-horizontal/sliders-horizontal.icon";
-
 import {
   DropdownMenu,
   DropdownMenuContent,

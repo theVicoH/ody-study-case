@@ -2,6 +2,8 @@ import { SheetRestaurantOverview } from "./sheet-restaurant-overview.organism";
 
 import type { Meta, StoryObj } from "@storybook/react";
 
+import { Skeleton } from "@/components/ui/skeleton";
+
 const meta: Meta<typeof SheetRestaurantOverview> = {
   title: "Components/Organisms/SheetRestaurantOverview",
   component: SheetRestaurantOverview,
@@ -116,4 +118,41 @@ export const EmptyTopDishes: Story = {
     },
     groupRestaurants
   }
+};
+
+export const Loading: Story = {
+  render: () => (
+    <div className="space-y-2 p-4">
+      <Skeleton className="h-6 w-1/2" />
+      <Skeleton className="h-24 w-full" />
+      <Skeleton className="h-24 w-full" />
+      <Skeleton className="h-24 w-full" />
+    </div>
+  )
+};
+
+export const Empty: Story = {
+  args: {
+    labels: baseLabels,
+    restaurantId: "r4",
+    restaurantType: "—",
+    performance: "warn",
+    stats: {
+      covers: 0,
+      revenue: 0,
+      orders: 0,
+      rating: "—",
+      trend: "0%"
+    },
+    groupRestaurants: [],
+    topItems: []
+  }
+};
+
+export const Error: Story = {
+  render: () => (
+    <div className="border-destructive bg-destructive/10 text-destructive rounded-md border p-4">
+      Failed to load restaurant overview. Please try again.
+    </div>
+  )
 };

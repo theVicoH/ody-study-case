@@ -1,13 +1,13 @@
 import React, { useMemo, useState } from "react";
 
-import { ArrowRightIcon } from "@/components/icons/arrow-right/arrow-right.icon";
-import { PlusIcon } from "@/components/icons/plus/plus.icon";
 
 import type { NavIconComponent } from "@/components/molecules/sidebar-nav/sidebar-nav.molecule";
 
 import { BrandMark } from "@/components/atoms/brand-mark/brand-mark.atom";
 import { StatusDot } from "@/components/atoms/status-dot/status-dot.atom";
 import { H4, Overline } from "@/components/atoms/typography/typography.atom";
+import { ArrowRightIcon } from "@/components/icons/arrow-right/arrow-right.icon";
+import { PlusIcon } from "@/components/icons/plus/plus.icon";
 import { RestaurantListItem } from "@/components/molecules/restaurant-list-item/restaurant-list-item.molecule";
 import { SearchInput } from "@/components/molecules/search-input/search-input.molecule";
 import { SidebarNav } from "@/components/molecules/sidebar-nav/sidebar-nav.molecule";
@@ -17,7 +17,6 @@ import { cn } from "@/lib/utils";
 
 
 const COMPARE_ICON_SIZE = 16;
-const COMPARE_ICON_STROKE = 2;
 
 interface SidebarRestaurant {
   id: string;

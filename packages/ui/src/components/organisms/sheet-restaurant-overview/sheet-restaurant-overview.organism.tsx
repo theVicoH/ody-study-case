@@ -24,7 +24,7 @@ interface RestaurantPerfRow {
   name: string;
   performance: "good" | "warn" | "bad";
   revenue: number;
-  sparklineData: ReadonlyArray<number>;
+  sparklineData?: ReadonlyArray<number>;
 }
 
 interface SheetRestaurantOverviewLabels {

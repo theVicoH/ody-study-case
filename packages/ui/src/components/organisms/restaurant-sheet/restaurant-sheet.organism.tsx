@@ -1,14 +1,14 @@
 import React, { useEffect } from "react";
 
+import { AnimatePresence, motion } from "motion/react";
 import { createPortal } from "react-dom";
 
-import { AnimatePresence, motion } from "motion/react";
 
+import { StatusDot } from "@/components/atoms/status-dot/status-dot.atom";
+import { H2, Muted, Overline } from "@/components/atoms/typography/typography.atom";
 import { MaximizeIcon } from "@/components/icons/maximize/maximize.icon";
 import { MinimizeIcon } from "@/components/icons/minimize/minimize.icon";
 import { XIcon } from "@/components/icons/x/x.icon";
-import { StatusDot } from "@/components/atoms/status-dot/status-dot.atom";
-import { H2, Muted, Overline } from "@/components/atoms/typography/typography.atom";
 import { Button } from "@/components/ui/button";
 import {
   Select,
