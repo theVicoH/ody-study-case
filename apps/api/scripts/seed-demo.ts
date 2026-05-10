@@ -187,11 +187,27 @@ function pickStatus(): OrderStatus {
   return ORDER_STATUS.CANCELLED;
 }
 
-function randomDateWithinDays(days: number): Date {
+function randomRecentDate(): Date {
   const now = Date.now();
-  const past = now - Math.floor(Math.random() * days * 24 * 60 * 60 * 1000);
+  const r = Math.random();
+  let daysAgo: number;
 
-  return new Date(past);
+  if (r < 0.35) {
+    daysAgo = Math.random();
+  } else if (r < 0.85) {
+    daysAgo = Math.random() * 7;
+  } else {
+    daysAgo = 7 + Math.random() * 23;
+  }
+
+  const hourBias = Math.random();
+  const hour = hourBias < 0.45 ? 12 + Math.random() * 3 : 19 + Math.random() * 4;
+  const past = now - daysAgo * 24 * 60 * 60 * 1000;
+  const date = new Date(past);
+
+  date.setHours(Math.floor(hour), Math.floor(Math.random() * 60), 0, 0);
+
+  return date;
 }
 
 async function cleanup(): Promise<void> {
@@ -208,6 +224,16 @@ async function cleanup(): Promise<void> {
   const orgs = await db.select().from(organizationsTable).where(eq(organizationsTable.ownerId, userId));
 
   for (const org of orgs) {
+    const restos = await db.select().from(restaurantsTable).where(eq(restaurantsTable.organizationId, org.id));
+
+    for (const r of restos) {
+      const orderRows = await db.select({ id: ordersTable.id }).from(ordersTable).where(eq(ordersTable.restaurantId, r.id));
+
+      for (const o of orderRows) {
+        await db.delete(orderItemsTable).where(eq(orderItemsTable.orderId, o.id));
+      }
+      await db.delete(ordersTable).where(eq(ordersTable.restaurantId, r.id));
+    }
     await db.delete(organizationsTable).where(eq(organizationsTable.id, org.id));
   }
 
@@ -315,12 +341,12 @@ async function seedRestaurant(restaurantId: string, seed: RestaurantSeed): Promi
   await db.insert(clientsTable).values(clientRows);
 
   const allDishes = dishRows;
-  const orderCount = 50;
+  const orderCount = 120;
 
   for (let i = 0; i < orderCount; i++) {
     const orderId = crypto.randomUUID();
     const status = pickStatus();
-    const placedAt = randomDateWithinDays(45);
+    const placedAt = randomRecentDate();
     const useClient = Math.random() > 0.3;
     const useTable = Math.random() > 0.2;
     const itemCount = 1 + Math.floor(Math.random() * 4);

@@ -75,7 +75,7 @@ app.onError(onError);
 export type AppType = typeof app;
 
 export default {
-  port: 3001,
+  port: Number(process.env["PORT"] ?? process.env["API_PORT"] ?? 3001),
   fetch(req: Request, server: Bun.Server<undefined>): Response | Promise<Response> {
     const ip = server.requestIP(req)?.address;
 

@@ -1276,32 +1276,61 @@ const Layout = (): React.JSX.Element => {
 
   const headerActions = (
     <>
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={handleOpenCreateRestaurant}
-        aria-label={t("restaurants.create.addRestaurant")}
-        disabled={apiLoading || !demoUser}
-      >
-        <span aria-hidden className="text-base leading-none">+</span>
-        <span className="typo-body-sm">{t("restaurants.create.addRestaurant")}</span>
-      </Button>
-      <Button
-        variant={view3dEnabled ? "tertiary" : "ghost"}
-        size="sm"
-        onClick={handleToggleView3d}
-        aria-label={view3dEnabled ? t("restaurants.flatList.disable3d") : t("restaurants.flatList.enable3d")}
-        aria-pressed={view3dEnabled}
-      >
-        <HugeiconsIcon
-          icon={ThreeDViewIcon}
-          size={THREED_ICON_SIZE}
-          strokeWidth={THREED_ICON_STROKE}
-        />
-        <span className="typo-body-sm">
-          {view3dEnabled ? t("restaurants.flatList.disable3d") : t("restaurants.flatList.enable3d")}
-        </span>
-      </Button>
+      {isMobileOrTablet ? (
+        <>
+          <Button
+            variant="outline"
+            size="icon-sm"
+            onClick={handleOpenCreateRestaurant}
+            aria-label={t("restaurants.create.addRestaurant")}
+            disabled={apiLoading || !demoUser}
+          >
+            <span aria-hidden className="text-base leading-none">+</span>
+          </Button>
+          <Button
+            variant={view3dEnabled ? "tertiary" : "ghost"}
+            size="icon-sm"
+            onClick={handleToggleView3d}
+            aria-label={view3dEnabled ? t("restaurants.flatList.disable3d") : t("restaurants.flatList.enable3d")}
+            aria-pressed={view3dEnabled}
+          >
+            <HugeiconsIcon
+              icon={ThreeDViewIcon}
+              size={THREED_ICON_SIZE}
+              strokeWidth={THREED_ICON_STROKE}
+            />
+          </Button>
+        </>
+      ) : (
+        <>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleOpenCreateRestaurant}
+            aria-label={t("restaurants.create.addRestaurant")}
+            disabled={apiLoading || !demoUser}
+          >
+            <span aria-hidden className="text-base leading-none">+</span>
+            <span className="typo-body-sm">{t("restaurants.create.addRestaurant")}</span>
+          </Button>
+          <Button
+            variant={view3dEnabled ? "tertiary" : "ghost"}
+            size="sm"
+            onClick={handleToggleView3d}
+            aria-label={view3dEnabled ? t("restaurants.flatList.disable3d") : t("restaurants.flatList.enable3d")}
+            aria-pressed={view3dEnabled}
+          >
+            <HugeiconsIcon
+              icon={ThreeDViewIcon}
+              size={THREED_ICON_SIZE}
+              strokeWidth={THREED_ICON_STROKE}
+            />
+            <span className="typo-body-sm">
+              {view3dEnabled ? t("restaurants.flatList.disable3d") : t("restaurants.flatList.enable3d")}
+            </span>
+          </Button>
+        </>
+      )}
       <button
         type="button"
         onClick={() => setProfileOpen(true)}
@@ -1328,6 +1357,7 @@ const Layout = (): React.JSX.Element => {
       brand={<BrandMark size="md" label={t("restaurants.brand")} />}
       brandVisible={!isOpen}
       headerActions={headerActions}
+      headerActionsRight={isMobileOrTablet ? "calc(var(--spacing-md) + 2.75rem)" : undefined}
       background={
         <RestaurantScene
           className="absolute inset-0"
@@ -1405,13 +1435,14 @@ const Layout = (): React.JSX.Element => {
         )}
       </AnimatePresence>
 
-      {isMobileOrTablet && !mobileSidebarOpen ? (
+      {isMobileOrTablet ? (
         <Button
           variant="outline"
           size="icon-sm"
-          onClick={() => setMobileSidebarOpen(true)}
+          onClick={() => setMobileSidebarOpen((prev) => !prev)}
           aria-label={t("restaurants.rail.openMenu")}
-          className="top-md left-md glass-strong fixed z-40"
+          aria-pressed={mobileSidebarOpen}
+          className="top-md right-md glass-strong fixed z-[60]"
         >
           <MenuIcon size={16} />
         </Button>

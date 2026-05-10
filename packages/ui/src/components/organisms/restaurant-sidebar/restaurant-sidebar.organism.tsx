@@ -144,7 +144,7 @@ const RestaurantSidebar = ({
       className={cn(
         "glass-strong fixed md:absolute",
         "top-sm bottom-sm left-sm rounded-xl",
-        isMobileOrTablet ? "right-sm z-[55] w-auto max-w-[20rem]" : "z-30 w-60",
+        isMobileOrTablet ? "z-[55] w-[min(20rem,calc(100vw-5rem))]" : "z-30 w-60",
         className
       )}
     >
