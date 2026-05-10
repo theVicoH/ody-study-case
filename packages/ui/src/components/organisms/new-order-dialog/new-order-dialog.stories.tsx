@@ -52,3 +52,32 @@ const NewOrderDialogDemo = (): React.JSX.Element => {
 export const Default: Story = {
   render: () => <NewOrderDialogDemo />
 };
+
+const NewOrderDialogOpenByDefault = (): React.JSX.Element => {
+  const [open, setOpen] = useState(true);
+
+  return (
+    <NewOrderDialog
+      open={open}
+      onOpenChange={setOpen}
+      labels={defaultLabels}
+      onSubmit={(values) => { console.error("submit", values); }}
+    />
+  );
+};
+
+export const OpenByDefault: Story = {
+  render: () => <NewOrderDialogOpenByDefault />
+};
+
+export const CreateMode: Story = {
+  render: () => <NewOrderDialogOpenByDefault />
+};
+
+export const Error: Story = {
+  render: () => (
+    <div className="border-destructive bg-destructive/10 text-destructive rounded-md border p-4">
+      Failed to create order. Please try again.
+    </div>
+  )
+};

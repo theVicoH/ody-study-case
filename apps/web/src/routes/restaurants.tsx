@@ -25,6 +25,7 @@ import { UsersIcon } from "@workspace/ui/components/icons/users/users.icon";
 import { DashboardLayout } from "@workspace/ui/components/layouts/dashboard-layout/dashboard-layout.layout";
 import { ControlTip } from "@workspace/ui/components/molecules/control-tip/control-tip.molecule";
 import { RestaurantListItem } from "@workspace/ui/components/molecules/restaurant-list-item/restaurant-list-item.molecule";
+import { SheetTabBar } from "@workspace/ui/components/molecules/sheet-tab-bar/sheet-tab-bar.molecule";
 import { RestaurantSheet } from "@workspace/ui/components/organisms/restaurant-sheet/restaurant-sheet.organism";
 import { RestaurantSidebar } from "@workspace/ui/components/organisms/restaurant-sidebar/restaurant-sidebar.organism";
 import { SheetCrm } from "@workspace/ui/components/organisms/sheet-crm/sheet-crm.organism";
@@ -134,6 +135,7 @@ const Layout = (): React.JSX.Element => {
   const clearSelection = useRestaurantSelectionStore((s) => s.clearSelection);
   const setActiveTab = useRestaurantSelectionStore((s) => s.setActiveTab);
   const setCompareMode = useRestaurantSelectionStore((s) => s.setCompareMode);
+  const setSecondaryTab = useRestaurantSelectionStore((s) => s.setSecondaryTab);
   const selectSecondaryRestaurant = useRestaurantSelectionStore(
     (s) => s.selectSecondaryRestaurant
   );
@@ -1150,6 +1152,13 @@ const Layout = (): React.JSX.Element => {
                   selectedRestaurantId={selected.id}
                   onSelectRestaurant={(id) => { if (id) handleSelectRestaurantById(id); }}
                   onClose={handleCloseLeftInCompare}
+                  tabSlot={
+                    <SheetTabBar
+                      items={navItems}
+                      activeId={activeTab}
+                      onTabChange={handleTabChange}
+                    />
+                  }
                 >
                   {renderAnimatedTabContent(
                     `${selected.id}:${activeTab}`,
@@ -1177,6 +1186,13 @@ const Layout = (): React.JSX.Element => {
                   selectedRestaurantId={secondary?.id}
                   onSelectRestaurant={handleSelectSecondary}
                   onClose={handleCloseRightInCompare}
+                  tabSlot={
+                    <SheetTabBar
+                      items={navItems}
+                      activeId={secondaryTab ?? activeTab}
+                      onTabChange={setSecondaryTab}
+                    />
+                  }
                 >
                   {renderAnimatedTabContent(
                     `${secondary?.id ?? "none"}:${rightTab}`,
@@ -1226,6 +1242,13 @@ const Layout = (): React.JSX.Element => {
           onResizerLeftPointerDown={view3dEnabled ? onResizerLeftPointerDown : undefined}
           onResizerRightPointerDown={view3dEnabled ? onResizerRightPointerDown : undefined}
           onDragHeaderPointerDown={view3dEnabled ? onDragHeaderPointerDown : undefined}
+          tabSlot={!isGroupView ? (
+            <SheetTabBar
+              items={navItems}
+              activeId={activeTab}
+              onTabChange={handleTabChange}
+            />
+          ) : undefined}
         >
           {renderAnimatedTabContent(
             `${isGroupView ? "__group" : selectedId ?? "none"}:${activeTab}`,

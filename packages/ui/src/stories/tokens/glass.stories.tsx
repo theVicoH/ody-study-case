@@ -30,13 +30,13 @@ export const Default: Story = {
               {
                 cls: "glass",
                 title: "glass",
-                desc: "Standard glass — blur(24px), 58% opacity bg. Sidebar panels, floating headers.",
+                desc: "Standard glass — blur(24px), 72% opacity bg. Sidebar panels, floating headers.",
                 code: "className=\"glass rounded-xl p-lg\""
               },
               {
                 cls: "glass-strong",
                 title: "glass-strong",
-                desc: "Strong glass — blur(40px), 78% opacity. Modals, critical overlays.",
+                desc: "Strong glass — blur(40px), 90% opacity. Modals, critical overlays.",
                 code: "className=\"glass-strong rounded-xl p-lg\""
               },
               {
@@ -44,6 +44,12 @@ export const Default: Story = {
                 title: "glass-card",
                 desc: "Card glass — gradient bg, stronger border. Dashboard KPI cards.",
                 code: "className=\"glass-card p-lg\""
+              },
+              {
+                cls: "glass-primary",
+                title: "glass-primary",
+                desc: "Primary-tinted glass — brand color overlay with glow. Featured CTAs, focused panels.",
+                code: "className=\"glass-primary rounded-xl p-lg\""
               }
             ].map((v) => (
               <div key={v.cls} className="gap-sm flex flex-col">

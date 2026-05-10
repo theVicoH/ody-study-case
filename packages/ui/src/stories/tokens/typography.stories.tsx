@@ -12,19 +12,19 @@ export default meta;
 type Story = StoryObj;
 
 const typeScale = [
-  { utility: "typo-display", label: "Display", size: "3.75rem", weight: "700", lineHeight: "1.1", font: "Space Grotesk", usage: "Hero sections, marketing headers" },
-  { utility: "typo-h1", label: "Heading 1", size: "2.25rem", weight: "700", lineHeight: "1.15", font: "Space Grotesk", usage: "Page titles" },
-  { utility: "typo-h2", label: "Heading 2", size: "1.875rem", weight: "700", lineHeight: "1.2", font: "Space Grotesk", usage: "Section titles" },
-  { utility: "typo-h3", label: "Heading 3", size: "1.5rem", weight: "600", lineHeight: "1.25", font: "Space Grotesk", usage: "Card titles, subsections" },
-  { utility: "typo-h4", label: "Heading 4", size: "1.25rem", weight: "600", lineHeight: "1.3", font: "Space Grotesk", usage: "Widget headers" },
-  { utility: "typo-h5", label: "Heading 5", size: "1.125rem", weight: "600", lineHeight: "1.35", font: "Inter", usage: "Form section titles" },
-  { utility: "typo-body-lg", label: "Body Large", size: "1.125rem", weight: "400", lineHeight: "1.6", font: "Inter", usage: "Lead paragraphs" },
+  { utility: "typo-display", label: "Display", size: "clamp(2.5–3.75rem)", weight: "700", lineHeight: "1.1", font: "Space Grotesk", usage: "Hero sections, marketing headers" },
+  { utility: "typo-h1", label: "Heading 1", size: "1.75rem", weight: "700", lineHeight: "1.15", font: "Space Grotesk", usage: "Page titles" },
+  { utility: "typo-h2", label: "Heading 2", size: "1.375rem", weight: "700", lineHeight: "1.2", font: "Space Grotesk", usage: "Section titles" },
+  { utility: "typo-h3", label: "Heading 3", size: "1.125rem", weight: "600", lineHeight: "1.25", font: "Space Grotesk", usage: "Card titles, subsections" },
+  { utility: "typo-h4", label: "Heading 4", size: "1rem", weight: "600", lineHeight: "1.3", font: "Space Grotesk", usage: "Widget headers" },
+  { utility: "typo-h5", label: "Heading 5", size: "0.875rem", weight: "600", lineHeight: "1.35", font: "Inter", usage: "Form section titles" },
+  { utility: "typo-body-lg", label: "Body Large", size: "clamp(1–1.125rem)", weight: "400", lineHeight: "1.6", font: "Inter", usage: "Lead paragraphs" },
   { utility: "typo-body", label: "Body", size: "1rem", weight: "400", lineHeight: "1.5", font: "Inter", usage: "Default body text" },
   { utility: "typo-body-sm", label: "Body Small", size: "0.875rem", weight: "400", lineHeight: "1.5", font: "Inter", usage: "Secondary text, descriptions" },
   { utility: "typo-caption", label: "Caption", size: "0.75rem", weight: "500", lineHeight: "1.4", font: "Inter", usage: "Labels, metadata" },
-  { utility: "typo-overline", label: "Overline", size: "0.75rem", weight: "600", lineHeight: "1.4", font: "Inter", usage: "Section labels (UPPERCASE)" },
+  { utility: "typo-overline", label: "Overline", size: "0.675rem", weight: "600", lineHeight: "1.4", font: "Inter", usage: "Section labels (UPPERCASE)" },
   { utility: "typo-button", label: "Button", size: "0.875rem", weight: "600", lineHeight: "1.2", font: "Inter", usage: "Button labels" },
-  { utility: "typo-code", label: "Code", size: "0.875rem", weight: "400", lineHeight: "1.5", font: "Monospace", usage: "Code snippets, tokens" }
+  { utility: "typo-code", label: "Code", size: "0.675rem", weight: "400", lineHeight: "1", font: "Monospace", usage: "Code snippets, tokens" }
 ];
 
 export const TypeScale: Story = {

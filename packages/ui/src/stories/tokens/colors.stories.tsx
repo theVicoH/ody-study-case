@@ -77,19 +77,36 @@ export const Default: Story = {
           </div>
         </Section>
 
-        <Section title="State" description="Warning, error, and info for contextual feedback.">
-          <div className="gap-sm grid grid-cols-3">
+        <Section title="State" description="Status and feedback colors. Each has a matching -tint variant at 10–13% opacity for backgrounds.">
+          <div className="gap-sm grid grid-cols-4">
             {[
-              { name: "Warning", cssVar: "--state-warning", bg: "bg-[oklch(0.78_0.14_80)]" },
-              { name: "Error", cssVar: "--state-error", bg: "bg-[oklch(0.68_0.20_27)]" },
-              { name: "Info", cssVar: "--state-info", bg: "bg-[oklch(0.65_0.17_248)]" }
+              { name: "Good", cssVar: "--status-good", tailwind: "bg-[var(--status-good)]" },
+              { name: "Warning", cssVar: "--state-warning", tailwind: "bg-[var(--state-warning)]" },
+              { name: "Error", cssVar: "--state-error", tailwind: "bg-[var(--state-error)]" },
+              { name: "Info", cssVar: "--state-info", tailwind: "bg-[var(--state-info)]" }
             ].map((s) => (
               <div key={s.name} className="border-border flex flex-col overflow-hidden rounded-lg border">
-                <div className={`${s.bg} h-20 w-full`} />
+                <div className={`${s.tailwind} h-20 w-full`} />
                 <div className="bg-card p-sm flex flex-col gap-0.5">
                   <span className="typo-caption text-foreground font-medium">{s.name}</span>
                   <span className="typo-caption text-muted-foreground font-mono">{s.cssVar}</span>
-                  <span className="typo-caption text-primary font-mono">text-[var({s.cssVar})]</span>
+                  <span className="typo-caption text-primary font-mono">{s.tailwind}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="gap-sm grid grid-cols-4">
+            {[
+              { name: "Primary tint", cssVar: "--state-primary-tint", tailwind: "bg-[var(--state-primary-tint)]" },
+              { name: "Warning tint", cssVar: "--state-warning-tint", tailwind: "bg-[var(--state-warning-tint)]" },
+              { name: "Error tint", cssVar: "--state-error-tint", tailwind: "bg-[var(--state-error-tint)]" },
+              { name: "Info tint", cssVar: "--state-info-tint", tailwind: "bg-[var(--state-info-tint)]" }
+            ].map((s) => (
+              <div key={s.name} className="border-border flex flex-col overflow-hidden rounded-lg border">
+                <div className={`${s.tailwind} border-border h-12 w-full border-b`} />
+                <div className="bg-card p-sm flex flex-col gap-0.5">
+                  <span className="typo-caption text-foreground font-medium">{s.name}</span>
+                  <span className="typo-caption text-muted-foreground font-mono">{s.cssVar}</span>
                 </div>
               </div>
             ))}

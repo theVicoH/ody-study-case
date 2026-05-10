@@ -51,3 +51,32 @@ const NewCustomerDialogDemo = (): React.JSX.Element => {
 export const Default: Story = {
   render: () => <NewCustomerDialogDemo />
 };
+
+const NewCustomerDialogOpenByDefault = (): React.JSX.Element => {
+  const [open, setOpen] = useState(true);
+
+  return (
+    <NewCustomerDialog
+      open={open}
+      onOpenChange={setOpen}
+      labels={defaultLabels}
+      onSubmit={(values) => { console.error("submit", values); }}
+    />
+  );
+};
+
+export const OpenByDefault: Story = {
+  render: () => <NewCustomerDialogOpenByDefault />
+};
+
+export const CreateMode: Story = {
+  render: () => <NewCustomerDialogOpenByDefault />
+};
+
+export const Error: Story = {
+  render: () => (
+    <div className="border-destructive bg-destructive/10 text-destructive rounded-md border p-4">
+      Failed to create customer. Please try again.
+    </div>
+  )
+};

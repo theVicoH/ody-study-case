@@ -3,6 +3,8 @@ import { CustomersTable } from "./customers-table.organism";
 import type { Meta, StoryObj } from "@storybook/react";
 import type { RestaurantCustomer } from "@workspace/client";
 
+import { Skeleton } from "@/components/ui/skeleton";
+
 const meta: Meta<typeof CustomersTable> = {
   title: "Components/Organisms/CustomersTable",
   component: CustomersTable,
@@ -40,6 +42,34 @@ export const Default: Story = {
   render: () => (
     <div className="h-[500px] w-[700px]">
       <CustomersTable customers={CUSTOMERS} labels={labels} />
+    </div>
+  )
+};
+
+export const Loading: Story = {
+  render: () => (
+    <div className="space-y-2 h-[500px] w-[700px]">
+      <Skeleton className="h-10 w-full" />
+      <Skeleton className="h-10 w-full" />
+      <Skeleton className="h-10 w-full" />
+      <Skeleton className="h-10 w-full" />
+      <Skeleton className="h-10 w-full" />
+    </div>
+  )
+};
+
+export const Empty: Story = {
+  render: () => (
+    <div className="h-[500px] w-[700px]">
+      <CustomersTable customers={[]} labels={labels} />
+    </div>
+  )
+};
+
+export const Error: Story = {
+  render: () => (
+    <div className="border-destructive bg-destructive/10 text-destructive rounded-md border p-4">
+      Failed to load customers. Please try again.
     </div>
   )
 };

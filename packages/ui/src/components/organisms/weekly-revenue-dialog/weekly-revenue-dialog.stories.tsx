@@ -66,3 +66,59 @@ const WeeklyRevenueDialogDemo = (): React.JSX.Element => {
 export const Default: Story = {
   render: () => <WeeklyRevenueDialogDemo />
 };
+
+const WeeklyRevenueDialogOpenByDefault = (): React.JSX.Element => {
+  const today = new Date();
+  const [open, setOpen] = useState(true);
+  const [selectedDate, setSelectedDate] = useState<Date>(today);
+
+  return (
+    <WeeklyRevenueDialog
+      open={open}
+      onOpenChange={setOpen}
+      labels={labels}
+      selectedDate={selectedDate}
+      onSelectedDateChange={setSelectedDate}
+      maxDate={today}
+      weeklyValues={THIS_WEEK_DATA}
+      weeklyLabels={DAY_LABELS}
+      formatRevenue={formatRevenue}
+    />
+  );
+};
+
+export const OpenByDefault: Story = {
+  render: () => <WeeklyRevenueDialogOpenByDefault />
+};
+
+const WeeklyRevenueDialogEmpty = (): React.JSX.Element => {
+  const today = new Date();
+  const [open, setOpen] = useState(true);
+  const [selectedDate, setSelectedDate] = useState<Date>(today);
+
+  return (
+    <WeeklyRevenueDialog
+      open={open}
+      onOpenChange={setOpen}
+      labels={labels}
+      selectedDate={selectedDate}
+      onSelectedDateChange={setSelectedDate}
+      maxDate={today}
+      weeklyValues={[]}
+      weeklyLabels={[]}
+      formatRevenue={formatRevenue}
+    />
+  );
+};
+
+export const Empty: Story = {
+  render: () => <WeeklyRevenueDialogEmpty />
+};
+
+export const Error: Story = {
+  render: () => (
+    <div className="border-destructive bg-destructive/10 text-destructive rounded-md border p-4">
+      Failed to load weekly revenue. Please try again.
+    </div>
+  )
+};

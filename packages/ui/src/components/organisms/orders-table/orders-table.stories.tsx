@@ -3,6 +3,8 @@ import { OrdersTable } from "./orders-table.organism";
 import type { Meta, StoryObj } from "@storybook/react";
 import type { RestaurantOrder } from "@workspace/client";
 
+import { Skeleton } from "@/components/ui/skeleton";
+
 const meta: Meta<typeof OrdersTable> = {
   title: "Components/Organisms/OrdersTable",
   component: OrdersTable,

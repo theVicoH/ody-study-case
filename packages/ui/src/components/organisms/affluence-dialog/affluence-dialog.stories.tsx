@@ -66,3 +66,59 @@ const AffluenceDialogDemo = (): React.JSX.Element => {
 export const Default: Story = {
   render: () => <AffluenceDialogDemo />
 };
+
+const AffluenceDialogOpenByDefault = (): React.JSX.Element => {
+  const today = new Date();
+  const [open, setOpen] = useState(true);
+  const [selectedDate, setSelectedDate] = useState<Date>(today);
+
+  return (
+    <AffluenceDialog
+      open={open}
+      onOpenChange={setOpen}
+      labels={labels}
+      selectedDate={selectedDate}
+      onSelectedDateChange={setSelectedDate}
+      maxDate={today}
+      data={THIS_WEEK_DATA}
+      hourLabels={HOURS}
+      dayLabels={DAYS}
+    />
+  );
+};
+
+export const OpenByDefault: Story = {
+  render: () => <AffluenceDialogOpenByDefault />
+};
+
+const AffluenceDialogEmpty = (): React.JSX.Element => {
+  const today = new Date();
+  const [open, setOpen] = useState(true);
+  const [selectedDate, setSelectedDate] = useState<Date>(today);
+
+  return (
+    <AffluenceDialog
+      open={open}
+      onOpenChange={setOpen}
+      labels={labels}
+      selectedDate={selectedDate}
+      onSelectedDateChange={setSelectedDate}
+      maxDate={today}
+      data={[]}
+      hourLabels={[]}
+      dayLabels={[]}
+    />
+  );
+};
+
+export const Empty: Story = {
+  render: () => <AffluenceDialogEmpty />
+};
+
+export const Error: Story = {
+  render: () => (
+    <div className="border-destructive bg-destructive/10 text-destructive rounded-md border p-4">
+      Failed to load affluence data. Please try again.
+    </div>
+  )
+};

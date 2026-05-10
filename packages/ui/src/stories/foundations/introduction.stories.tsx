@@ -27,9 +27,9 @@ export const Default: Story = {
 
         <div className="gap-md grid grid-cols-3">
           {[
-            { label: "Components", count: "20+", desc: "Primitives, atoms, organisms" },
-            { label: "Design Tokens", count: "60+", desc: "Colors, spacing, motion" },
-            { label: "Patterns", count: "4", desc: "Composed UI patterns" }
+            { label: "Components", count: "89+", desc: "6 atoms · 14 molecules · 22 organisms · 2 layouts · 25 UI · 20 icons" },
+            { label: "Design Tokens", count: "80+", desc: "Colors, spacing, radius, motion, glass, elevation" },
+            { label: "Patterns", count: "6", desc: "Composed UI patterns across forms, data, feedback" }
           ].map((stat) => (
             <div key={stat.label} className="glass-card p-lg gap-xs flex flex-col">
               <span className="typo-display text-primary">{stat.count}</span>
@@ -47,6 +47,8 @@ export const Default: Story = {
               { name: "TypeScript (strict)", role: "Type Safety" },
               { name: "Tailwind v4", role: "Styling" },
               { name: "Shadcn UI", role: "Component primitives" },
+              { name: "Three.js + React Three Fiber", role: "3D restaurant scenes" },
+              { name: "Motion (motion/react)", role: "Animations & transitions" },
               { name: "Storybook 8", role: "Component explorer" },
               { name: "Vitest + Testing Library", role: "Testing" }
             ].map((tech) => (
@@ -63,15 +65,19 @@ export const Default: Story = {
           <div className="border-border bg-muted p-md typo-code text-foreground rounded-lg border font-mono">
             <pre>{`packages/ui/src/
 ├── components/
-│   ├── atoms/          # Smallest building blocks
-│   ├── molecules/      # Composed atom groups
-│   ├── organisms/      # Complex sections
-│   ├── layouts/        # Page layout wrappers
-│   └── ui/             # Shadcn primitives
+│   ├── atoms/          # 6 — smallest building blocks
+│   ├── molecules/      # 14 — composed atom groups
+│   ├── organisms/      # 22 — complex sections & sheets
+│   ├── layouts/        # 2 — page layout wrappers
+│   ├── icons/          # 20 — animated SVG icon set
+│   └── ui/             # 25 — Shadcn primitives
 ├── hooks/              # Shared hooks
 ├── lib/                # Utilities & tokens
-├── styles/             # Global CSS & tokens
-└── stories/            # Storybook documentation`}</pre>
+├── styles/             # Global CSS & design tokens
+└── stories/            # Storybook documentation
+
+packages/threejs/       # 3D restaurant scene (Three.js + R3F)
+packages/client/        # Data hooks & Zustand stores`}</pre>
           </div>
         </div>
       </div>

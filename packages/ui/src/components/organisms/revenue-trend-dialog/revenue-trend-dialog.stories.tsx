@@ -65,3 +65,59 @@ const RevenueTrendDialogDemo = (): React.JSX.Element => {
 export const Default: Story = {
   render: () => <RevenueTrendDialogDemo />
 };
+
+const RevenueTrendDialogOpenByDefault = (): React.JSX.Element => {
+  const today = new Date();
+  const [open, setOpen] = useState(true);
+  const [selectedDate, setSelectedDate] = useState<Date>(today);
+
+  return (
+    <RevenueTrendDialog
+      open={open}
+      onOpenChange={setOpen}
+      labels={labels}
+      selectedDate={selectedDate}
+      onSelectedDateChange={setSelectedDate}
+      maxDate={today}
+      hourlyValues={TODAY_DATA}
+      hourlyLabels={HOURLY_LABELS}
+      formatRevenue={formatRevenue}
+    />
+  );
+};
+
+export const OpenByDefault: Story = {
+  render: () => <RevenueTrendDialogOpenByDefault />
+};
+
+const RevenueTrendDialogEmpty = (): React.JSX.Element => {
+  const today = new Date();
+  const [open, setOpen] = useState(true);
+  const [selectedDate, setSelectedDate] = useState<Date>(today);
+
+  return (
+    <RevenueTrendDialog
+      open={open}
+      onOpenChange={setOpen}
+      labels={labels}
+      selectedDate={selectedDate}
+      onSelectedDateChange={setSelectedDate}
+      maxDate={today}
+      hourlyValues={[]}
+      hourlyLabels={[]}
+      formatRevenue={formatRevenue}
+    />
+  );
+};
+
+export const Empty: Story = {
+  render: () => <RevenueTrendDialogEmpty />
+};
+
+export const Error: Story = {
+  render: () => (
+    <div className="border-destructive bg-destructive/10 text-destructive rounded-md border p-4">
+      Failed to load revenue trend. Please try again.
+    </div>
+  )
+};
