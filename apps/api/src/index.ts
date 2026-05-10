@@ -8,6 +8,10 @@ import { auth } from "./lib/auth/auth";
 import { notFound, onError } from "./middleware/error/error.middleware";
 import { loggerMiddleware } from "./middleware/logger/logger.middleware";
 import { authRouter } from "./routes/auth/auth.routes";
+import { clientsRouter } from "./routes/clients/clients.routes";
+import { dishesRouter } from "./routes/dishes/dishes.routes";
+import { menusRouter } from "./routes/menus/menus.routes";
+import { ordersRouter } from "./routes/orders/orders.routes";
 import { organizationsRouter } from "./routes/organizations/organizations.routes";
 import { restaurantOpeningHoursRouter } from "./routes/restaurant-opening-hours/restaurant-opening-hours.routes";
 import { restaurantTablesRouter } from "./routes/restaurant-tables/restaurant-tables.routes";
@@ -44,6 +48,10 @@ app.route("/organizations", organizationsRouter);
 app.route("/restaurants", restaurantsRouter);
 app.route("/restaurants", restaurantOpeningHoursRouter);
 app.route("/restaurants", restaurantTablesRouter);
+app.route("/restaurants", clientsRouter);
+app.route("/restaurants", dishesRouter);
+app.route("/restaurants", menusRouter);
+app.route("/restaurants", ordersRouter);
 
 app.doc("/openapi.json", {
   openapi: "3.0.0",
