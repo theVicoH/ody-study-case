@@ -36,7 +36,15 @@ export function useApiRestaurants(): UseApiRestaurantsReturn {
     setLoading(true);
     setError(null);
     try {
-      const me = await authApi.getOrCreateDemoUser();
+      const me = await authApi.me();
+
+      if (!me) {
+        setUser(null);
+        setOrganization(null);
+        setApiRestaurants([]);
+
+        return;
+      }
 
       setUser(me);
 

@@ -45,6 +45,7 @@ import { SheetRestaurantOverview } from "@workspace/ui/components/organisms/shee
 import { RestaurantSettingsPanel } from "@/components/restaurant-settings-panel/restaurant-settings-panel.organism";
 import { SheetStats } from "@workspace/ui/components/organisms/sheet-stats/sheet-stats.organism";
 import { Avatar, AvatarFallback } from "@workspace/ui/components/ui/avatar";
+import { Button } from "@workspace/ui/components/ui/button";
 import {
   Dialog,
   DialogContent,
