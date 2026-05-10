@@ -1,0 +1,11 @@
+Model Information:
+* title:	Sculpting: Sushi Shop
+* source:	https://sketchfab.com/3d-models/sculpting-sushi-shop-d9c0d8de9324448687fab1a8f8d70c43
+* author:	Kurt De Bleecker (https://sketchfab.com/Kurt.De.Bleecker)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Sculpting: Sushi Shop" (https://sketchfab.com/3d-models/sculpting-sushi-shop-d9c0d8de9324448687fab1a8f8d70c43) by Kurt De Bleecker (https://sketchfab.com/Kurt.De.Bleecker) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
