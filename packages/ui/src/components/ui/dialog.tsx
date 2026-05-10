@@ -5,6 +5,8 @@ import { XIcon } from "@workspace/ui/components/icons/x/x.icon";
 import { Button } from "@workspace/ui/components/ui/button";
 import { cn } from "@workspace/ui/lib/utils";
 
+const CLOSE_ICON_SIZE = 16;
+
 function Dialog({ ...props }: DialogPrimitive.Root.Props) {
   return <DialogPrimitive.Root data-slot="dialog" {...props} />;
 }
@@ -68,7 +70,7 @@ function DialogContent({
               />
             }
           >
-            <XIcon size={16} />
+            <XIcon size={CLOSE_ICON_SIZE} />
             <span className="sr-only">Close</span>
           </DialogPrimitive.Close>
         )}

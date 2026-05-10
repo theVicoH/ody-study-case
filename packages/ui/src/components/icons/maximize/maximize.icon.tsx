@@ -23,6 +23,8 @@ import { cn } from "@/lib/utils";
 const ICON_DEFAULT_SIZE = 24;
 const ICON_DEFAULT_DURATION = 1;
 const SVG_VIEWBOX_SIZE = 24;
+const SCALE_DURATION_FACTOR = 0.5;
+const FADE_DURATION_FACTOR = 0.4;
 
 export interface MaximizeIconHandle {
   startAnimation: () => void;
@@ -93,7 +95,7 @@ const MaximizeIcon = forwardRef<MaximizeIconHandle, MaximizeIconProps>((
     normal: { scale: 1 },
     animate: {
       scale: [1, 1.15, 0.95, 1],
-      transition: { duration: 0.5 * duration, ease: "easeInOut" }
+      transition: { duration: SCALE_DURATION_FACTOR * duration, ease: "easeInOut" }
     }
   };
 
@@ -101,7 +103,7 @@ const MaximizeIcon = forwardRef<MaximizeIconHandle, MaximizeIconProps>((
     normal: { opacity: 1 },
     animate: {
       opacity: [0, 1],
-      transition: { duration: 0.4 * duration, ease: "easeOut" }
+      transition: { duration: FADE_DURATION_FACTOR * duration, ease: "easeOut" }
     }
   };
 

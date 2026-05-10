@@ -78,6 +78,7 @@ interface SheetStatsProps {
 }
 
 const SPARKLINE_HEIGHT = 56;
+const ICON_SIZE = 16;
 const TOP_DISHES_PAGE_SIZE = 6;
 const FILL_RATE_GOOD_THRESHOLD = 80;
 const FILL_RATE_WARN_THRESHOLD = 50;
@@ -280,7 +281,7 @@ const SheetStats = ({
                 aria-label={labels.expandStats}
                 onClick={() => setTrendOpen(true)}
               >
-                <ArrowRightIcon size={16} />
+                <ArrowRightIcon size={ICON_SIZE} />
               </Button>
             </CardAction>
           </CardHeader>
@@ -305,7 +306,7 @@ const SheetStats = ({
                 aria-label={labels.expandStats}
                 onClick={() => setWeeklyOpen(true)}
               >
-                <ArrowRightIcon size={16} />
+                <ArrowRightIcon size={ICON_SIZE} />
               </Button>
             </CardAction>
           </CardHeader>
@@ -330,7 +331,7 @@ const SheetStats = ({
               aria-label={labels.expandStats}
               onClick={() => setAffluenceOpen(true)}
             >
-              <ArrowRightIcon size={16} />
+              <ArrowRightIcon size={ICON_SIZE} />
             </Button>
           </CardAction>
         </CardHeader>

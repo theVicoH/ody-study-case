@@ -1,3 +1,4 @@
+/* eslint-disable custom/no-unnecessary-comments */
 import React from "react";
 
 import { RestaurantLabel } from "@workspace/ui/components/molecules/restaurant-label/restaurant-label.molecule";

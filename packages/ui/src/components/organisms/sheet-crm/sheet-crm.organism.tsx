@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 
 
 const VIP_PERCENT_MULTIPLIER = 100;
+const ICON_SIZE = 16;
 
 interface SheetCrmLabels {
   searchPlaceholder: string;
@@ -142,7 +143,7 @@ const SheetCrm = ({
           onChange={setSearch}
         />
         <Button size="sm" onClick={() => setDialogOpen(true)}>
-          <PlusIcon size={16} data-icon="inline-start" />
+          <PlusIcon size={ICON_SIZE} data-icon="inline-start" />
           {labels.newCustomer}
         </Button>
       </div>

@@ -12,6 +12,8 @@ const NAV_BTN_CLASSES = "border-border text-muted-foreground hover:bg-accent hov
 
 const DAY_BTN_CLASSES = "hover:bg-accent hover:text-accent-foreground focus-visible:ring-ring focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 selected:bg-primary selected:text-primary-foreground selected:hover:bg-primary selected:hover:text-primary-foreground size-8 rounded-md p-0 font-normal aria-selected:opacity-100";
 
+const CHEVRON_SIZE = 16;
+
 const Calendar = ({ className, classNames, showOutsideDays = true, ...props }: CalendarProps): React.JSX.Element => (
   <DayPicker
     showOutsideDays={showOutsideDays}
@@ -41,8 +43,8 @@ const Calendar = ({ className, classNames, showOutsideDays = true, ...props }: C
     }}
     components={{
       Chevron: ({ orientation }) => orientation === "left"
-        ? <ArrowLeftIcon size={16} />
-        : <ArrowRightIcon size={16} />
+        ? <ArrowLeftIcon size={CHEVRON_SIZE} />
+        : <ArrowRightIcon size={CHEVRON_SIZE} />
     }}
     {...props}
   />

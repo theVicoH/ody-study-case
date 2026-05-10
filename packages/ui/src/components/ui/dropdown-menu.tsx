@@ -7,6 +7,7 @@ import { cn } from "@workspace/ui/lib/utils";
 const DROPDOWN_SIDE_OFFSET = 4;
 const DROPDOWN_SUB_ALIGN_OFFSET_ABS = 3;
 const DROPDOWN_SUB_ALIGN_OFFSET = -DROPDOWN_SUB_ALIGN_OFFSET_ABS;
+const SUBMENU_ICON_SIZE = 16;
 
 function DropdownMenu({ ...props }: MenuPrimitive.Root.Props) {
   return <MenuPrimitive.Root data-slot="dropdown-menu" {...props} />;
@@ -121,7 +122,7 @@ function DropdownMenuSubTrigger({
       {...props}
     >
       {children}
-      <ArrowRightIcon size={16} className="ms-auto rtl:rotate-180" />
+      <ArrowRightIcon size={SUBMENU_ICON_SIZE} className="ms-auto rtl:rotate-180" />
     </MenuPrimitive.SubmenuTrigger>
   );
 }

@@ -23,6 +23,9 @@ import { cn } from "@/lib/utils";
 const ICON_DEFAULT_SIZE = 24;
 const ICON_DEFAULT_DURATION = 1;
 const SVG_VIEWBOX_SIZE = 24;
+const ROTATE_LARGE_DEG = 8;
+const ROTATE_SMALL_DEG = 4;
+const ANIMATION_DURATION_FACTOR = 0.6;
 
 export interface PencilIconHandle {
   startAnimation: () => void;
@@ -92,10 +95,10 @@ const PencilIcon = forwardRef<PencilIconHandle, PencilIconProps>((
   const svgVariants: Variants = {
     normal: { rotate: 0, x: 0, y: 0 },
     animate: {
-      rotate: [-8, 8, -4, 4, 0],
+      rotate: [-ROTATE_LARGE_DEG, ROTATE_LARGE_DEG, -ROTATE_SMALL_DEG, ROTATE_SMALL_DEG, 0],
       x: [0, 1, -1, 0],
       y: [0, -1, 1, 0],
-      transition: { duration: 0.6 * duration, ease: "easeInOut" }
+      transition: { duration: ANIMATION_DURATION_FACTOR * duration, ease: "easeInOut" }
     }
   };
 

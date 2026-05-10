@@ -5,6 +5,8 @@ import { XIcon } from "@workspace/ui/components/icons/x/x.icon";
 import { Button } from "@workspace/ui/components/ui/button";
 import { cn } from "@workspace/ui/lib/utils";
 
+const CLOSE_ICON_SIZE = 16;
+
 function Sheet({ ...props }: SheetPrimitive.Root.Props) {
   return <SheetPrimitive.Root data-slot="sheet" {...props} />;
 }
@@ -70,7 +72,7 @@ function SheetContent({
               />
             }
           >
-            <XIcon size={16} />
+            <XIcon size={CLOSE_ICON_SIZE} />
             <span className="sr-only">Close</span>
           </SheetPrimitive.Close>
         )}

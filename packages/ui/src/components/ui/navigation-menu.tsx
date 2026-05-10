@@ -4,6 +4,7 @@ import { cn } from "@workspace/ui/lib/utils";
 import { cva } from "class-variance-authority";
 
 const NAV_MENU_SIDE_OFFSET = 8;
+const TRIGGER_ICON_SIZE = 12;
 
 
 
@@ -72,7 +73,7 @@ function NavigationMenuTrigger({
       {...props}
     >
       {children}{" "}
-      <ArrowDownIcon size={12} className="relative top-px ms-1 transition duration-300 group-data-open/navigation-menu-trigger:rotate-180 group-data-popup-open/navigation-menu-trigger:rotate-180" aria-hidden="true" />
+      <ArrowDownIcon size={TRIGGER_ICON_SIZE} className="relative top-px ms-1 transition duration-300 group-data-open/navigation-menu-trigger:rotate-180 group-data-popup-open/navigation-menu-trigger:rotate-180" aria-hidden="true" />
     </NavigationMenuPrimitive.Trigger>
   );
 }

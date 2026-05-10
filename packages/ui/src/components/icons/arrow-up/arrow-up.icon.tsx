@@ -23,7 +23,8 @@ import { cn } from "@/lib/utils";
 const ICON_DEFAULT_SIZE = 24;
 const ICON_DEFAULT_DURATION = 1;
 const SVG_VIEWBOX_SIZE = 24;
-const ARROW_SHIFT_PX = -3;
+const ARROW_SHIFT_MAGNITUDE_PX = 3;
+const ARROW_SHIFT_PX = -ARROW_SHIFT_MAGNITUDE_PX;
 const ANIMATION_DURATION_FACTOR = 0.4;
 
 export interface ArrowUpIconHandle {
@@ -94,8 +95,8 @@ const ArrowUpIcon = forwardRef<ArrowUpIconHandle, ArrowUpIconProps>((
   const svgVariants: Variants = {
     normal: { y: 0 },
     animate: {
-      y: [0, -3, 0],
-      transition: { duration: 0.4 * duration, ease: "easeInOut" }
+      y: [0, ARROW_SHIFT_PX, 0],
+      transition: { duration: ANIMATION_DURATION_FACTOR * duration, ease: "easeInOut" }
     }
   };
 

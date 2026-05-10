@@ -41,6 +41,7 @@ interface SheetOrdersLabels {
 }
 
 const PERCENT_MULTIPLIER = 100;
+const ICON_SIZE = 16;
 
 interface SheetOrdersProps {
   labels: SheetOrdersLabels;
@@ -143,7 +144,7 @@ const SheetOrders = ({ labels, orders, onCreateOrder }: SheetOrdersProps): React
           onChange={setSearch}
         />
         <Button size="sm" onClick={() => setDialogOpen(true)}>
-          <PlusIcon size={16} data-icon="inline-start" />
+          <PlusIcon size={ICON_SIZE} data-icon="inline-start" />
           {labels.newOrder}
         </Button>
       </div>

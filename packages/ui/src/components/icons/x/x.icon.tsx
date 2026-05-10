@@ -127,7 +127,7 @@ const XIcon = forwardRef<XIconHandle, XIconProps>((
     animate: {
       pathLength: [0, 1],
       opacity: [0, 1],
-      transition: { duration: 0.6 * duration, ease: "easeInOut" }
+      transition: { duration: ANIMATE_DURATION_FACTOR * duration, ease: "easeInOut" }
     }
   };
 

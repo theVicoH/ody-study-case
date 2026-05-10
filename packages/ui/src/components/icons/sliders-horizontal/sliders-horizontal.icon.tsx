@@ -23,6 +23,11 @@ import { cn } from "@/lib/utils";
 const ICON_DEFAULT_SIZE = 24;
 const ICON_DEFAULT_DURATION = 1;
 const SVG_VIEWBOX_SIZE = 24;
+const TRACK_OPACITY_DIM = 0.6;
+const TRACK_DURATION_FACTOR = 0.6;
+const KNOB_SHIFT_PX = 3;
+const KNOB_DURATION_FACTOR = 0.7;
+const KNOB_DELAY_FACTOR = 0.05;
 
 export interface SlidersHorizontalIconHandle {
   startAnimation: () => void;
@@ -92,16 +97,16 @@ const SlidersHorizontalIcon = forwardRef<SlidersHorizontalIconHandle, SlidersHor
   const trackVariants: Variants = {
     normal: { opacity: 1 },
     animate: {
-      opacity: [1, 0.6, 1],
-      transition: { duration: 0.6 * duration, ease: "easeInOut" }
+      opacity: [1, TRACK_OPACITY_DIM, 1],
+      transition: { duration: TRACK_DURATION_FACTOR * duration, ease: "easeInOut" }
     }
   };
 
   const knobVariants: Variants = {
     normal: { x: 0 },
     animate: (i: number) => ({
-      x: [0, i * 3, 0],
-      transition: { duration: 0.7 * duration, ease: "easeInOut", delay: i * 0.05 }
+      x: [0, i * KNOB_SHIFT_PX, 0],
+      transition: { duration: KNOB_DURATION_FACTOR * duration, ease: "easeInOut", delay: i * KNOB_DELAY_FACTOR }
     })
   };
 

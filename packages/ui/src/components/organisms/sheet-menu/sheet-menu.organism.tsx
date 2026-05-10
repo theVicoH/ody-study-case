@@ -29,6 +29,7 @@ import { cn } from "@/lib/utils";
 const AVAILABILITY_PERCENT_MULTIPLIER = 100;
 const PAGE_SIZE = 12;
 const FIRST_PAGE = 1;
+const ICON_SIZE = 16;
 const EDIT_ICON_SIZE = 14;
 
 const CATEGORY_GRADIENTS = [
@@ -131,7 +132,7 @@ const SheetMenu = ({ items }: SheetMenuProps): React.JSX.Element => {
           onChange={setSearch}
         />
         <Button size="sm">
-          <PlusIcon size={16} data-icon="inline-start" />
+          <PlusIcon size={ICON_SIZE} data-icon="inline-start" />
           {t("restaurants.menu.addDish")}
         </Button>
       </div>

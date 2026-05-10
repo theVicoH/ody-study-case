@@ -27,14 +27,14 @@ const SHEET_DURATION = 0.22;
 interface RestaurantSelectorItem {
   id: string;
   name: string;
-  status: "good" | "warn" | "bad";
+  status: "good" | "warn" | "bad" | "disabled";
 }
 
 interface RestaurantSheetProps {
   open: boolean;
   resizing?: boolean;
   expanded?: boolean;
-  status: "good" | "warn" | "bad";
+  status: "good" | "warn" | "bad" | "disabled";
   eyebrow?: string;
   title: string;
   caption: string;

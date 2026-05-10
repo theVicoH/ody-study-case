@@ -6,6 +6,7 @@ import { ArrowUpIcon } from "@workspace/ui/components/icons/arrow-up/arrow-up.ic
 import { cn } from "@workspace/ui/lib/utils";
 
 const SELECT_SIDE_OFFSET = 4;
+const SCROLL_ICON_SIZE = 16;
 
 
 const Select = SelectPrimitive.Root;
@@ -187,7 +188,7 @@ function SelectScrollUpButton({
       )}
       {...props}
     >
-      <ArrowUpIcon size={16} />
+      <ArrowUpIcon size={SCROLL_ICON_SIZE} />
     </SelectPrimitive.ScrollUpArrow>
   );
 }
@@ -205,7 +206,7 @@ function SelectScrollDownButton({
       )}
       {...props}
     >
-      <ArrowDownIcon size={16} />
+      <ArrowDownIcon size={SCROLL_ICON_SIZE} />
     </SelectPrimitive.ScrollDownArrow>
   );
 }
