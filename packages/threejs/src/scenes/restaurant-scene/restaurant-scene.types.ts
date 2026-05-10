@@ -4,6 +4,7 @@ export interface RestaurantSceneCallbacks {
   onSelectGroup?: () => void;
   onSelectRestaurant?: (restaurant: Restaurant) => void;
   onEmptyClick?: () => void;
+  onSunClick?: () => void;
 }
 
 export interface RestaurantSceneApi {

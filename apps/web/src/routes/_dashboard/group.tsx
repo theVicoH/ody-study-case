@@ -13,6 +13,6 @@ const GroupRoute = (): null => {
   return null;
 };
 
-export const Route = createFileRoute("/restaurants/group")({
+export const Route = createFileRoute("/_dashboard/group")({
   component: GroupRoute
 });

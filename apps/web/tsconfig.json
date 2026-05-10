@@ -16,14 +16,19 @@
         "./src/*",
         "../../packages/domain/src/*",
         "../../packages/ui/src/*",
-        "../../packages/shared/src/*"
+        "../../packages/shared/src/*",
+        "../../packages/client/src/*",
+        "../../packages/threejs/src/*",
+        "../../packages/application/src/*"
       ],
       "@workspace/client": ["../../packages/client/src/index.ts"],
       "@workspace/client/*": ["../../packages/client/src/*"],
       "@workspace/shared": ["../../packages/shared/src/index.ts"],
       "@workspace/shared/*": ["../../packages/shared/src/*"],
       "@workspace/ui": ["../../packages/ui/src/index.ts"],
-      "@workspace/ui/*": ["../../packages/ui/src/*"]
+      "@workspace/ui/*": ["../../packages/ui/src/*"],
+      "@workspace/threejs": ["../../packages/threejs/src/index.ts"],
+      "@workspace/threejs/*": ["../../packages/threejs/src/*"]
     }
   },
   "include": ["**/*.ts", "**/*.tsx", "eslint.config.js", "prettier.config.js", "vite.config.js"],

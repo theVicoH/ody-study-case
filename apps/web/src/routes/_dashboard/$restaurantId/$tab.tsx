@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useRestaurantSelectionStore } from "@workspace/client";
 
-const VALID_TABS = new Set(["home", "stats", "crm", "orders", "menu", "settings"]);
+const VALID_TABS = new Set(["home", "stats", "crm", "orders", "settings"]);
 
 const RestaurantTabRoute = (): null => {
   const { restaurantId, tab } = Route.useParams();
@@ -18,6 +18,6 @@ const RestaurantTabRoute = (): null => {
   return null;
 };
 
-export const Route = createFileRoute("/restaurants/$restaurantId/$tab")({
+export const Route = createFileRoute("/_dashboard/$restaurantId/$tab")({
   component: RestaurantTabRoute
 });

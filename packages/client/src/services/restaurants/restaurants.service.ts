@@ -15,7 +15,6 @@ const COLOR_PINK = 0xff3eb5;
 const MODEL_CORNER = "/models/corner-shop/scene.gltf";
 const MODEL_JAPANESE_STREET = "/models/japanese-street-restaurant.gltf";
 const MODEL_TEA = "/models/japanese-tea-shop/scene.gltf";
-const MODEL_SUSHI = "/models/sushi-shop/scene.gltf";
 
 const RESTAURANTS_CONFIG = {
   items: [

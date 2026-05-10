@@ -8,3 +8,5 @@ export type {
 export { RestaurantMiniScene } from "./scenes/restaurant-mini-scene/restaurant-mini-scene";
 
 export { RestaurantTopdownScene } from "./scenes/restaurant-topdown-scene/restaurant-topdown-scene";
+
+export { RestaurantModelPreview } from "./scenes/restaurant-model-preview/restaurant-model-preview";

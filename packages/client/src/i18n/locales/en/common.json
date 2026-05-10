@@ -1,4 +1,5 @@
 {
+  "notFound": "Page not found",
   "restaurants": {
     "nav": {
       "home": "Overview",
@@ -22,7 +23,8 @@
       "viewAllModalTitle": "All restaurants",
       "inAlert": "{{count}} in alert",
       "compareCount": "{{count}} restaurants",
-      "compareMode": "Compare mode"
+      "compareMode": "Compare mode",
+      "noResults": "No restaurants found."
     },
     "sheet": {
       "close": "Close",
@@ -276,7 +278,8 @@
     },
     "brand": "ODY",
     "scene": {
-      "sunCta": "Click to explore"
+      "sunCta": "Explore",
+      "createOrgCta": "Create organization"
     },
     "tip": "drag rotate · scroll zoom · click sun or restaurant",
     "flatList": {
@@ -284,9 +287,36 @@
       "search": "Search restaurants...",
       "enable3d": "Enable 3D view",
       "disable3d": "Disable 3D view"
+    },
+    "create": {
+      "addRestaurant": "Add restaurant",
+      "needOrgTitle": "Create an organization first",
+      "needOrgDesc": "Click the sun to spin up your organization.",
+      "orgTitle": "Create organization",
+      "orgDescription": "The sun lights up your group. Give it a name.",
+      "orgNameLabel": "Name",
+      "orgNamePlaceholder": "My restaurant group",
+      "restaurantTitle": "Add a restaurant",
+      "restaurantDescription": "Pick a 3D model and fill in the key info.",
+      "nameLabel": "Name",
+      "namePlaceholder": "Le Gourmet",
+      "addressLabel": "Address",
+      "addressPlaceholder": "12 rue de la Paix, Paris",
+      "phoneLabel": "Phone",
+      "phonePlaceholder": "+33 1 23 45 67 89",
+      "maxCoversLabel": "Max covers",
+      "modelLabel": "3D model",
+      "cancel": "Cancel",
+      "submit": "Create"
     }
   },
   "common": {
-    "settings": "Settings"
+    "settings": "Settings",
+    "loading": "Loading"
+  },
+  "errors": {
+    "loadFailed": "Failed to load data",
+    "createOrganizationFailed": "Could not create organization",
+    "createRestaurantFailed": "Could not create restaurant"
   }
 }

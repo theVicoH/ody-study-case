@@ -29,7 +29,8 @@ export const RestaurantScene = ({
   apiRef,
   onSelectGroup,
   onSelectRestaurant,
-  onEmptyClick
+  onEmptyClick,
+  onSunClick
 }: RestaurantSceneProps): React.JSX.Element => {
   const containerRef = useRef<HTMLDivElement>(null);
   const localApiRef = useRef<RestaurantSceneApi | null>(null);
@@ -44,7 +45,7 @@ export const RestaurantScene = ({
       restaurants,
       computeStats,
       sunLabels,
-      callbacks: { onSelectGroup, onSelectRestaurant, onEmptyClick }
+      callbacks: { onSelectGroup, onSelectRestaurant, onEmptyClick, onSunClick }
     });
 
     localApiRef.current = api;
@@ -56,7 +57,7 @@ export const RestaurantScene = ({
       localApiRef.current = null;
       if (apiRef) apiRef.current = null;
     };
-  }, [restaurants, computeStats, sunLabels, onSelectGroup, onSelectRestaurant, onEmptyClick, apiRef]);
+  }, [restaurants, computeStats, sunLabels, onSelectGroup, onSelectRestaurant, onEmptyClick, onSunClick, apiRef]);
 
   return <div ref={containerRef} className={className} />;
 };

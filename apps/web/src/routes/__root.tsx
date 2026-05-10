@@ -2,6 +2,7 @@ import React from "react";
 
 import { HeadContent, Outlet, Scripts, createRootRouteWithContext } from "@tanstack/react-router";
 import { GridOverlay } from "@workspace/ui/components/layouts/grid-overlay/grid-overlay.layout";
+import { Toaster } from "@workspace/ui/components/ui/sonner";
 import appCss from "@workspace/ui/globals.css?url";
 
 import type { QueryClient } from "@tanstack/react-query";
@@ -24,6 +25,7 @@ const RootComponent = (): React.JSX.Element => {
       <body>
         <Outlet />
         <GridOverlay visible={visible} />
+        <Toaster position="top-center" />
         <Scripts />
       </body>
     </html>

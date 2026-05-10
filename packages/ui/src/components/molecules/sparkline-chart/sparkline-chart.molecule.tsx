@@ -42,8 +42,10 @@ const SparklineChart = ({
 }: SparklineChartProps): React.JSX.Element => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const uid = useId();
   const width = SPARKLINE_VIEWBOX_WIDTH;
   const innerHeight = height - SPARKLINE_PADDING_TOP - SPARKLINE_PADDING_BOTTOM;
+  const gradientId = `sparkline-gradient-${uid.replace(/:/g, "")}`;
 
   if (data.length === 0) {
     return <div className={cn("w-full", className)} style={{ height }} />;
@@ -54,7 +56,9 @@ const SparklineChart = ({
   const range = max - min || 1;
 
   const points = data.map((value, index) => {
-    const x = SPARKLINE_PADDING_X + (index / (data.length - 1)) * (width - SPARKLINE_PADDING_X * 2);
+    const x = data.length === 1
+      ? width / 2
+      : SPARKLINE_PADDING_X + (index / (data.length - 1)) * (width - SPARKLINE_PADDING_X * 2);
     const y = SPARKLINE_PADDING_TOP + (1 - (value - min) / range) * innerHeight;
 
     return { x, y };
@@ -72,9 +76,9 @@ const SparklineChart = ({
   }, "");
 
   const baselineY = SPARKLINE_PADDING_TOP + innerHeight;
-  const areaD = `${pathD} L ${points[points.length - 1].x} ${baselineY} L ${points[0].x} ${baselineY} Z`;
-  const uid = useId();
-  const gradientId = `sparkline-gradient-${uid.replace(/:/g, "")}`;
+  const lastPoint = points[points.length - 1];
+  const firstPoint = points[0];
+  const areaD = `${pathD} L ${lastPoint.x} ${baselineY} L ${firstPoint.x} ${baselineY} Z`;
 
   const gridYs = Array.from({ length: GRID_LINES }, (_, index) => {
     return SPARKLINE_PADDING_TOP + ((index + 1) / (GRID_LINES + 1)) * innerHeight;

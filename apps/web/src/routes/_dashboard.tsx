@@ -4,33 +4,37 @@ import { ThreeDViewIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { createFileRoute, Outlet, useNavigate, useSearch } from "@tanstack/react-router";
 import {
+  DEFAULT_MODEL_ID,
+  RESTAURANT_MODELS,
+  useApiRestaurants,
   useRestaurants,
   useRestaurantSelectionStore
 } from "@workspace/client";
 import {
   RestaurantMiniScene,
+  RestaurantModelPreview,
   RestaurantScene,
   RestaurantTopdownScene
 } from "@workspace/threejs";
 import { BrandMark } from "@workspace/ui/components/atoms/brand-mark/brand-mark.atom";
+import { FivePetalSpiralLoader } from "@workspace/ui/components/atoms/five-petal-spiral-loader/five-petal-spiral-loader.atom";
 import { KbdKey } from "@workspace/ui/components/atoms/kbd-key/kbd-key.atom";
 import { H3, Muted, Overline } from "@workspace/ui/components/atoms/typography/typography.atom";
 import { BookmarkCheckIcon } from "@workspace/ui/components/icons/bookmark-check/bookmark-check.icon";
 import { ChartLineIcon } from "@workspace/ui/components/icons/chart-line/chart-line.icon";
 import { HouseIcon } from "@workspace/ui/components/icons/home/home.icon";
-import { MenuIcon } from "@workspace/ui/components/icons/menu/menu.icon";
 import { SearchIcon } from "@workspace/ui/components/icons/search/search.icon";
 import { SettingsIcon } from "@workspace/ui/components/icons/settings/settings.icon";
 import { UsersIcon } from "@workspace/ui/components/icons/users/users.icon";
 import { DashboardLayout } from "@workspace/ui/components/layouts/dashboard-layout/dashboard-layout.layout";
 import { ControlTip } from "@workspace/ui/components/molecules/control-tip/control-tip.molecule";
 import { RestaurantListItem } from "@workspace/ui/components/molecules/restaurant-list-item/restaurant-list-item.molecule";
-import { SheetTabBar } from "@workspace/ui/components/molecules/sheet-tab-bar/sheet-tab-bar.molecule";
+import { CreateOrganizationDialog } from "@workspace/ui/components/organisms/create-organization-dialog/create-organization-dialog.organism";
+import { CreateRestaurantDialog } from "@workspace/ui/components/organisms/create-restaurant-dialog/create-restaurant-dialog.organism";
 import { RestaurantSheet } from "@workspace/ui/components/organisms/restaurant-sheet/restaurant-sheet.organism";
 import { RestaurantSidebar } from "@workspace/ui/components/organisms/restaurant-sidebar/restaurant-sidebar.organism";
 import { SheetCrm } from "@workspace/ui/components/organisms/sheet-crm/sheet-crm.organism";
 import { SheetGroupOverview } from "@workspace/ui/components/organisms/sheet-group-overview/sheet-group-overview.organism";
-import { SheetMenu } from "@workspace/ui/components/organisms/sheet-menu/sheet-menu.organism";
 import { SheetOrders } from "@workspace/ui/components/organisms/sheet-orders/sheet-orders.organism";
 import { SheetRestaurantOverview } from "@workspace/ui/components/organisms/sheet-restaurant-overview/sheet-restaurant-overview.organism";
 import { SheetSettings } from "@workspace/ui/components/organisms/sheet-settings/sheet-settings.organism";
@@ -46,11 +50,13 @@ import { Input } from "@workspace/ui/components/ui/input";
 import { animate, AnimatePresence, motion } from "motion/react";
 import { useTranslation } from "react-i18next";
 
-import restaurantsCss from "./restaurants/restaurants.css?url";
+import restaurantsCss from "./_dashboard/restaurants.css?url";
 
 import type {
   Restaurant,
-  RestaurantPerformance
+  RestaurantDetailedStats,
+  RestaurantPerformance,
+  RestaurantTopItem
 } from "@workspace/client";
 import type { RestaurantSceneApi } from "@workspace/threejs";
 import type { SidebarNavItem } from "@workspace/ui/components/organisms/restaurant-sidebar/restaurant-sidebar.organism";
@@ -73,6 +79,8 @@ const SPLIT_MAX_RATIO = 0.8;
 const TAB_FADE_DURATION = 0.22;
 const TAB_FADE_EASE: [number, number, number, number] = [0.2, 0, 0, 1];
 const TAB_FADE_OFFSET = 8;
+const DEFAULT_VIEWPORT_WIDTH = 1280;
+const SPLIT_RATIO_HALF = 1.5;
 
 type DragMode = "left" | "right" | "move";
 
@@ -102,13 +110,12 @@ const NAV_ICONS = {
   stats: ChartLineIcon,
   crm: UsersIcon,
   orders: BookmarkCheckIcon,
-  menu: MenuIcon,
   settings: SettingsIcon
 } as const;
 
 type NavId = keyof typeof NAV_ICONS;
 
-const NAV_ORDER: ReadonlyArray<NavId> = ["home", "stats", "crm", "orders", "menu", "settings"];
+const NAV_ORDER: ReadonlyArray<NavId> = ["home", "stats", "crm", "orders", "settings"];
 
 const performanceStatus = (perf: RestaurantPerformance): "good" | "warn" | "bad" => perf;
 
@@ -116,15 +123,36 @@ const Layout = (): React.JSX.Element => {
   const { t } = useTranslation("common");
   const navigate = useNavigate();
   const {
-    restaurants,
-    summary,
     statsFor,
     detailedStatsFor,
     customersFor,
     ordersFor,
-    menuItemsFor,
     settingsFor
   } = useRestaurants();
+  const {
+    user: demoUser,
+    organization,
+    restaurants,
+    loading: apiLoading,
+    error: apiError,
+    createOrganization,
+    createRestaurant: createRestaurantViaApi
+  } = useApiRestaurants();
+  const summary = useMemo(() => {
+    const good = restaurants.filter((r) => r.performance === "good").length;
+    const warn = restaurants.filter((r) => r.performance === "warn").length;
+    const bad = restaurants.filter((r) => r.performance === "bad").length;
+    const total = restaurants.length;
+
+    if (bad > 0) return { total, good, warn, bad, worstCount: bad, worstClass: "bad" as const, worstLabel: `${bad} en alerte` };
+    if (warn > 0) return { total, good, warn, bad, worstCount: warn, worstClass: "warn" as const, worstLabel: `${warn} à surveiller` };
+
+    return { total, good, warn, bad, worstCount: 0, worstClass: "good" as const, worstLabel: "Tout va bien" };
+  }, [restaurants]);
+  const [createOrgOpen, setCreateOrgOpen] = useState(false);
+  const [createRestaurantOpen, setCreateRestaurantOpen] = useState(false);
+  const [createSubmitting, setCreateSubmitting] = useState(false);
+  const [createError, setCreateError] = useState<string | null>(null);
   const selectedId = useRestaurantSelectionStore((s) => s.selectedId);
   const secondaryId = useRestaurantSelectionStore((s) => s.secondaryId);
   const compareMode = useRestaurantSelectionStore((s) => s.compareMode);
@@ -135,10 +163,7 @@ const Layout = (): React.JSX.Element => {
   const clearSelection = useRestaurantSelectionStore((s) => s.clearSelection);
   const setActiveTab = useRestaurantSelectionStore((s) => s.setActiveTab);
   const setCompareMode = useRestaurantSelectionStore((s) => s.setCompareMode);
-  const setSecondaryTab = useRestaurantSelectionStore((s) => s.setSecondaryTab);
-  const selectSecondaryRestaurant = useRestaurantSelectionStore(
-    (s) => s.selectSecondaryRestaurant
-  );
+  const selectSecondaryRestaurant = useRestaurantSelectionStore((s) => s.selectSecondaryRestaurant);
   const openTabInSplit = useRestaurantSelectionStore((s) => s.openTabInSplit);
 
   const sheetRef = useRef<HTMLElement>(null);
@@ -154,10 +179,8 @@ const Layout = (): React.JSX.Element => {
   const [resizing, setResizing] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const [splitRatio, setSplitRatio] = useState(0.5);
-  const [viewportWidth, setViewportWidth] = useState(
-    typeof window !== "undefined" ? window.innerWidth : 1280
-  );
-  const search = useSearch({ from: "/restaurants" }) as { flat?: boolean };
+  const [viewportWidth, setViewportWidth] = useState(typeof window !== "undefined" ? window.innerWidth : DEFAULT_VIEWPORT_WIDTH);
+  const search = useSearch({ from: "/_dashboard" }) as { flat?: boolean };
   const [view3dEnabled, setView3dEnabled] = useState(!search.flat);
   const [flatQuery, setFlatQuery] = useState("");
   const [viewAllOpen, setViewAllOpen] = useState(false);
@@ -180,7 +203,7 @@ const Layout = (): React.JSX.Element => {
     (id: string): void => {
       selectRestaurant(id);
       void navigate({
-        to: "/restaurants/$restaurantId/$tab",
+        to: "/$restaurantId/$tab",
         params: { restaurantId: id, tab: activeTab || "home" }
       });
       if (view3dEnabled) {
@@ -198,7 +221,7 @@ const Layout = (): React.JSX.Element => {
     setView3dEnabled(next);
     clearSelection();
     void navigate({
-      to: "/restaurants",
+      to: "/",
       search: next ? {} : { flat: true }
     });
     setSheetWidth(null);
@@ -233,7 +256,7 @@ const Layout = (): React.JSX.Element => {
 
   const handleSelectGroup = useCallback((): void => {
     selectGroup();
-    void navigate({ to: "/restaurants/group" });
+    void navigate({ to: "/group" });
     sceneApiRef.current?.selectRestaurant(null);
     sceneApiRef.current?.setSunVisible(true);
     sceneApiRef.current?.resetCamera();
@@ -241,7 +264,7 @@ const Layout = (): React.JSX.Element => {
 
   const handleClose = useCallback((): void => {
     clearSelection();
-    void navigate({ to: "/restaurants" });
+    void navigate({ to: "/" });
     sceneApiRef.current?.selectRestaurant(null);
     sceneApiRef.current?.setSunVisible(true);
     sceneApiRef.current?.resetCamera();
@@ -250,7 +273,7 @@ const Layout = (): React.JSX.Element => {
   const handleEmptyClick = useCallback((): void => {
     if (selectedIdRef.current === null) return;
     clearSelection();
-    void navigate({ to: "/restaurants" });
+    void navigate({ to: "/" });
     sceneApiRef.current?.selectRestaurant(null);
     sceneApiRef.current?.setSunVisible(true);
   }, [navigate, clearSelection]);
@@ -258,16 +281,8 @@ const Layout = (): React.JSX.Element => {
   const handleTabChange = useCallback(
     (tab: string): void => {
       setActiveTab(tab);
-      const id = selectedIdRef.current;
-
-      if (id && id !== "__group") {
-        void navigate({
-          to: "/restaurants/$restaurantId/$tab",
-          params: { restaurantId: id, tab }
-        });
-      }
     },
-    [navigate, setActiveTab]
+    [setActiveTab]
   );
 
   useEffect(() => {
@@ -472,10 +487,10 @@ const Layout = (): React.JSX.Element => {
 
   const sunLabels = useMemo(
     () => ({
-      brand: t("restaurants.brand"),
-      cta: t("restaurants.scene.sunCta")
+      brand: organization?.name ?? t("restaurants.brand"),
+      cta: organization ? t("restaurants.scene.sunCta") : t("restaurants.scene.createOrgCta")
     }),
-    [t]
+    [t, organization]
   );
 
   const navItems = useMemo<ReadonlyArray<SidebarNavItem>>(
@@ -488,6 +503,11 @@ const Layout = (): React.JSX.Element => {
     [t]
   );
 
+  const groupNavItems = useMemo<ReadonlyArray<SidebarNavItem>>(
+    () => navItems.filter((item) => item.id !== "settings"),
+    [navItems]
+  );
+
   const railRestaurants = useMemo(
     () =>
       restaurants.map((r) => ({
@@ -497,6 +517,22 @@ const Layout = (): React.JSX.Element => {
         status: performanceStatus(r.performance)
       })),
     [restaurants]
+  );
+
+  const sheetSelectorItems = useMemo(
+    () => [
+      {
+        id: "__group",
+        name: organization?.name ?? t("restaurants.rail.allRestaurants"),
+        status: "disabled" as const
+      },
+      ...restaurants.map((r) => ({
+        id: r.id,
+        name: r.name,
+        status: performanceStatus(r.performance)
+      }))
+    ],
+    [restaurants, t, organization]
   );
 
   const flatSheetWidth = Math.max(SHEET_MIN_WIDTH, viewportWidth - SIDEBAR_RESERVED - SHEET_DEFAULT_RIGHT);
@@ -529,6 +565,116 @@ const Layout = (): React.JSX.Element => {
   const groupTotalRevenue = useMemo(
     () => restaurants.reduce((sum, r) => sum + statsFor(r).revenue, 0),
     [restaurants, statsFor]
+  );
+
+  const groupAggregatedCustomers = useMemo(
+    () => restaurants.flatMap((r) => customersFor(r)),
+    [restaurants, customersFor]
+  );
+
+  const groupAggregatedOrders = useMemo(
+    () => restaurants.flatMap((r) => ordersFor(r)),
+    [restaurants, ordersFor]
+  );
+
+  const groupAggregatedDetailedStats = useMemo<RestaurantDetailedStats>(() => {
+    const list = restaurants.map((r) => detailedStatsFor(r));
+
+    if (list.length === 0) {
+      return {
+        covers: 0,
+        revenue: 0,
+        orders: 0,
+        rating: "0.0",
+        trend: "+0%",
+        todayCovers: 0,
+        todayRevenue: 0,
+        avgTicket: 0,
+        fillRate: 0,
+        weeklyRevenue: [0, 0, 0, 0, 0, 0, 0],
+        monthlyRevenue: [],
+        yearlyRevenue: [],
+        heatmap: [],
+        topItems: [],
+        sparklineData: [],
+        customers: 0,
+        openOrders: 0
+      };
+    }
+
+    const sumNumbers = (key: keyof RestaurantDetailedStats): number =>
+      list.reduce((acc, s) => acc + (s[key] as number), 0);
+
+    const avgNumber = (key: keyof RestaurantDetailedStats): number =>
+      sumNumbers(key) / list.length;
+
+    const sumArrays = (key: "weeklyRevenue" | "monthlyRevenue" | "yearlyRevenue"): number[] => {
+      const len = list[0][key].length;
+
+      return Array.from({ length: len }, (_, i) =>
+        list.reduce((acc, s) => acc + (s[key][i] ?? 0), 0));
+    };
+
+    const avgArrays = (key: "sparklineData"): number[] => {
+      const len = list[0][key].length;
+
+      return Array.from({ length: len }, (_, i) =>
+        list.reduce((acc, s) => acc + (s[key][i] ?? 0), 0) / list.length);
+    };
+
+    const avgHeatmap = (): number[][] => {
+      const rows = list[0].heatmap.length;
+      const cols = list[0].heatmap[0]?.length ?? 0;
+
+      return Array.from({ length: rows }, (_, r) =>
+        Array.from({ length: cols }, (_, c) =>
+          list.reduce((acc, s) => acc + (s.heatmap[r]?.[c] ?? 0), 0) / list.length));
+    };
+
+    const aggregateTopItems = (): ReadonlyArray<RestaurantTopItem> => {
+      const map = new Map<string, RestaurantTopItem>();
+
+      list.flatMap((s) => s.topItems).forEach((item) => {
+        const existing = map.get(item.name);
+
+        if (existing) {
+          map.set(item.name, { ...existing, sold: existing.sold + item.sold });
+        } else {
+          map.set(item.name, { ...item });
+        }
+      });
+
+      return Array.from(map.values()).sort((a, b) => b.sold - a.sold);
+    };
+
+    const totalRevenue = sumNumbers("revenue");
+    const totalCovers = sumNumbers("covers");
+    const ratingAvg = list.reduce((acc, s) => acc + parseFloat(s.rating), 0) / list.length;
+
+    return {
+      covers: totalCovers,
+      revenue: totalRevenue,
+      orders: sumNumbers("orders"),
+      rating: ratingAvg.toFixed(1),
+      trend: list[0].trend,
+      todayCovers: sumNumbers("todayCovers"),
+      todayRevenue: sumNumbers("todayRevenue"),
+      avgTicket: totalCovers > 0 ? Math.round(totalRevenue / totalCovers) : 0,
+      fillRate: Math.round(avgNumber("fillRate")),
+      weeklyRevenue: sumArrays("weeklyRevenue"),
+      monthlyRevenue: sumArrays("monthlyRevenue"),
+      yearlyRevenue: sumArrays("yearlyRevenue"),
+      heatmap: avgHeatmap(),
+      topItems: aggregateTopItems(),
+      sparklineData: avgArrays("sparklineData"),
+      customers: sumNumbers("customers"),
+      openOrders: sumNumbers("openOrders")
+    };
+  }, [restaurants, detailedStatsFor]);
+
+  const groupAggregatedVip = useMemo(
+    () => groupAggregatedCustomers.filter((c) => c.tag === "VIP").length,
+    [groupAggregatedCustomers]
   );
 
   const groupOverviewLabels = useMemo(() => ({
@@ -770,7 +916,7 @@ const Layout = (): React.JSX.Element => {
     ? t("restaurants.rail.compareCount", { count: 2 })
     : selected
       ? selected.name
-      : t("restaurants.rail.allRestaurants");
+      : organization?.name ?? t("restaurants.rail.allRestaurants");
   const miniStatus: "good" | "warn" | "bad" | "disabled" = isCompareActive
     ? "disabled"
     : isGroupView
@@ -784,16 +930,12 @@ const Layout = (): React.JSX.Element => {
         ? t(`restaurants.perf.${selected.performance}`)
         : "—";
 
-  const sheetStatus: "good" | "warn" | "bad" = isGroupView
-    ? performanceStatus(summary.worstClass)
+  const sheetStatus: "good" | "warn" | "bad" | "disabled" = isGroupView
+    ? "disabled"
     : performanceStatus(selected?.performance ?? "good");
 
-  const sheetEyebrow = isGroupView
-    ? t("restaurants.sheet.groupView")
-    : selected?.type ?? "";
-
   const sheetTitle = isGroupView
-    ? t("restaurants.rail.allRestaurants")
+    ? organization?.name ?? t("restaurants.rail.allRestaurants")
     : selected?.name ?? "—";
 
   const sheetCaption =
@@ -803,13 +945,12 @@ const Layout = (): React.JSX.Element => {
 
   const renderRestaurantTab = (
     restaurant: Restaurant,
-    tabId: string = activeTab
+    tabId: string
   ): React.ReactNode => {
     const rStats = statsFor(restaurant);
     const rDetailed = detailedStatsFor(restaurant);
     const rCustomers = customersFor(restaurant);
     const rOrders = ordersFor(restaurant);
-    const rMenu = menuItemsFor(restaurant);
     const rSettings = settingsFor(restaurant);
     const rVip = rCustomers.filter((c) => c.tag === "VIP").length;
 
@@ -855,10 +996,6 @@ const Layout = (): React.JSX.Element => {
       return <SheetOrders labels={ordersLabels} orders={rOrders} />;
     }
 
-    if (tabId === "menu") {
-      return <SheetMenu items={rMenu} />;
-    }
-
     if (tabId === "settings") {
       return <SheetSettings labels={settingsLabels} settings={rSettings} />;
     }
@@ -866,8 +1003,33 @@ const Layout = (): React.JSX.Element => {
     return null;
   };
 
-  const renderSheetContent = (): React.ReactNode => {
+  const renderSheetContent = (tab: string): React.ReactNode => {
     if (isGroupView) {
+      if (tab === "stats") {
+        return (
+          <SheetStats
+            labels={statsLabels}
+            stats={groupAggregatedDetailedStats}
+            restaurantId="__group"
+          />
+        );
+      }
+
+      if (tab === "crm") {
+        return (
+          <SheetCrm
+            labels={crmLabels}
+            customers={groupAggregatedCustomers}
+            totalCustomers={groupAggregatedCustomers.length}
+            vipCount={groupAggregatedVip}
+          />
+        );
+      }
+
+      if (tab === "orders") {
+        return <SheetOrders labels={ordersLabels} orders={groupAggregatedOrders} />;
+      }
+
       return (
         <SheetGroupOverview
           labels={groupOverviewLabels}
@@ -883,7 +1045,7 @@ const Layout = (): React.JSX.Element => {
 
     if (!selected || !stats) return null;
 
-    const tabContent = renderRestaurantTab(selected);
+    const tabContent = renderRestaurantTab(selected, tab);
 
     if (tabContent !== null) return tabContent;
 
@@ -912,8 +1074,71 @@ const Layout = (): React.JSX.Element => {
     </AnimatePresence>
   );
 
+  const handleOpenCreateRestaurant = useCallback((): void => {
+    setCreateError(null);
+    if (!organization) {
+      setCreateOrgOpen(true);
+
+      return;
+    }
+    setCreateRestaurantOpen(true);
+  }, [organization]);
+
+  const handleSubmitOrganization = useCallback(async (name: string): Promise<void> => {
+    setCreateSubmitting(true);
+    setCreateError(null);
+    try {
+      await createOrganization(name);
+      setCreateOrgOpen(false);
+    } catch (e) {
+      setCreateError(e instanceof Error ? e.message : "Failed");
+    } finally {
+      setCreateSubmitting(false);
+    }
+  }, [createOrganization]);
+
+  const handleSubmitRestaurant = useCallback(async (
+    values: { name: string; address: string; phone: string; maxCovers: number; modelId: string }
+  ): Promise<void> => {
+    setCreateSubmitting(true);
+    setCreateError(null);
+    try {
+      await createRestaurantViaApi(
+        {
+          name: values.name,
+          address: values.address,
+          phone: values.phone,
+          maxCovers: values.maxCovers
+        },
+        values.modelId
+      );
+      setCreateRestaurantOpen(false);
+    } catch (e) {
+      setCreateError(e instanceof Error ? e.message : "Failed");
+    } finally {
+      setCreateSubmitting(false);
+    }
+  }, [createRestaurantViaApi]);
+
+  const handleSunClick = useCallback((): void => {
+    if (!organization && demoUser) {
+      setCreateError(null);
+      setCreateOrgOpen(true);
+    }
+  }, [organization, demoUser]);
+
   const headerActions = (
     <>
+      <button
+        type="button"
+        onClick={handleOpenCreateRestaurant}
+        aria-label={t("restaurants.create.addRestaurant")}
+        title={t("restaurants.create.addRestaurant")}
+        disabled={apiLoading || !demoUser}
+        className="border-primary/40 bg-primary/15 text-primary hover:bg-primary/25 flex h-8 w-8 items-center justify-center rounded-lg border transition-all duration-200 disabled:opacity-50"
+      >
+        <span aria-hidden className="text-base leading-none">+</span>
+      </button>
       <button
         type="button"
         onClick={handleToggleView3d}
@@ -938,6 +1163,14 @@ const Layout = (): React.JSX.Element => {
     </>
   );
 
+  if (apiLoading) {
+    return (
+      <div className="bg-background fixed inset-0 z-50 flex items-center justify-center">
+        <FivePetalSpiralLoader ariaLabel={t("common.loading")} />
+      </div>
+    );
+  }
+
   return (
     <DashboardLayout
       brand={<BrandMark size="md" label={t("restaurants.brand")} />}
@@ -953,6 +1186,7 @@ const Layout = (): React.JSX.Element => {
           onSelectGroup={handleSelectGroup}
           onSelectRestaurant={handleSelectRestaurant}
           onEmptyClick={handleEmptyClick}
+          onSunClick={handleSunClick}
         />
       }
       backgroundDimmed={expanded || !view3dEnabled}
@@ -985,7 +1219,7 @@ const Layout = (): React.JSX.Element => {
               }}
             >
               <div className="p-md pb-sm">
-                <H3 className="scroll-m-0">{t("restaurants.flatList.title")}</H3>
+                <H3 className="scroll-m-0">{organization?.name ?? t("restaurants.flatList.title")}</H3>
                 <Overline className="text-muted-foreground mt-xs block">
                   {t("restaurants.rail.count", { count: restaurants.length })}
                 </Overline>
@@ -1048,10 +1282,10 @@ const Layout = (): React.JSX.Element => {
         miniName={miniName}
         miniStatus={miniStatus}
         miniCaption={miniCaption}
-        navItems={navItems}
+        navItems={isGroupView ? groupNavItems : navItems}
         activeTabId={activeTab}
         onTabChange={handleTabChange}
-        groupLabel={t("restaurants.rail.allRestaurants")}
+        groupLabel={organization?.name ?? t("restaurants.rail.allRestaurants")}
         groupOverview={t("restaurants.rail.groupOverview")}
         isGroupActive={isGroupView}
         onSelectGroup={handleSelectGroup}
@@ -1072,7 +1306,8 @@ const Layout = (): React.JSX.Element => {
           if (!open) setViewAllQuery("");
         }}
       >
-        <DialogContent className="w-[28rem] gap-3">
+        {/* eslint-disable-next-line custom/enforce-spacing-tokens */}
+        <DialogContent className="gap-sm w-[28rem]">
           <DialogHeader>
             <DialogTitle>{t("restaurants.rail.viewAllModalTitle")}</DialogTitle>
           </DialogHeader>
@@ -1087,19 +1322,28 @@ const Layout = (): React.JSX.Element => {
               className="h-xl pl-xl typo-body-sm"
             />
           </div>
-          <div className="-mx-1 max-h-[24rem] overflow-y-auto px-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-            {railRestaurants
-              .filter((r) => {
-                const q = viewAllQuery.trim().toLowerCase();
-
+          {/* eslint-disable-next-line custom/enforce-spacing-tokens */}
+          <div className="-mx-2xs px-2xs max-h-[24rem] overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            {(() => {
+              const q = viewAllQuery.trim().toLowerCase();
+              const filtered = railRestaurants.filter((r) => {
                 if (!q) return true;
 
                 return (
                   r.name.toLowerCase().includes(q) ||
                   r.caption.toLowerCase().includes(q)
                 );
-              })
-              .map((r) => (
+              });
+
+              if (filtered.length === 0) {
+                return (
+                  <p className="text-muted-foreground typo-body-sm py-md text-center">
+                    {t("restaurants.rail.noResults")}
+                  </p>
+                );
+              }
+
+              return filtered.map((r) => (
                 <RestaurantListItem
                   key={r.id}
                   name={r.name}
@@ -1112,7 +1356,8 @@ const Layout = (): React.JSX.Element => {
                     setViewAllQuery("");
                   }}
                 />
-              ))}
+              ));
+            })()}
           </div>
         </DialogContent>
       </Dialog>
@@ -1127,7 +1372,7 @@ const Layout = (): React.JSX.Element => {
             );
             const rightSheetRight = SHEET_DEFAULT_RIGHT;
             const leftSheetRight = SHEET_DEFAULT_RIGHT + rightWidth + SPLIT_GAP;
-            const splitterRight = SHEET_DEFAULT_RIGHT + rightWidth + SPLIT_GAP / 2 - 1.5;
+            const splitterRight = SHEET_DEFAULT_RIGHT + rightWidth + SPLIT_GAP / 2 - SPLIT_RATIO_HALF;
             const rightTab = secondaryTab ?? activeTab;
             const leftCategoryLabel = t(`restaurants.nav.${activeTab}`);
             const rightCategoryLabel = t(`restaurants.nav.${rightTab}`);
@@ -1152,17 +1397,10 @@ const Layout = (): React.JSX.Element => {
                   selectedRestaurantId={selected.id}
                   onSelectRestaurant={(id) => { if (id) handleSelectRestaurantById(id); }}
                   onClose={handleCloseLeftInCompare}
-                  tabSlot={
-                    <SheetTabBar
-                      items={navItems}
-                      activeId={activeTab}
-                      onTabChange={handleTabChange}
-                    />
-                  }
                 >
                   {renderAnimatedTabContent(
                     `${selected.id}:${activeTab}`,
-                    renderSheetContent()
+                    renderSheetContent(activeTab)
                   )}
                 </RestaurantSheet>
 
@@ -1186,13 +1424,6 @@ const Layout = (): React.JSX.Element => {
                   selectedRestaurantId={secondary?.id}
                   onSelectRestaurant={handleSelectSecondary}
                   onClose={handleCloseRightInCompare}
-                  tabSlot={
-                    <SheetTabBar
-                      items={navItems}
-                      activeId={secondaryTab ?? activeTab}
-                      onTabChange={setSecondaryTab}
-                    />
-                  }
                 >
                   {renderAnimatedTabContent(
                     `${secondary?.id ?? "none"}:${rightTab}`,
@@ -1204,14 +1435,15 @@ const Layout = (): React.JSX.Element => {
                   onPointerDown={onSplitterPointerDown}
                   aria-label={t("restaurants.sheet.splitResize")}
                   role="separator"
-                  className="group/split fixed z-40 flex w-3 cursor-ew-resize items-center justify-center touch-none select-none"
+                  className="group/split fixed z-40 flex w-sm cursor-ew-resize touch-none items-center justify-center select-none"
                   style={{
                     top: "var(--spacing-sm)",
                     bottom: "var(--spacing-sm)",
                     right: `${splitterRight}px`
                   }}
                 >
-                  <span className="bg-foreground/20 group-hover/split:bg-primary group-hover/split:h-16 block h-10 w-1 rounded-full transition-all duration-200" />
+                  {/* eslint-disable-next-line custom/enforce-spacing-tokens */}
+                  <span className="bg-foreground/20 group-hover/split:bg-primary duration-fast block h-10 w-2xs rounded-full transition-all group-hover/split:h-16" />
                 </div>
               </>
             );
@@ -1224,7 +1456,7 @@ const Layout = (): React.JSX.Element => {
           resizing={resizing}
           expanded={!view3dEnabled || expanded}
           status={sheetStatus}
-          eyebrow={isGroupView ? sheetEyebrow : undefined}
+          eyebrow={undefined}
           title={sheetTitle}
           caption={sheetCaption}
           closeLabel={t("restaurants.sheet.close")}
@@ -1234,30 +1466,80 @@ const Layout = (): React.JSX.Element => {
           resizeLabel={t("restaurants.sheet.resizeSheet")}
           width={!view3dEnabled ? flatSheetWidth : sheetWidth}
           right={!view3dEnabled ? flatSheetRight : sheetRight}
-          selectorRestaurants={!isGroupView ? railRestaurants : undefined}
-          selectedRestaurantId={!isGroupView ? (selectedId ?? undefined) : undefined}
-          onSelectRestaurant={!isGroupView ? (id) => { if (id) handleSelectRestaurantById(id); } : undefined}
+          selectorRestaurants={sheetSelectorItems}
+          selectedRestaurantId={isGroupView ? "__group" : (selectedId ?? undefined)}
+          onSelectRestaurant={(id) => {
+            if (!id) return;
+            if (id === "__group") {
+              handleSelectGroup();
+
+              return;
+            }
+            handleSelectRestaurantById(id);
+          }}
           onClose={handleClose}
           onToggleExpand={view3dEnabled ? onToggleExpand : undefined}
           onResizerLeftPointerDown={view3dEnabled ? onResizerLeftPointerDown : undefined}
           onResizerRightPointerDown={view3dEnabled ? onResizerRightPointerDown : undefined}
           onDragHeaderPointerDown={view3dEnabled ? onDragHeaderPointerDown : undefined}
-          tabSlot={!isGroupView ? (
-            <SheetTabBar
-              items={navItems}
-              activeId={activeTab}
-              onTabChange={handleTabChange}
-            />
-          ) : undefined}
         >
           {renderAnimatedTabContent(
             `${isGroupView ? "__group" : selectedId ?? "none"}:${activeTab}`,
-            renderSheetContent()
+            renderSheetContent(activeTab)
           )}
         </RestaurantSheet>
       )}
 
       <Outlet />
+
+      <CreateOrganizationDialog
+        open={createOrgOpen}
+        onOpenChange={(next) => { setCreateOrgOpen(next); if (!next) setCreateError(null); }}
+        loading={createSubmitting}
+        error={createError}
+        labels={{
+          title: t("restaurants.create.orgTitle"),
+          description: t("restaurants.create.orgDescription"),
+          nameLabel: t("restaurants.create.orgNameLabel"),
+          namePlaceholder: t("restaurants.create.orgNamePlaceholder"),
+          cancel: t("restaurants.create.cancel"),
+          submit: t("restaurants.create.submit")
+        }}
+        onSubmit={(name) => { void handleSubmitOrganization(name); }}
+      />
+
+      <CreateRestaurantDialog
+        open={createRestaurantOpen}
+        onOpenChange={(next) => { setCreateRestaurantOpen(next); if (!next) setCreateError(null); }}
+        models={RESTAURANT_MODELS}
+        defaultModelId={DEFAULT_MODEL_ID}
+        loading={createSubmitting}
+        error={createError}
+        labels={{
+          title: t("restaurants.create.restaurantTitle"),
+          description: t("restaurants.create.restaurantDescription"),
+          nameLabel: t("restaurants.create.nameLabel"),
+          namePlaceholder: t("restaurants.create.namePlaceholder"),
+          addressLabel: t("restaurants.create.addressLabel"),
+          addressPlaceholder: t("restaurants.create.addressPlaceholder"),
+          phoneLabel: t("restaurants.create.phoneLabel"),
+          phonePlaceholder: t("restaurants.create.phonePlaceholder"),
+          maxCoversLabel: t("restaurants.create.maxCoversLabel"),
+          modelLabel: t("restaurants.create.modelLabel"),
+          cancel: t("restaurants.create.cancel"),
+          submit: t("restaurants.create.submit")
+        }}
+        onSubmit={(values) => { void handleSubmitRestaurant(values); }}
+        renderModelPreview={(model) => (
+          <RestaurantModelPreview modelUrl={model.url} className="absolute inset-0" />
+        )}
+      />
+
+      {apiError ? (
+        <div className="bg-destructive/10 text-destructive border-destructive/40 typo-caption fixed bottom-4 left-1/2 z-50 -translate-x-1/2 rounded-lg border px-4 py-2">
+          {apiError}
+        </div>
+      ) : null}
     </DashboardLayout>
   );
 };
@@ -1266,7 +1548,17 @@ interface RestaurantsSearch {
   flat?: boolean;
 }
 
-export const Route = createFileRoute("/restaurants")({
+const NotFound = (): React.JSX.Element => {
+  const { t } = useTranslation("common");
+
+  return (
+    <div className="flex h-full items-center justify-center">
+      <Muted>{t("notFound")}</Muted>
+    </div>
+  );
+};
+
+export const Route = createFileRoute("/_dashboard")({
   head: () => ({
     links: [{ rel: "stylesheet", href: restaurantsCss }]
   }),
@@ -1277,5 +1569,6 @@ export const Route = createFileRoute("/restaurants")({
       flat: flat === true || flat === "true" || flat === "1" || flat === 1
     };
   },
-  component: Layout
+  component: Layout,
+  notFoundComponent: NotFound
 });

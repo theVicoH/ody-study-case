@@ -1,4 +1,5 @@
 {
+  "notFound": "Page introuvable",
   "restaurants": {
     "nav": {
       "home": "Vue d'ensemble",
@@ -22,7 +23,8 @@
       "viewAllModalTitle": "Tous les restaurants",
       "inAlert": "{{count}} en alerte",
       "compareCount": "{{count}} restaurants",
-      "compareMode": "Mode comparaison"
+      "compareMode": "Mode comparaison",
+      "noResults": "Aucun restaurant trouvé."
     },
     "sheet": {
       "close": "Fermer",
@@ -276,7 +278,8 @@
     },
     "brand": "ODY",
     "scene": {
-      "sunCta": "Cliquer pour explorer"
+      "sunCta": "Explorer",
+      "createOrgCta": "Créer une organisation"
     },
     "tip": "drag rotate · scroll zoom · click sun ou restaurant",
     "flatList": {
@@ -284,9 +287,36 @@
       "search": "Rechercher un restaurant...",
       "enable3d": "Activer la vue 3D",
       "disable3d": "Désactiver la vue 3D"
+    },
+    "create": {
+      "addRestaurant": "Ajouter un restaurant",
+      "needOrgTitle": "Créer une organisation d'abord",
+      "needOrgDesc": "Cliquez sur le soleil pour créer votre organisation.",
+      "orgTitle": "Créer une organisation",
+      "orgDescription": "Le soleil illumine votre groupe. Donnez-lui un nom.",
+      "orgNameLabel": "Nom",
+      "orgNamePlaceholder": "Ma maison de cuisine",
+      "restaurantTitle": "Ajouter un restaurant",
+      "restaurantDescription": "Choisissez un modèle 3D et remplissez les informations clés.",
+      "nameLabel": "Nom",
+      "namePlaceholder": "Le Gourmet",
+      "addressLabel": "Adresse",
+      "addressPlaceholder": "12 rue de la Paix, Paris",
+      "phoneLabel": "Téléphone",
+      "phonePlaceholder": "+33 1 23 45 67 89",
+      "maxCoversLabel": "Couverts max",
+      "modelLabel": "Modèle 3D",
+      "cancel": "Annuler",
+      "submit": "Créer"
     }
   },
   "common": {
-    "settings": "Paramètres"
+    "settings": "Paramètres",
+    "loading": "Chargement"
+  },
+  "errors": {
+    "loadFailed": "Échec du chargement des données",
+    "createOrganizationFailed": "Impossible de créer l'organisation",
+    "createRestaurantFailed": "Impossible de créer le restaurant"
   }
 }

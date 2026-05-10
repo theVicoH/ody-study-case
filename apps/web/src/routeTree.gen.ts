@@ -9,147 +9,117 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as RestaurantsRouteImport } from './routes/restaurants'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as RestaurantsIndexRouteImport } from './routes/restaurants/index'
-import { Route as RestaurantsGroupRouteImport } from './routes/restaurants/group'
-import { Route as RestaurantsRestaurantIdTabRouteImport } from './routes/restaurants/$restaurantId/$tab'
+import { Route as DashboardRouteImport } from './routes/_dashboard'
+import { Route as DashboardIndexRouteImport } from './routes/_dashboard/index'
+import { Route as DashboardGroupRouteImport } from './routes/_dashboard/group'
+import { Route as DashboardRestaurantIdTabRouteImport } from './routes/_dashboard/$restaurantId/$tab'
 
-const RestaurantsRoute = RestaurantsRouteImport.update({
-  id: '/restaurants',
-  path: '/restaurants',
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/_dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
+const DashboardIndexRoute = DashboardIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => DashboardRoute,
 } as any)
-const RestaurantsIndexRoute = RestaurantsIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => RestaurantsRoute,
-} as any)
-const RestaurantsGroupRoute = RestaurantsGroupRouteImport.update({
+const DashboardGroupRoute = DashboardGroupRouteImport.update({
   id: '/group',
   path: '/group',
-  getParentRoute: () => RestaurantsRoute,
+  getParentRoute: () => DashboardRoute,
 } as any)
-const RestaurantsRestaurantIdTabRoute =
-  RestaurantsRestaurantIdTabRouteImport.update({
+const DashboardRestaurantIdTabRoute =
+  DashboardRestaurantIdTabRouteImport.update({
     id: '/$restaurantId/$tab',
     path: '/$restaurantId/$tab',
-    getParentRoute: () => RestaurantsRoute,
+    getParentRoute: () => DashboardRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/restaurants': typeof RestaurantsRouteWithChildren
-  '/restaurants/group': typeof RestaurantsGroupRoute
-  '/restaurants/': typeof RestaurantsIndexRoute
-  '/restaurants/$restaurantId/$tab': typeof RestaurantsRestaurantIdTabRoute
+  '/group': typeof DashboardGroupRoute
+  '/': typeof DashboardIndexRoute
+  '/$restaurantId/$tab': typeof DashboardRestaurantIdTabRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/restaurants/group': typeof RestaurantsGroupRoute
-  '/restaurants': typeof RestaurantsIndexRoute
-  '/restaurants/$restaurantId/$tab': typeof RestaurantsRestaurantIdTabRoute
+  '/group': typeof DashboardGroupRoute
+  '/': typeof DashboardIndexRoute
+  '/$restaurantId/$tab': typeof DashboardRestaurantIdTabRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/restaurants': typeof RestaurantsRouteWithChildren
-  '/restaurants/group': typeof RestaurantsGroupRoute
-  '/restaurants/': typeof RestaurantsIndexRoute
-  '/restaurants/$restaurantId/$tab': typeof RestaurantsRestaurantIdTabRoute
+  '/_dashboard': typeof DashboardRouteWithChildren
+  '/_dashboard/group': typeof DashboardGroupRoute
+  '/_dashboard/': typeof DashboardIndexRoute
+  '/_dashboard/$restaurantId/$tab': typeof DashboardRestaurantIdTabRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/'
-    | '/restaurants'
-    | '/restaurants/group'
-    | '/restaurants/'
-    | '/restaurants/$restaurantId/$tab'
+  fullPaths: '/group' | '/' | '/$restaurantId/$tab'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/restaurants/group'
-    | '/restaurants'
-    | '/restaurants/$restaurantId/$tab'
+  to: '/group' | '/' | '/$restaurantId/$tab'
   id:
     | '__root__'
-    | '/'
-    | '/restaurants'
-    | '/restaurants/group'
-    | '/restaurants/'
-    | '/restaurants/$restaurantId/$tab'
+    | '/_dashboard'
+    | '/_dashboard/group'
+    | '/_dashboard/'
+    | '/_dashboard/$restaurantId/$tab'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  RestaurantsRoute: typeof RestaurantsRouteWithChildren
+  DashboardRoute: typeof DashboardRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/restaurants': {
-      id: '/restaurants'
-      path: '/restaurants'
-      fullPath: '/restaurants'
-      preLoaderRoute: typeof RestaurantsRouteImport
+    '/_dashboard': {
+      id: '/_dashboard'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof DashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
+    '/_dashboard/': {
+      id: '/_dashboard/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof DashboardIndexRouteImport
+      parentRoute: typeof DashboardRoute
     }
-    '/restaurants/': {
-      id: '/restaurants/'
-      path: '/'
-      fullPath: '/restaurants/'
-      preLoaderRoute: typeof RestaurantsIndexRouteImport
-      parentRoute: typeof RestaurantsRoute
-    }
-    '/restaurants/group': {
-      id: '/restaurants/group'
+    '/_dashboard/group': {
+      id: '/_dashboard/group'
       path: '/group'
-      fullPath: '/restaurants/group'
-      preLoaderRoute: typeof RestaurantsGroupRouteImport
-      parentRoute: typeof RestaurantsRoute
+      fullPath: '/group'
+      preLoaderRoute: typeof DashboardGroupRouteImport
+      parentRoute: typeof DashboardRoute
     }
-    '/restaurants/$restaurantId/$tab': {
-      id: '/restaurants/$restaurantId/$tab'
+    '/_dashboard/$restaurantId/$tab': {
+      id: '/_dashboard/$restaurantId/$tab'
       path: '/$restaurantId/$tab'
-      fullPath: '/restaurants/$restaurantId/$tab'
-      preLoaderRoute: typeof RestaurantsRestaurantIdTabRouteImport
-      parentRoute: typeof RestaurantsRoute
+      fullPath: '/$restaurantId/$tab'
+      preLoaderRoute: typeof DashboardRestaurantIdTabRouteImport
+      parentRoute: typeof DashboardRoute
     }
   }
 }
 
-interface RestaurantsRouteChildren {
-  RestaurantsGroupRoute: typeof RestaurantsGroupRoute
-  RestaurantsIndexRoute: typeof RestaurantsIndexRoute
-  RestaurantsRestaurantIdTabRoute: typeof RestaurantsRestaurantIdTabRoute
+interface DashboardRouteChildren {
+  DashboardGroupRoute: typeof DashboardGroupRoute
+  DashboardIndexRoute: typeof DashboardIndexRoute
+  DashboardRestaurantIdTabRoute: typeof DashboardRestaurantIdTabRoute
 }
 
-const RestaurantsRouteChildren: RestaurantsRouteChildren = {
-  RestaurantsGroupRoute: RestaurantsGroupRoute,
-  RestaurantsIndexRoute: RestaurantsIndexRoute,
-  RestaurantsRestaurantIdTabRoute: RestaurantsRestaurantIdTabRoute,
+const DashboardRouteChildren: DashboardRouteChildren = {
+  DashboardGroupRoute: DashboardGroupRoute,
+  DashboardIndexRoute: DashboardIndexRoute,
+  DashboardRestaurantIdTabRoute: DashboardRestaurantIdTabRoute,
 }
 
-const RestaurantsRouteWithChildren = RestaurantsRoute._addFileChildren(
-  RestaurantsRouteChildren,
+const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
+  DashboardRouteChildren,
 )
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  RestaurantsRoute: RestaurantsRouteWithChildren,
+  DashboardRoute: DashboardRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -904,6 +904,7 @@ export function initRestaurantScene(config: InitConfig): RestaurantSceneApi {
     const hit = pickAt(e.clientX, e.clientY);
 
     if (hit?.sun) {
+      callbacks.onSunClick?.();
       callbacks.onSelectGroup?.();
       resetCamera();
 
