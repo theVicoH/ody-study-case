@@ -76,6 +76,7 @@ export type AppType = typeof app;
 
 export default {
   port: Number(process.env["PORT"] ?? process.env["API_PORT"] ?? 3001),
+  hostname: "0.0.0.0",
   fetch(req: Request, server: Bun.Server<undefined>): Response | Promise<Response> {
     const ip = server.requestIP(req)?.address;
 
