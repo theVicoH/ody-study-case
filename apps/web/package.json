@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite dev --port 3000",
     "build": "vite build",
+    "start": "bun run .output/server/index.mjs",
     "preview": "vite preview",
     "lint": "oxlint --config .oxlintrc.json src/ && eslint src/",
     "lint:fix": "oxlint --fix --config .oxlintrc.json src/ && eslint --fix src/",
