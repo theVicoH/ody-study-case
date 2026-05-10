@@ -24,7 +24,8 @@
       "inAlert": "{{count}} in alert",
       "compareCount": "{{count}} restaurants",
       "compareMode": "Compare mode",
-      "noResults": "No restaurants found."
+      "noResults": "No restaurants found.",
+      "openMenu": "Open menu"
     },
     "sheet": {
       "close": "Close",
@@ -38,6 +39,14 @@
       "compare": "Compare two restaurants",
       "splitResize": "Resize split",
       "openBeside": "Open beside"
+    },
+    "groupCreate": {
+      "pickTitle": "Select a restaurant",
+      "pickDescription": "Choose the restaurant you want to create this in.",
+      "pickPlaceholder": "Search restaurants…",
+      "pickEmpty": "No restaurant matches.",
+      "pickCancel": "Cancel",
+      "pickContinue": "Continue"
     },
     "split": {
       "title": "Open a second view",

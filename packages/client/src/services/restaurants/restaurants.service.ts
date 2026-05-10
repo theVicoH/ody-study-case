@@ -184,8 +184,15 @@ const HEATMAP_PEAK_HOUR_NIGHT = 5;
 const HEATMAP_PEAK_INTENSITY = 0.4;
 const HEATMAP_RAND_MULTIPLIER = 0.7;
 const SPARKLINE_POINTS = 24;
-const SPARKLINE_MIN = 0.2;
-const SPARKLINE_RANGE = 0.8;
+const SPARKLINE_NOISE_MIN = 0.85;
+const SPARKLINE_NOISE_RANGE = 0.3;
+const SPARKLINE_LUNCH_PEAK_HOUR = 13;
+const SPARKLINE_DINNER_PEAK_HOUR = 20;
+const SPARKLINE_LUNCH_WIDTH = 1.6;
+const SPARKLINE_DINNER_WIDTH = 1.8;
+const SPARKLINE_LUNCH_AMPLITUDE = 0.7;
+const SPARKLINE_DINNER_AMPLITUDE = 1;
+const SPARKLINE_BASELINE = 0.04;
 const CUSTOMER_VISITS_RANGE = 24;
 const CUSTOMER_SPENT_BASE = 40;
 const CUSTOMER_SPENT_RANGE = 800;
@@ -303,10 +310,17 @@ export function computeRestaurantDetailedStats(restaurant: Restaurant): Restaura
   }));
 
   const sparklineRng = createSeededRandom(restaurant.id + "_spark");
-  const sparklineData = Array.from(
-    { length: SPARKLINE_POINTS },
-    () => SPARKLINE_MIN + sparklineRng() * SPARKLINE_RANGE
-  );
+  const sparklineShape = Array.from({ length: SPARKLINE_POINTS }, (_, hour) => {
+    const lunchDelta = (hour - SPARKLINE_LUNCH_PEAK_HOUR) / SPARKLINE_LUNCH_WIDTH;
+    const dinnerDelta = (hour - SPARKLINE_DINNER_PEAK_HOUR) / SPARKLINE_DINNER_WIDTH;
+    const lunch = SPARKLINE_LUNCH_AMPLITUDE * Math.exp(-lunchDelta * lunchDelta);
+    const dinner = SPARKLINE_DINNER_AMPLITUDE * Math.exp(-dinnerDelta * dinnerDelta);
+    const noise = SPARKLINE_NOISE_MIN + sparklineRng() * SPARKLINE_NOISE_RANGE;
+
+    return (SPARKLINE_BASELINE + lunch + dinner) * noise;
+  });
+  const shapeSum = sparklineShape.reduce((acc, value) => acc + value, 0) || 1;
+  const sparklineData = sparklineShape.map((value) => Math.round((value / shapeSum) * todayRevenue));
 
   const topRng = createSeededRandom(restaurant.id + "_top");
   const topItems = DISH_NAMES.slice(0, 5).map((name, i) => ({

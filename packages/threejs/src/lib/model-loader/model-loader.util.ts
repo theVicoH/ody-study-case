@@ -33,27 +33,7 @@ export function loadModel(url: string): Promise<THREE.Group> {
 }
 
 export function instantiateModel(source: THREE.Group): THREE.Group {
-  const clone = source.clone(true);
-
-  clone.traverse((child) => {
-    const mesh = child as THREE.Mesh;
-
-    if (mesh.isMesh) {
-      mesh.castShadow = true;
-      mesh.receiveShadow = true;
-      mesh.userData.sharedGeometry = true;
-
-      const material = mesh.material;
-
-      if (Array.isArray(material)) {
-        mesh.material = material.map((m) => m.clone());
-      } else if (material) {
-        mesh.material = material.clone();
-      }
-    }
-  });
-
-  return clone;
+  return source.clone(true);
 }
 
 export function fitModel(model: THREE.Group, dimensions: ModelDimensions, baseTopY: number): void {

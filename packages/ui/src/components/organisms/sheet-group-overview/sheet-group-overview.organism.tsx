@@ -76,24 +76,6 @@ const SheetGroupOverview = ({
 
   return (
   <>
-    {onAddRestaurant && labels.addRestaurant ? (
-      <div className="flex justify-start">
-        <Button
-          size="sm"
-          onClick={onAddRestaurant}
-          onMouseEnter={() => plusIconRef.current?.startAnimation()}
-          onMouseLeave={() => plusIconRef.current?.stopAnimation()}
-        >
-          <PlusIcon
-            ref={plusIconRef}
-            size={ADD_RESTAURANT_ICON_SIZE}
-            isAnimated={false}
-            data-icon="inline-start"
-          />
-          <span className="typo-body-sm">{labels.addRestaurant}</span>
-        </Button>
-      </div>
-    ) : null}
     <div className="gap-sm grid grid-cols-2">
       <KpiCard variant="subtle" label={labels.restaurants} value={total} />
       <KpiCard
@@ -131,7 +113,25 @@ const SheetGroupOverview = ({
 
     {restaurants && restaurants.length > 0 && (
       <div className="gap-xs flex flex-col">
-        <p className="text-muted-foreground typo-overline px-2xs">{labels.allRestaurants}</p>
+        <div className="flex items-center justify-between px-2xs">
+          <p className="text-muted-foreground typo-overline">{labels.allRestaurants}</p>
+          {onAddRestaurant && labels.addRestaurant ? (
+            <Button
+              size="sm"
+              onClick={onAddRestaurant}
+              onMouseEnter={() => plusIconRef.current?.startAnimation()}
+              onMouseLeave={() => plusIconRef.current?.stopAnimation()}
+            >
+              <PlusIcon
+                ref={plusIconRef}
+                size={ADD_RESTAURANT_ICON_SIZE}
+                isAnimated={false}
+                data-icon="inline-start"
+              />
+              <span className="typo-body-sm">{labels.addRestaurant}</span>
+            </Button>
+          ) : null}
+        </div>
         <div className="h-full">
           <RestaurantsPerfTable
             restaurants={restaurants}

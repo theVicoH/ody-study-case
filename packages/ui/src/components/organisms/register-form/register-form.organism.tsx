@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next";
 import { ArrowLeftIcon } from "@/components/icons/arrow-left/arrow-left.icon";
 import { ArrowRightIcon } from "@/components/icons/arrow-right/arrow-right.icon";
 import { CalendarIcon } from "@/components/icons/calendar/calendar.icon";
+import { UserIcon } from "@/components/icons/user/user.icon";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
@@ -176,19 +177,10 @@ const RegisterForm = ({
                         className="size-full object-cover"
                       />
                     ) : (
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="text-muted-foreground absolute inset-0 m-auto size-8"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth={1.5}
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <circle cx="12" cy="8" r="4" />
-                        <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
-                      </svg>
+                      <UserIcon
+                        size={32}
+                        className="text-muted-foreground absolute inset-0 m-auto"
+                      />
                     )}
                   </button>
                   <span className="text-muted-foreground text-xs">{t("register.step1.photoHint")}</span>

@@ -3,8 +3,8 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
-import type { ApiOrganization, ApiUser, CreateRestaurantInput } from "@/types/api/api.types";
-import type { Restaurant } from "@/types/restaurant/restaurant.types";
+import type { ApiOrganization, ApiRestaurant, ApiUser, CreateRestaurantInput } from "@/types/api/api.types";
+import type { Restaurant, RestaurantSettings } from "@/types/restaurant/restaurant.types";
 
 import { restaurantModelsStorage } from "@/lib/restaurant-visuals/restaurant-models-storage.util";
 import { toVisualRestaurant } from "@/lib/restaurant-visuals/restaurant-visuals.util";
@@ -19,6 +19,7 @@ export interface UseApiRestaurantsReturn {
   restaurants: ReadonlyArray<Restaurant>;
   loading: boolean;
   error: string | null;
+  settingsForId: (id: string) => RestaurantSettings | null;
   createOrganization: (name: string) => Promise<ApiOrganization>;
   updateOrganization: (name: string) => Promise<ApiOrganization>;
   deleteOrganization: () => Promise<void>;
@@ -27,11 +28,22 @@ export interface UseApiRestaurantsReturn {
   reload: () => Promise<void>;
 }
 
+const toRestaurantSettings = (r: ApiRestaurant): RestaurantSettings => ({
+  name: r.name,
+  address: r.address,
+  phone: r.phone,
+  maxCovers: r.maxCovers,
+  tableService: r.tableService,
+  clickAndCollect: r.clickAndCollect,
+  kitchenNotifications: r.kitchenNotifications,
+  testMode: r.testMode
+});
+
 export function useApiRestaurants(): UseApiRestaurantsReturn {
   const { t } = useTranslation("common");
   const [user, setUser] = useState<ApiUser | null>(null);
   const [organization, setOrganization] = useState<ApiOrganization | null>(null);
-  const [apiRestaurants, setApiRestaurants] = useState<ReadonlyArray<{ id: string; name: string; address: string }>>([]);
+  const [apiRestaurants, setApiRestaurants] = useState<ReadonlyArray<ApiRestaurant>>([]);
   const [modelMap, setModelMap] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -85,6 +97,12 @@ export function useApiRestaurants(): UseApiRestaurantsReturn {
 
     return apiRestaurants.map((r, index) => toVisualRestaurant(r, index, total, { modelId: modelMap[r.id] }));
   }, [apiRestaurants, modelMap]);
+
+  const settingsForId = useCallback((id: string): RestaurantSettings | null => {
+    const found = apiRestaurants.find((r) => r.id === id);
+
+    return found ? toRestaurantSettings(found) : null;
+  }, [apiRestaurants]);
 
   const createOrganization = useCallback(async (name: string): Promise<ApiOrganization> => {
     if (!user) throw new Error("Demo user not loaded");
@@ -176,6 +194,7 @@ export function useApiRestaurants(): UseApiRestaurantsReturn {
     restaurants,
     loading,
     error,
+    settingsForId,
     createOrganization,
     updateOrganization,
     deleteOrganization,

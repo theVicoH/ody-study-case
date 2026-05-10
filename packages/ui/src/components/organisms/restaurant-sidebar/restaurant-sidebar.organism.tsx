@@ -15,6 +15,7 @@ import { SearchInput } from "@/components/molecules/search-input/search-input.mo
 import { SidebarNav } from "@/components/molecules/sidebar-nav/sidebar-nav.molecule";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { useBreakpoint } from "@/hooks/use-breakpoint/use-breakpoint.hook";
 import { cn } from "@/lib/utils";
 
 
@@ -52,7 +53,7 @@ interface RestaurantSidebarProps {
   groupLabel: string;
   groupOverview: string;
   isGroupActive: boolean;
-  onSelectGroup: () => void;
+  onSelectGroup?: () => void;
   restaurants: ReadonlyArray<SidebarRestaurant>;
   activeRestaurantId: string | null;
   secondaryActiveRestaurantId?: string | null;
@@ -61,9 +62,12 @@ interface RestaurantSidebarProps {
   countLabel: string;
   viewAllLabel: string;
   onViewAll?: () => void;
+  addRestaurantLabel?: string;
+  onAddRestaurant?: () => void;
   compareMode?: boolean;
   compareLabel?: string;
   onToggleCompare?: () => void;
+  onRequestClose?: () => void;
   className?: string;
 }
 
@@ -90,12 +94,16 @@ const RestaurantSidebar = ({
   countLabel,
   viewAllLabel,
   onViewAll,
+  addRestaurantLabel,
+  onAddRestaurant,
   compareMode,
   compareLabel,
   onToggleCompare,
+  onRequestClose,
   className
 }: RestaurantSidebarProps): React.JSX.Element => {
   const [query, setQuery] = useState("");
+  const { isMobileOrTablet } = useBreakpoint();
 
   const filtered = useMemo(() => {
     if (!query.trim()) return restaurants;
@@ -109,6 +117,18 @@ const RestaurantSidebar = ({
     : activeRestaurantId ?? "__none";
 
   return (
+    <>
+      {isMobileOrTablet && open && onRequestClose ? (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.2 }}
+          onClick={onRequestClose}
+          aria-hidden="true"
+          className="fixed inset-0 z-[54] bg-black/40 backdrop-blur-sm"
+        />
+      ) : null}
     <motion.aside
       initial={false}
       animate={open ? "open" : "closed"}
@@ -122,8 +142,9 @@ const RestaurantSidebar = ({
       }}
       style={{ pointerEvents: open ? "auto" : "none" }}
       className={cn(
-        "glass-strong absolute z-30",
-        "top-sm bottom-sm left-sm w-60 rounded-xl",
+        "glass-strong fixed md:absolute",
+        "top-sm bottom-sm left-sm rounded-xl",
+        isMobileOrTablet ? "right-sm z-[55] w-auto max-w-[20rem]" : "z-30 w-60",
         className
       )}
     >
@@ -190,15 +211,28 @@ const RestaurantSidebar = ({
         <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
           <div className="pl-sm pb-sm flex shrink-0 items-center justify-between">
             <Overline className="text-foreground/70">{countLabel}</Overline>
-            <Button
-              variant="ghost"
-              size="icon-sm"
-              className="rounded-md"
-              onClick={onViewAll}
-              aria-label={viewAllLabel}
-            >
-              <ArrowRightIcon size={COMPARE_ICON_SIZE} />
-            </Button>
+            <div className="gap-3xs flex items-center">
+              {onAddRestaurant && (
+                <Button
+                  variant="ghost"
+                  size="icon-sm"
+                  className="rounded-md"
+                  onClick={onAddRestaurant}
+                  aria-label={addRestaurantLabel}
+                >
+                  <PlusIcon size={COMPARE_ICON_SIZE} />
+                </Button>
+              )}
+              <Button
+                variant="ghost"
+                size="icon-sm"
+                className="rounded-md"
+                onClick={onViewAll}
+                aria-label={viewAllLabel}
+              >
+                <ArrowRightIcon size={COMPARE_ICON_SIZE} />
+              </Button>
+            </div>
           </div>
 
           <div className="pb-xs shrink-0">
@@ -216,7 +250,7 @@ const RestaurantSidebar = ({
               status="disabled"
               tone="group"
               active={isGroupActive}
-              onClick={onSelectGroup}
+              onClick={onSelectGroup ?? undefined}
             />
             {filtered.map((r) => {
               const isPrimary = r.id === activeRestaurantId;
@@ -249,6 +283,7 @@ const RestaurantSidebar = ({
         </div>
       </div>
     </motion.aside>
+    </>
   );
 };
 

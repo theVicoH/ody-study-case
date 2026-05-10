@@ -1,0 +1,5 @@
+{
+  "buildCommand": "cd ../.. && bun install && bun --filter web build",
+  "installCommand": "echo skip",
+  "framework": null
+}

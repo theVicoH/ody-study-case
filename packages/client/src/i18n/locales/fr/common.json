@@ -24,7 +24,8 @@
       "inAlert": "{{count}} en alerte",
       "compareCount": "{{count}} restaurants",
       "compareMode": "Mode comparaison",
-      "noResults": "Aucun restaurant trouvé."
+      "noResults": "Aucun restaurant trouvé.",
+      "openMenu": "Ouvrir le menu"
     },
     "sheet": {
       "close": "Fermer",
@@ -38,6 +39,14 @@
       "compare": "Comparer deux restaurants",
       "splitResize": "Redimensionner le partage",
       "openBeside": "Ouvrir à côté"
+    },
+    "groupCreate": {
+      "pickTitle": "Choisir un restaurant",
+      "pickDescription": "Sélectionnez le restaurant dans lequel créer cet élément.",
+      "pickPlaceholder": "Rechercher un restaurant…",
+      "pickEmpty": "Aucun restaurant ne correspond.",
+      "pickCancel": "Annuler",
+      "pickContinue": "Continuer"
     },
     "split": {
       "title": "Ouvrir une seconde vue",

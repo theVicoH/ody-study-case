@@ -72,6 +72,7 @@ interface SheetCrmProps {
   onDeleteCustomer?: (id: string) => void;
   serverPagination?: SheetCrmServerPagination;
   pageSize?: number;
+  renderCreateDialog?: (props: { open: boolean; onOpenChange: (open: boolean) => void }) => React.ReactNode;
 }
 
 const SheetCrm = ({
@@ -84,7 +85,8 @@ const SheetCrm = ({
   onUpdateCustomer,
   onDeleteCustomer,
   serverPagination,
-  pageSize
+  pageSize,
+  renderCreateDialog
 }: SheetCrmProps): React.JSX.Element => {
   const [search, setSearch] = useState("");
   const [createOpen, setCreateOpen] = useState(false);
@@ -181,7 +183,7 @@ const SheetCrm = ({
           value={search}
           onChange={setSearch}
         />
-        {onCreateCustomer ? (
+        {onCreateCustomer || renderCreateDialog ? (
           <Button size="sm" onClick={() => setCreateOpen(true)}>
             <PlusIcon size={ICON_SIZE} data-icon="inline-start" />
             {labels.newCustomer}
@@ -201,14 +203,16 @@ const SheetCrm = ({
         />
       </div>
 
-      {onCreateCustomer ? (
-        <NewCustomerDialog
-          open={createOpen}
-          onOpenChange={setCreateOpen}
-          labels={labels.newCustomerDialog}
-          onSubmit={handleCreate}
-        />
-      ) : null}
+      {renderCreateDialog
+        ? renderCreateDialog({ open: createOpen, onOpenChange: setCreateOpen })
+        : onCreateCustomer ? (
+            <NewCustomerDialog
+              open={createOpen}
+              onOpenChange={setCreateOpen}
+              labels={labels.newCustomerDialog}
+              onSubmit={handleCreate}
+            />
+          ) : null}
 
       {onUpdateCustomer ? (
         <NewCustomerDialog

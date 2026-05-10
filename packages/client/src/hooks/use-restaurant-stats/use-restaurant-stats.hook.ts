@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQueries, useQuery } from "@tanstack/react-query";
 
 import type { ApiRestaurantStats } from "@/types/api/api.types";
 import type { RestaurantDetailedStats } from "@/types/restaurant/restaurant.types";
@@ -81,4 +81,32 @@ export const useGroupStats = (restaurantIds: ReadonlyArray<string>): UseRestaura
   });
 
   return toReturn(query);
+};
+
+export interface UseRestaurantStatsMultiReturn {
+  byRestaurant: Map<string, RestaurantDetailedStats>;
+  isLoading: boolean;
+}
+
+export const useRestaurantStatsMulti = (
+  restaurantIds: ReadonlyArray<string>
+): UseRestaurantStatsMultiReturn => {
+  const results = useQueries({
+    queries: restaurantIds.map((id) => ({
+      queryKey: KEYS.one(id),
+      queryFn: () => restaurantStatsApi.get(id),
+      enabled: Boolean(id)
+    }))
+  });
+
+  const byRestaurant = new Map<string, RestaurantDetailedStats>();
+
+  results.forEach((res, idx) => {
+    const id = restaurantIds[idx];
+
+    if (!id || !res.data) return;
+    byRestaurant.set(id, mapApiStatsToDetailed(res.data));
+  });
+
+  return { byRestaurant, isLoading: results.some((r) => r.isPending) };
 };

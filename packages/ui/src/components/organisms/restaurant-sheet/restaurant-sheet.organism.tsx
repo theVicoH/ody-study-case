@@ -20,6 +20,7 @@ import {
   SelectTrigger,
   SelectValue
 } from "@/components/ui/select";
+import { useBreakpoint } from "@/hooks/use-breakpoint/use-breakpoint.hook";
 import { cn } from "@/lib/utils";
 
 const ICON_SIZE = 16;
@@ -115,6 +116,7 @@ const RestaurantSheet = React.forwardRef<HTMLElement, RestaurantSheetProps>(({
   const hideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const leftPlusIconRef = useRef<PlusIconHandle>(null);
   const rightPlusIconRef = useRef<PlusIconHandle>(null);
+  const { isMobileOrTablet } = useBreakpoint();
 
   useEffect(() => () => {
     if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
@@ -135,9 +137,10 @@ const RestaurantSheet = React.forwardRef<HTMLElement, RestaurantSheetProps>(({
 
   const sheetWidthPx = width ?? SHEET_DEFAULT_WIDTH;
   const sheetRightPx = typeof right === "number" ? right : SHEET_DEFAULT_RIGHT_PX;
+  const showSplitHandles = !isMobileOrTablet;
   const leftButtonRight = sheetRightPx + sheetWidthPx + SPLIT_BUTTON_GAP_PX;
   const rightButtonRight = sheetRightPx - SPLIT_BUTTON_SIZE_PX - SPLIT_BUTTON_GAP_PX;
-  const showSplitButtons = open && Boolean(onRequestSplit);
+  const showSplitButtons = open && Boolean(onRequestSplit) && !isMobileOrTablet;
   const splitButtonClassName = cn(
     "fixed top-1/2 z-40 flex -translate-y-1/2 items-center justify-center rounded-md",
     "border border-foreground/30 bg-background/80 text-foreground/80 outline outline-2 outline-transparent backdrop-blur-sm",
@@ -179,7 +182,15 @@ const RestaurantSheet = React.forwardRef<HTMLElement, RestaurantSheetProps>(({
             resizing && "transition-none",
             className
           )}
-          style={{
+          style={isMobileOrTablet ? {
+            top: "var(--spacing-sm)",
+            right: "var(--spacing-sm)",
+            left: "var(--spacing-sm)",
+            bottom: "var(--spacing-sm)",
+            width: "auto",
+            height: "auto",
+            maxWidth: "none"
+          } : {
             width: `${width ?? SHEET_DEFAULT_WIDTH}px`,
             top: "var(--spacing-sm)",
             right: typeof right === "number" ? `${right}px` : "var(--spacing-sm)",
@@ -189,7 +200,7 @@ const RestaurantSheet = React.forwardRef<HTMLElement, RestaurantSheetProps>(({
           }}
           data-expanded={expanded ? "true" : undefined}
         >
-          {onResizerLeftPointerDown && (
+          {onResizerLeftPointerDown && showSplitHandles && (
             <div
               onPointerDown={onResizerLeftPointerDown}
               aria-label={resizeLabel}
@@ -200,7 +211,7 @@ const RestaurantSheet = React.forwardRef<HTMLElement, RestaurantSheetProps>(({
             </div>
           )}
 
-          {onResizerRightPointerDown && (
+          {onResizerRightPointerDown && showSplitHandles && (
             <div
               onPointerDown={onResizerRightPointerDown}
               aria-label={resizeLabel}
@@ -211,7 +222,7 @@ const RestaurantSheet = React.forwardRef<HTMLElement, RestaurantSheetProps>(({
             </div>
           )}
 
-          {onDragHeaderPointerDown && (
+          {onDragHeaderPointerDown && showSplitHandles && (
             <div
               onPointerDown={onDragHeaderPointerDown}
               aria-label={moveLabel}

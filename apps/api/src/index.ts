@@ -26,7 +26,7 @@ const app = new OpenAPIHono<AppEnv>();
 const ALLOWED_ORIGINS = [
   "http://localhost:3000",
   "http://localhost:3001",
-  process.env["VITE_API_URL"] ?? ""
+  ...(process.env["ALLOWED_ORIGINS"] ?? "").split(",").map((o) => o.trim()).filter(Boolean)
 ].filter(Boolean);
 
 app.use("/*", cors({

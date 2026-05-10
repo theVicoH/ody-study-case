@@ -1,10 +1,13 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 
 import { useOrdersMulti, useUpdateOrderStatusForAny } from "@workspace/client";
 
 import type { ApiOrder, ApiOrderStatus, OrderStatus, RestaurantOrder } from "@workspace/client";
+import type { RestaurantPickerDialogLabels, RestaurantPickerOption } from "@workspace/ui/components/organisms/restaurant-picker-dialog/restaurant-picker-dialog.organism";
 import type { ComponentProps } from "react";
 
+import { ConnectedNewOrderDialog } from "@/components/connected/connected-new-order-dialog/connected-new-order-dialog.organism";
+import { RestaurantPickerDialog } from "@/components/organisms/restaurant-picker-dialog/restaurant-picker-dialog.organism";
 import { SheetOrders } from "@/components/organisms/sheet-orders/sheet-orders.organism";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -15,10 +18,14 @@ const HOUR_MS = 60 * MINUTE_MS;
 const DAY_MS = 24 * HOUR_MS;
 
 type SheetOrdersLabels = ComponentProps<typeof SheetOrders>["labels"];
+type ConnectedNewOrderDialogLabels = ComponentProps<typeof ConnectedNewOrderDialog>["labels"];
 
 interface ConnectedGroupOrdersProps {
   restaurantIds: ReadonlyArray<string>;
+  restaurants: ReadonlyArray<RestaurantPickerOption>;
   labels: SheetOrdersLabels;
+  newOrderDialogLabels: ConnectedNewOrderDialogLabels;
+  pickerLabels: RestaurantPickerDialogLabels;
 }
 
 const STATUS_MAP: Record<ApiOrderStatus, OrderStatus> = {
@@ -73,10 +80,14 @@ const buildOrders = (orders: ReadonlyArray<ApiOrder>): RestaurantOrder[] =>
 
 const ConnectedGroupOrders = ({
   restaurantIds,
-  labels
+  restaurants,
+  labels,
+  newOrderDialogLabels,
+  pickerLabels
 }: ConnectedGroupOrdersProps): React.JSX.Element => {
   const ordersResult = useOrdersMulti(restaurantIds);
   const updateStatus = useUpdateOrderStatusForAny();
+  const [pickedId, setPickedId] = useState<string | null>(null);
 
   const orders = useMemo(() => buildOrders(ordersResult.flat), [ordersResult.flat]);
 
@@ -121,7 +132,40 @@ const ConnectedGroupOrders = ({
     );
   }
 
-  return <SheetOrders labels={labels} orders={orders} onStatusChange={handleStatusChange} />;
+  return (
+    <SheetOrders
+      labels={labels}
+      orders={orders}
+      onStatusChange={handleStatusChange}
+      renderCreateDialog={({ open, onOpenChange }) => {
+        const handleClose = (next: boolean): void => {
+          onOpenChange(next);
+          if (!next) setPickedId(null);
+        };
+
+        if (pickedId) {
+          return (
+            <ConnectedNewOrderDialog
+              restaurantId={pickedId}
+              open={open}
+              onOpenChange={handleClose}
+              labels={newOrderDialogLabels}
+            />
+          );
+        }
+
+        return (
+          <RestaurantPickerDialog
+            open={open}
+            onOpenChange={onOpenChange}
+            labels={pickerLabels}
+            restaurants={restaurants}
+            onSelect={(id) => setPickedId(id)}
+          />
+        );
+      }}
+    />
+  );
 };
 
 export { ConnectedGroupOrders };

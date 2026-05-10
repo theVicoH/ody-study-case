@@ -29,6 +29,7 @@ export { restaurantStatsApi } from "@/services/api/restaurant-stats-api/restaura
 export {
   useRestaurantStats,
   useGroupStats,
+  useRestaurantStatsMulti,
   mapApiStatsToDetailed
 } from "@/hooks/use-restaurant-stats/use-restaurant-stats.hook";
 

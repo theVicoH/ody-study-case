@@ -1,15 +1,22 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 
 import { useDishesMulti, useMenusMulti } from "@workspace/client";
 import { SheetMenu } from "@workspace/ui/components/organisms/sheet-menu/sheet-menu.organism";
 import { Skeleton } from "@workspace/ui/components/ui/skeleton";
 
 import type { ApiDish, ApiMenu, RestaurantMenuItem } from "@workspace/client";
+import type { RestaurantPickerDialogLabels, RestaurantPickerOption } from "@workspace/ui/components/organisms/restaurant-picker-dialog/restaurant-picker-dialog.organism";
+
+import { ConnectedDishDialog } from "@/components/connected/connected-dish-dialog/connected-dish-dialog.organism";
+import { ConnectedMenuDialog } from "@/components/connected/connected-menu-dialog/connected-menu-dialog.organism";
+import { RestaurantPickerDialog } from "@/components/organisms/restaurant-picker-dialog/restaurant-picker-dialog.organism";
 
 const CENTS_PER_EURO = 100;
 
 interface ConnectedGroupMenuProps {
   restaurantIds: ReadonlyArray<string>;
+  restaurants: ReadonlyArray<RestaurantPickerOption>;
+  pickerLabels: RestaurantPickerDialogLabels;
 }
 
 const buildItems = (
@@ -47,9 +54,16 @@ const buildItems = (
   return items;
 };
 
-const ConnectedGroupMenu = ({ restaurantIds }: ConnectedGroupMenuProps): React.JSX.Element => {
+type PickerKind = "dish" | "menu";
+
+const ConnectedGroupMenu = ({
+  restaurantIds,
+  restaurants,
+  pickerLabels
+}: ConnectedGroupMenuProps): React.JSX.Element => {
   const dishes = useDishesMulti(restaurantIds);
   const menus = useMenusMulti(restaurantIds);
+  const [picked, setPicked] = useState<{ kind: PickerKind; restaurantId: string } | null>(null);
 
   const items = useMemo(
     () => buildItems(dishes.byRestaurant, menus.byRestaurant),
@@ -78,7 +92,54 @@ const ConnectedGroupMenu = ({ restaurantIds }: ConnectedGroupMenuProps): React.J
     );
   }
 
-  return <SheetMenu items={items} />;
+  const renderForKind = (
+    kind: PickerKind,
+    open: boolean,
+    onOpenChange: (next: boolean) => void
+  ): React.ReactNode => {
+    const handleClose = (next: boolean): void => {
+      onOpenChange(next);
+      if (!next) setPicked(null);
+    };
+
+    if (picked && picked.kind === kind) {
+      if (kind === "dish") {
+        return (
+          <ConnectedDishDialog
+            restaurantId={picked.restaurantId}
+            open={open}
+            onOpenChange={handleClose}
+          />
+        );
+      }
+
+      return (
+        <ConnectedMenuDialog
+          restaurantId={picked.restaurantId}
+          open={open}
+          onOpenChange={handleClose}
+        />
+      );
+    }
+
+    return (
+      <RestaurantPickerDialog
+        open={open}
+        onOpenChange={onOpenChange}
+        labels={pickerLabels}
+        restaurants={restaurants}
+        onSelect={(id) => setPicked({ kind, restaurantId: id })}
+      />
+    );
+  };
+
+  return (
+    <SheetMenu
+      items={items}
+      renderCreateDialog={({ open, onOpenChange }) => renderForKind("dish", open, onOpenChange)}
+      renderCreateMenuDialog={({ open, onOpenChange }) => renderForKind("menu", open, onOpenChange)}
+    />
+  );
 };
 
 export { ConnectedGroupMenu };

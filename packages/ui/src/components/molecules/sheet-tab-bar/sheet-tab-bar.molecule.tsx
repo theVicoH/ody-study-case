@@ -1,5 +1,6 @@
 import React from "react";
 
+import { PanelRightIcon } from "@/components/icons/panel-right/panel-right.icon";
 import type { NavIconComponent } from "@/components/molecules/sidebar-nav/sidebar-nav.molecule";
 
 import { cn } from "@/lib/utils";
@@ -25,21 +26,7 @@ interface SheetTabBarProps {
 }
 
 const SplitRightGlyph = (): React.JSX.Element => (
-  <svg
-    width={SPLIT_ICON_SIZE}
-    height={SPLIT_ICON_SIZE}
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth={2}
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    aria-hidden="true"
-  >
-    <rect x="3" y="4" width="18" height="16" rx="2" />
-    <line x1="13" y1="4" x2="13" y2="20" />
-    <line x1="17" y1="9" x2="17" y2="15" />
-  </svg>
+  <PanelRightIcon size={SPLIT_ICON_SIZE} isAnimated={false} aria-hidden="true" />
 );
 
 const SheetTabBar = ({

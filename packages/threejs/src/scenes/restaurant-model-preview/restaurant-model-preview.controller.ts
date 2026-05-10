@@ -7,9 +7,11 @@ const COLOR_PURPLE = 0x8442ff;
 const CAMERA_FOV = 35;
 const CAMERA_NEAR = 0.1;
 const CAMERA_FAR = 100;
-const PIXEL_RATIO_CAP = 2;
+const PIXEL_RATIO_CAP = 1.5;
 const ROTATION_SPEED = 0.45;
 const TARGET_SIZE = 2.4;
+const TARGET_FPS = 30;
+const FRAME_INTERVAL = 1000 / TARGET_FPS;
 
 export interface RestaurantModelPreviewApi {
   dispose: () => void;
@@ -37,22 +39,6 @@ function fitToTarget(model: THREE.Group, targetSize: number): void {
   model.position.y -= scaledBox.min.y;
 }
 
-function disposeGroup(group: THREE.Group): void {
-  group.traverse((child) => {
-    const mesh = child as THREE.Mesh;
-
-    if (!mesh.isMesh) return;
-    if (!mesh.userData.sharedGeometry) {
-      mesh.geometry.dispose();
-    }
-
-    const material = mesh.material as THREE.Material | THREE.Material[];
-
-    if (Array.isArray(material)) material.forEach((m) => m.dispose());
-    else material.dispose();
-  });
-}
-
 export function initRestaurantModelPreview(container: HTMLElement, modelUrl: string): RestaurantModelPreviewApi {
   const width = (): number => Math.max(container.clientWidth, 1);
   const height = (): number => Math.max(container.clientHeight, 1);
@@ -63,7 +49,11 @@ export function initRestaurantModelPreview(container: HTMLElement, modelUrl: str
   camera.position.set(3.5, 2.6, 3.8);
   camera.lookAt(0, 0.8, 0);
 
-  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  const renderer = new THREE.WebGLRenderer({
+    antialias: true,
+    alpha: true,
+    powerPreference: "low-power"
+  });
 
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, PIXEL_RATIO_CAP));
   renderer.setSize(width(), height());
@@ -90,6 +80,9 @@ export function initRestaurantModelPreview(container: HTMLElement, modelUrl: str
 
   let modelGroup: THREE.Group | null = null;
   let disposed = false;
+  let visible = true;
+  let frameId = 0;
+  let lastFrame = 0;
 
   loadModel(modelUrl)
     .then((source) => {
@@ -117,14 +110,29 @@ export function initRestaurantModelPreview(container: HTMLElement, modelUrl: str
 
   ro.observe(container);
 
-  let frameId = 0;
+  const io = new IntersectionObserver(
+    (entries) => {
+      const entry = entries[0];
+
+      if (!entry) return;
+      visible = entry.isIntersecting;
+    },
+    { threshold: 0 }
+  );
+
+  io.observe(container);
+
   const t0 = performance.now();
-  const tick = (): void => {
-    const t = (performance.now() - t0) / 1000;
+  const tick = (now: number): void => {
+    frameId = requestAnimationFrame(tick);
+    if (!visible) return;
+    if (now - lastFrame < FRAME_INTERVAL) return;
+    lastFrame = now;
+
+    const t = (now - t0) / 1000;
 
     if (modelGroup) modelGroup.rotation.y = t * ROTATION_SPEED;
     renderer.render(scene, camera);
-    frameId = requestAnimationFrame(tick);
   };
 
   frameId = requestAnimationFrame(tick);
@@ -133,9 +141,9 @@ export function initRestaurantModelPreview(container: HTMLElement, modelUrl: str
     disposed = true;
     cancelAnimationFrame(frameId);
     ro.disconnect();
+    io.disconnect();
     if (modelGroup) {
       scene.remove(modelGroup);
-      disposeGroup(modelGroup);
       modelGroup = null;
     }
     renderer.dispose();

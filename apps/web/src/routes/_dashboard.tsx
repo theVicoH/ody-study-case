@@ -9,8 +9,10 @@ import {
   restaurantHoursApi,
   restaurantTablesApi,
   useApiRestaurants,
+  useGroupStats,
   useRestaurants,
-  useRestaurantSelectionStore
+  useRestaurantSelectionStore,
+  useRestaurantStatsMulti
 } from "@workspace/client";
 import {
   RestaurantMiniScene,
@@ -40,8 +42,9 @@ import { RestaurantSheet } from "@workspace/ui/components/organisms/restaurant-s
 import { RestaurantSidebar } from "@workspace/ui/components/organisms/restaurant-sidebar/restaurant-sidebar.organism";
 import { SheetGroupOverview } from "@workspace/ui/components/organisms/sheet-group-overview/sheet-group-overview.organism";
 import { SheetOrganizationSettings } from "@workspace/ui/components/organisms/sheet-organization-settings/sheet-organization-settings.organism";
-import { SheetRestaurantOverview } from "@workspace/ui/components/organisms/sheet-restaurant-overview/sheet-restaurant-overview.organism";
+import { ConnectedOverview } from "@workspace/ui/components/connected/connected-overview/connected-overview.organism";
 import { ConnectedGroupStats, ConnectedStats } from "@workspace/ui/components/connected/connected-stats/connected-stats.organism";
+import { useBreakpoint } from "@workspace/ui/hooks/use-breakpoint/use-breakpoint.hook";
 import { Avatar, AvatarFallback } from "@workspace/ui/components/ui/avatar";
 import { Button } from "@workspace/ui/components/ui/button";
 import {
@@ -77,7 +80,7 @@ const SHEET_MIN_WIDTH = 360;
 const SHEET_MAX_LIMIT = 2400;
 const SHEET_DEFAULT_RIGHT = 12;
 const SHEET_DEFAULT_WIDTH = 480;
-const SIDEBAR_RESERVED = 264;
+const SIDEBAR_RESERVED = 252;
 const EXPAND_DURATION = 0.45;
 const THREED_ICON_SIZE = 16;
 const THREED_ICON_STROKE = 2;
@@ -143,6 +146,7 @@ const Layout = (): React.JSX.Element => {
     restaurants,
     loading: apiLoading,
     error: apiError,
+    settingsForId,
     createOrganization,
     updateOrganization,
     createRestaurant: createRestaurantViaApi,
@@ -199,7 +203,10 @@ const Layout = (): React.JSX.Element => {
   const [viewAllOpen, setViewAllOpen] = useState(false);
   const [viewAllQuery, setViewAllQuery] = useState("");
   const [splitDialogOpen, setSplitDialogOpen] = useState(false);
+  const [splitNewSide, setSplitNewSide] = useState<"left" | "right">("right");
   const savedGeometryRef = useRef<SheetGeometry | null>(null);
+  const { isMobileOrTablet } = useBreakpoint();
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
   const isGroupView = selectedId === "__group";
   const selected =
@@ -213,10 +220,12 @@ const Layout = (): React.JSX.Element => {
     isCompareActive && secondaryId
       ? restaurants.find((r) => r.id === secondaryId) ?? null
       : null;
+  const isSecondaryGroup = secondaryId === "__group";
 
   const handleSelectRestaurantById = useCallback(
     (id: string): void => {
       selectRestaurant(id);
+      setMobileSidebarOpen(false);
       void navigate({
         to: "/$restaurantId/$tab",
         params: { restaurantId: id, tab: activeTab || "home" }
@@ -278,6 +287,7 @@ const Layout = (): React.JSX.Element => {
 
   const handleSelectGroup = useCallback((): void => {
     selectGroup();
+    setMobileSidebarOpen(false);
     void navigate({ to: "/group" });
     sceneApiRef.current?.selectRestaurant(null);
     sceneApiRef.current?.setSunVisible(true);
@@ -305,6 +315,31 @@ const Layout = (): React.JSX.Element => {
       setActiveTab(tab);
     },
     [setActiveTab]
+  );
+
+  const handleTabChangeInCompare = useCallback(
+    (tab: string): void => {
+      setActiveTab(tab);
+      setSecondaryTab(tab);
+    },
+    [setActiveTab, setSecondaryTab]
+  );
+
+  const handleSelectInCompare = useCallback(
+    (id: string): void => {
+      selectRestaurant(id);
+      selectSecondaryRestaurant(id);
+      void navigate({
+        to: "/$restaurantId/$tab",
+        params: { restaurantId: id, tab: activeTab || "home" }
+      });
+      if (view3dEnabled) {
+        sceneApiRef.current?.selectRestaurant(id);
+        sceneApiRef.current?.focusRestaurant(id);
+        sceneApiRef.current?.setSunVisible(true);
+      }
+    },
+    [selectRestaurant, selectSecondaryRestaurant, navigate, activeTab, view3dEnabled]
   );
 
   useEffect(() => {
@@ -438,8 +473,13 @@ const Layout = (): React.JSX.Element => {
 
       return;
     }
+    const vw = window.innerWidth;
+    const currentRight = sheetRight ?? SHEET_DEFAULT_RIGHT;
+    const currentWidth = sheetWidth ?? SHEET_DEFAULT_WIDTH;
+    const spaceLeft = vw - SIDEBAR_RESERVED - currentRight - currentWidth;
+    setSplitNewSide(spaceLeft >= currentRight ? "left" : "right");
     setSplitDialogOpen(true);
-  }, [compareMode, setCompareMode]);
+  }, [compareMode, setCompareMode, sheetRight, sheetWidth]);
 
   const handleSelectSecondary = useCallback(
     (id: string | null): void => {
@@ -449,11 +489,13 @@ const Layout = (): React.JSX.Element => {
   );
 
   const handleCloseLeftInCompare = useCallback((): void => {
-    if (secondary) {
+    if (isSecondaryGroup) {
+      handleSelectGroup();
+    } else if (secondary) {
       handleSelectRestaurantById(secondary.id);
     }
     setCompareMode(false);
-  }, [secondary, handleSelectRestaurantById, setCompareMode]);
+  }, [secondary, isSecondaryGroup, handleSelectGroup, handleSelectRestaurantById, setCompareMode]);
 
   const handleCloseRightInCompare = useCallback((): void => {
     setCompareMode(false);
@@ -564,29 +606,49 @@ const Layout = (): React.JSX.Element => {
     return railRestaurants.filter((r) => r.name.toLowerCase().includes(q) || r.caption.toLowerCase().includes(q));
   }, [railRestaurants, flatQuery]);
 
+  const groupRestaurantIds = useMemo(() => restaurants.map((r) => r.id), [restaurants]);
+
+  const realStatsMulti = useRestaurantStatsMulti(groupRestaurantIds);
+  const realGroupStats = useGroupStats(groupRestaurantIds);
+
   const groupRestaurantSummaries = useMemo<ReadonlyArray<RestaurantSummaryItem>>(
     () =>
       restaurants.map((r) => {
-        const s = statsFor(r);
-        const ds = detailedStatsFor(r);
+        const real = realStatsMulti.byRestaurant.get(r.id);
+        const fallbackStats = statsFor(r);
+        const fallbackDetailed = detailedStatsFor(r);
 
         return {
           id: r.id,
           name: r.name,
           performance: r.performance,
-          revenue: s.revenue,
-          sparklineData: ds.sparklineData
+          revenue: real?.revenue ?? fallbackStats.revenue,
+          sparklineData: real?.sparklineData ?? fallbackDetailed.sparklineData
         };
       }),
-    [restaurants, statsFor, detailedStatsFor]
+    [restaurants, realStatsMulti.byRestaurant, statsFor, detailedStatsFor]
   );
 
   const groupTotalRevenue = useMemo(
-    () => restaurants.reduce((sum, r) => sum + statsFor(r).revenue, 0),
-    [restaurants, statsFor]
+    () =>
+      realGroupStats.stats?.revenue
+      ?? restaurants.reduce((sum, r) => sum + statsFor(r).revenue, 0),
+    [realGroupStats.stats, restaurants, statsFor]
   );
 
-  const groupRestaurantIds = useMemo(() => restaurants.map((r) => r.id), [restaurants]);
+  const groupPickerOptions = useMemo(
+    () => restaurants.map((r) => ({ id: r.id, name: r.name, address: r.address })),
+    [restaurants]
+  );
+
+  const groupPickerLabels = useMemo(() => ({
+    title: t("restaurants.groupCreate.pickTitle"),
+    description: t("restaurants.groupCreate.pickDescription"),
+    searchPlaceholder: t("restaurants.groupCreate.pickPlaceholder"),
+    empty: t("restaurants.groupCreate.pickEmpty"),
+    cancel: t("restaurants.groupCreate.pickCancel"),
+    submit: t("restaurants.groupCreate.pickContinue")
+  }), [t]);
 
   const groupOverviewLabels = useMemo(() => ({
     restaurants: t("restaurants.stats.restaurants"),
@@ -964,27 +1026,16 @@ const Layout = (): React.JSX.Element => {
     restaurant: Restaurant,
     tabId: string
   ): React.ReactNode => {
-    const rStats = statsFor(restaurant);
-    const rDetailed = detailedStatsFor(restaurant);
     const rSettings = settingsFor(restaurant);
 
     if (tabId === "home") {
       return (
-        <SheetRestaurantOverview
-          labels={overviewLabels}
+        <ConnectedOverview
           restaurantId={restaurant.id}
-          restaurantType={restaurant.type}
-          performance={restaurant.performance}
-          stats={rStats}
-          openOrders={rDetailed.openOrders}
-          fillRate={rDetailed.fillRate}
-          sparklineData={rDetailed.sparklineData}
-          phone={rSettings.phone}
-          maxCovers={rSettings.maxCovers}
-          tableService={rSettings.tableService}
-          clickAndCollect={rSettings.clickAndCollect}
+          restaurant={restaurant}
+          settings={settingsForId(restaurant.id)}
           groupRestaurants={groupRestaurantSummaries}
-          topItems={rDetailed.topItems}
+          labels={overviewLabels}
         />
       );
     }
@@ -1026,15 +1077,36 @@ const Layout = (): React.JSX.Element => {
       }
 
       if (tab === "crm") {
-        return <ConnectedGroupCrm restaurantIds={groupRestaurantIds} labels={crmLabels} />;
+        return (
+          <ConnectedGroupCrm
+            restaurantIds={groupRestaurantIds}
+            restaurants={groupPickerOptions}
+            labels={crmLabels}
+            pickerLabels={groupPickerLabels}
+          />
+        );
       }
 
       if (tab === "orders") {
-        return <ConnectedGroupOrders restaurantIds={groupRestaurantIds} labels={ordersLabels} />;
+        return (
+          <ConnectedGroupOrders
+            restaurantIds={groupRestaurantIds}
+            restaurants={groupPickerOptions}
+            labels={ordersLabels}
+            newOrderDialogLabels={ordersLabels.newOrderDialog}
+            pickerLabels={groupPickerLabels}
+          />
+        );
       }
 
       if (tab === "menu") {
-        return <ConnectedGroupMenu restaurantIds={groupRestaurantIds} />;
+        return (
+          <ConnectedGroupMenu
+            restaurantIds={groupRestaurantIds}
+            restaurants={groupPickerOptions}
+            pickerLabels={groupPickerLabels}
+          />
+        );
       }
 
       if (tab === "settings") {
@@ -1333,14 +1405,27 @@ const Layout = (): React.JSX.Element => {
         )}
       </AnimatePresence>
 
+      {isMobileOrTablet && !mobileSidebarOpen ? (
+        <Button
+          variant="outline"
+          size="icon-sm"
+          onClick={() => setMobileSidebarOpen(true)}
+          aria-label={t("restaurants.rail.openMenu")}
+          className="top-md left-md glass-strong fixed z-40"
+        >
+          <MenuIcon size={16} />
+        </Button>
+      ) : null}
+
       <RestaurantSidebar
-        open={isOpen}
+        open={isMobileOrTablet ? mobileSidebarOpen : isOpen}
+        onRequestClose={() => setMobileSidebarOpen(false)}
         compareMode={view3dEnabled ? isCompareActive : false}
         compareLabel={t("restaurants.sheet.compare")}
         onToggleCompare={
           view3dEnabled && (selected !== null || isGroupView) ? handleToggleCompare : undefined
         }
-        secondaryTabId={isCompareActive ? secondaryTab : null}
+        secondaryTabId={null}
         miniSlot={
           view3dEnabled ? (
             isGroupView ? (
@@ -1361,20 +1446,22 @@ const Layout = (): React.JSX.Element => {
         miniStatus={miniStatus}
         miniCaption={miniCaption}
         navItems={isGroupView ? groupNavItems : navItems}
-        activeTabId={activeTab}
-        onTabChange={handleTabChange}
+        activeTabId={isCompareActive ? "" : activeTab}
+        onTabChange={isCompareActive ? handleTabChangeInCompare : handleTabChange}
         groupLabel={organization?.name ?? t("restaurants.rail.allRestaurants")}
         groupOverview={t("restaurants.rail.groupOverview")}
-        isGroupActive={isGroupView}
-        onSelectGroup={handleSelectGroup}
+        isGroupActive={isCompareActive ? false : isGroupView}
+        onSelectGroup={isCompareActive ? undefined : handleSelectGroup}
         restaurants={railRestaurants}
-        activeRestaurantId={selectedId === "__group" ? null : selectedId}
-        secondaryActiveRestaurantId={isCompareActive ? secondaryId : null}
-        onSelectRestaurant={handleSelectRestaurantById}
+        activeRestaurantId={isCompareActive ? null : (selectedId === "__group" ? null : selectedId)}
+        secondaryActiveRestaurantId={null}
+        onSelectRestaurant={isCompareActive ? handleSelectInCompare : handleSelectRestaurantById}
         searchPlaceholder={t("restaurants.rail.search")}
         countLabel={t("restaurants.rail.count", { count: restaurants.length })}
         viewAllLabel={t("restaurants.rail.viewAll")}
         onViewAll={() => setViewAllOpen(true)}
+        addRestaurantLabel={t("restaurants.create.addRestaurant")}
+        onAddRestaurant={handleOpenCreateRestaurant}
       />
 
       <Dialog
@@ -1462,16 +1549,72 @@ const Layout = (): React.JSX.Element => {
               ? t("restaurants.sheet.activeEstablishments", { count: summary.total })
               : selected?.address ?? "";
             const leftPageOptions = isGroupView ? groupPageOptions : sheetPageOptions;
+            const isSecondaryGroupView = secondaryId === "__group";
+            const rightTitle = isSecondaryGroupView
+              ? (organization?.name ?? t("restaurants.rail.allRestaurants"))
+              : (secondary?.name ?? "—");
+            const rightCaption = isSecondaryGroupView
+              ? t("restaurants.sheet.activeEstablishments", { count: summary.total })
+              : (secondary?.address ?? "");
+            const rightSheetStatus: "good" | "warn" | "bad" | "disabled" = isSecondaryGroupView
+              ? "disabled"
+              : secondary ? performanceStatus(secondary.performance) : "good";
+            const rightPageOptions = isSecondaryGroupView ? groupPageOptions : sheetPageOptions;
+            const rightSelectedId = isSecondaryGroupView ? "__group" : secondary?.id;
+            const renderRightContent = (tab: string): React.ReactNode => {
+              if (isSecondaryGroupView) {
+                if (tab === "stats") return <ConnectedGroupStats restaurantIds={groupRestaurantIds} labels={statsLabels} />;
+                if (tab === "crm") return <ConnectedGroupCrm restaurantIds={groupRestaurantIds} restaurants={groupPickerOptions} labels={crmLabels} pickerLabels={groupPickerLabels} />;
+                if (tab === "orders") return <ConnectedGroupOrders restaurantIds={groupRestaurantIds} restaurants={groupPickerOptions} labels={ordersLabels} newOrderDialogLabels={ordersLabels.newOrderDialog} pickerLabels={groupPickerLabels} />;
+                if (tab === "menu") return <ConnectedGroupMenu restaurantIds={groupRestaurantIds} restaurants={groupPickerOptions} pickerLabels={groupPickerLabels} />;
+                if (tab === "settings") return (
+                  <SheetOrganizationSettings
+                    labels={orgSettingsLabels}
+                    orgName={organization?.name ?? ""}
+                    ownerEmail={demoUser?.email ?? ""}
+                    restaurants={restaurants.map((r) => ({ id: r.id, name: r.name, address: r.address }))}
+                    onSave={handleUpdateOrganization}
+                    onDeleteRestaurant={(id) => { void deleteRestaurantViaApi(id); }}
+                    onDeleteOrganization={() => {
+                      void deleteOrganization().then(() => {
+                        clearSelection();
+                        void navigate({ to: "/" });
+                      });
+                    }}
+                  />
+                );
+                return (
+                  <SheetGroupOverview
+                    labels={groupOverviewLabels}
+                    total={summary.total}
+                    good={summary.good}
+                    warn={summary.warn}
+                    bad={summary.bad}
+                    totalRevenue={groupTotalRevenue}
+                    restaurants={groupRestaurantSummaries}
+                    onAddRestaurant={handleOpenCreateRestaurant}
+                  />
+                );
+              }
+              return secondary ? renderRestaurantTab(secondary, tab) : null;
+            };
+
+            const isSwapped = splitNewSide === "left";
+            const handlePrimarySelect = (id: string | null): void => {
+              if (!id) return;
+              if (id === "__group") { handleSelectGroup(); return; }
+              handleSelectRestaurantById(id);
+            };
 
             return (
               <>
                 <RestaurantSheet
                   open
                   resizing={resizing}
-                  status={sheetStatus}
-                  eyebrow={leftCategoryLabel}
-                  title={leftTitle}
-                  caption={leftCaption}
+                  status={isSwapped ? rightSheetStatus : sheetStatus}
+                  eyebrow={isSwapped ? rightCategoryLabel : leftCategoryLabel}
+                  title={isSwapped ? rightTitle : leftTitle}
+                  caption={isSwapped ? rightCaption : leftCaption}
                   closeLabel={t("restaurants.sheet.close")}
                   expandLabel={t("restaurants.sheet.expand")}
                   collapseLabel={t("restaurants.sheet.collapse")}
@@ -1480,36 +1623,26 @@ const Layout = (): React.JSX.Element => {
                   width={leftWidth}
                   right={leftSheetRight}
                   selectorRestaurants={sheetSelectorItems}
-                  selectedRestaurantId={leftPrimaryId}
-                  onSelectRestaurant={(id) => {
-                    if (!id) return;
-                    if (id === "__group") {
-                      handleSelectGroup();
-
-                      return;
-                    }
-                    handleSelectRestaurantById(id);
-                  }}
-                  pageOptions={leftPageOptions}
-                  selectedPageId={activeTab}
-                  onSelectPage={setActiveTab}
-                  onClose={handleCloseLeftInCompare}
+                  selectedRestaurantId={isSwapped ? rightSelectedId : leftPrimaryId}
+                  onSelectRestaurant={isSwapped ? handleSelectSecondary : handlePrimarySelect}
+                  pageOptions={isSwapped ? rightPageOptions : leftPageOptions}
+                  selectedPageId={isSwapped ? rightTab : activeTab}
+                  onSelectPage={isSwapped ? setSecondaryTab : setActiveTab}
+                  onClose={isSwapped ? handleCloseRightInCompare : handleCloseLeftInCompare}
                 >
                   {renderAnimatedTabContent(
-                    `${leftPrimaryId}:${activeTab}`,
-                    renderSheetContent(activeTab)
+                    isSwapped ? `${rightSelectedId ?? "none"}:${rightTab}` : `${leftPrimaryId}:${activeTab}`,
+                    isSwapped ? renderRightContent(rightTab) : renderSheetContent(activeTab)
                   )}
                 </RestaurantSheet>
 
                 <RestaurantSheet
                   open
                   resizing={resizing}
-                  status={
-                    secondary ? performanceStatus(secondary.performance) : "good"
-                  }
-                  eyebrow={rightCategoryLabel}
-                  title={secondary?.name ?? "—"}
-                  caption={secondary?.address ?? ""}
+                  status={isSwapped ? sheetStatus : rightSheetStatus}
+                  eyebrow={isSwapped ? leftCategoryLabel : rightCategoryLabel}
+                  title={isSwapped ? leftTitle : rightTitle}
+                  caption={isSwapped ? leftCaption : rightCaption}
                   closeLabel={t("restaurants.sheet.close")}
                   expandLabel={t("restaurants.sheet.expand")}
                   collapseLabel={t("restaurants.sheet.collapse")}
@@ -1517,17 +1650,17 @@ const Layout = (): React.JSX.Element => {
                   resizeLabel={t("restaurants.sheet.resizeSheet")}
                   width={rightWidth}
                   right={rightSheetRight}
-                  selectorRestaurants={railRestaurants}
-                  selectedRestaurantId={secondary?.id}
-                  onSelectRestaurant={handleSelectSecondary}
-                  pageOptions={sheetPageOptions}
-                  selectedPageId={rightTab}
-                  onSelectPage={setSecondaryTab}
-                  onClose={handleCloseRightInCompare}
+                  selectorRestaurants={sheetSelectorItems}
+                  selectedRestaurantId={isSwapped ? leftPrimaryId : rightSelectedId}
+                  onSelectRestaurant={isSwapped ? handlePrimarySelect : handleSelectSecondary}
+                  pageOptions={isSwapped ? leftPageOptions : rightPageOptions}
+                  selectedPageId={isSwapped ? activeTab : rightTab}
+                  onSelectPage={isSwapped ? setActiveTab : setSecondaryTab}
+                  onClose={isSwapped ? handleCloseLeftInCompare : handleCloseRightInCompare}
                 >
                   {renderAnimatedTabContent(
-                    `${secondary?.id ?? "none"}:${rightTab}`,
-                    secondary ? renderRestaurantTab(secondary, rightTab) : null
+                    isSwapped ? `${leftPrimaryId}:${activeTab}` : `${rightSelectedId ?? "none"}:${rightTab}`,
+                    isSwapped ? renderSheetContent(activeTab) : renderRightContent(rightTab)
                   )}
                 </RestaurantSheet>
 
@@ -1586,7 +1719,7 @@ const Layout = (): React.JSX.Element => {
           splitLabel={t("restaurants.sheet.openBeside")}
           onRequestSplit={
             view3dEnabled && (selected !== null || isGroupView)
-              ? () => setSplitDialogOpen(true)
+              ? (side) => { setSplitNewSide(side); setSplitDialogOpen(true); }
               : undefined
           }
           onClose={handleClose}
@@ -1660,11 +1793,11 @@ const Layout = (): React.JSX.Element => {
       <CreateSplitDialog
         open={splitDialogOpen}
         onOpenChange={setSplitDialogOpen}
-        restaurants={railRestaurants}
+        restaurants={sheetSelectorItems}
         pages={sheetPageOptions}
         defaultRestaurantId={
-          railRestaurants.find((r) => isGroupView ? true : r.id !== selected?.id)?.id
-            ?? railRestaurants[0]?.id
+          sheetSelectorItems.find((r) => isGroupView ? r.id !== "__group" : r.id !== selected?.id)?.id
+            ?? sheetSelectorItems[0]?.id
         }
         defaultPageId={activeTab}
         labels={{

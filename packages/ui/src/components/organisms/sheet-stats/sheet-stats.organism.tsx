@@ -102,7 +102,7 @@ const REVENUE_FORMATTER = (value: number): string => {
   return `€${Math.round(value)}`;
 };
 
-const SPARKLINE_FORMATTER = (value: number): string => `${Math.round(value * REVENUE_HUNDRED)}%`;
+const SPARKLINE_FORMATTER = (value: number): string => REVENUE_FORMATTER(value);
 
 const PRNG_MOD = 233280;
 const PRNG_A = 9301;
