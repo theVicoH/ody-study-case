@@ -16,7 +16,7 @@ interface SearchInputProps {
 
 const SearchInput = ({ value, onChange, placeholder, className }: SearchInputProps): React.JSX.Element => (
   <div className={cn("relative", className)}>
-    <span className="text-muted-foreground left-sm pointer-events-none absolute top-1/2 flex -translate-y-1/2 items-center justify-center leading-none">
+    <span className="text-muted-foreground left-sm pointer-events-none absolute top-1/2 flex -translate-y-1/2 items-center justify-center">
       <SearchIcon size={SEARCH_ICON_SIZE} isAnimated={false} />
     </span>
     <Input

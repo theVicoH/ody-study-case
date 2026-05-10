@@ -15,7 +15,7 @@ export const GridOverlay = ({ visible, leftOffset = 0 }: GridOverlayProps): Reac
       className="pr-md pointer-events-none fixed inset-0 z-[9999]"
       style={{ paddingLeft: leftOffset > 0 ? `${leftOffset}px` : undefined }}
     >
-      <div className="grid h-full grid-cols-4 gap-[20px] md:grid-cols-8 lg:grid-cols-12">
+      <div className="gap-xl grid h-full grid-cols-4 md:grid-cols-8 lg:grid-cols-12">
         {COLS.map((_, i) => (
           <div
             key={i}

@@ -30,6 +30,7 @@ import { cn } from "@/lib/utils";
 const CENTS_PER_EURO = 100;
 const ALL_CATEGORIES = "__all__";
 const TOTAL_STEPS = 3;
+const MAX_NAME_LENGTH = 120;
 
 type Step = 1 | 2 | 3;
 
@@ -236,7 +237,7 @@ const ConnectedMenuDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="gap-md flex max-h-[85vh] w-[min(42rem,calc(100vw-2rem))] flex-col">
+      <DialogContent className="gap-md flex max-h-screen w-full flex-col">
         <DialogHeader>
           <DialogTitle>
             {isEdit ? t("restaurants.menu.editMenuTitle") : t("restaurants.menu.createMenuTitle")}
@@ -266,7 +267,7 @@ const ConnectedMenuDialog = ({
                     value={name}
                     onChange={(event) => setName(event.target.value)}
                     minLength={2}
-                    maxLength={120}
+                    maxLength={MAX_NAME_LENGTH}
                   />
                 </div>
 
@@ -309,7 +310,7 @@ const ConnectedMenuDialog = ({
               </div>
 
               {dishesEmpty ? (
-                <p className="bg-muted/30 text-muted-foreground typo-caption rounded-md p-3">
+                <p className="bg-muted/30 text-muted-foreground typo-caption p-2xl rounded-md">
                   {t("restaurants.menu.menuNoDishes")}
                 </p>
               ) : (
@@ -325,7 +326,7 @@ const ConnectedMenuDialog = ({
                       value={category}
                       onValueChange={(v) => { if (v !== null) setCategory(v); }}
                     >
-                      <SelectTrigger className="sm:w-44">
+                      <SelectTrigger className="sm:w-4xl">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -374,7 +375,7 @@ const ConnectedMenuDialog = ({
 
                   <div className="border-border min-h-0 flex-1 overflow-y-auto rounded-md border">
                     {filteredDishes.length === 0 ? (
-                      <p className="text-muted-foreground typo-caption p-3 text-center">
+                      <p className="text-muted-foreground typo-caption p-2xl text-center">
                         {t("restaurants.menu.menuDishesNoMatch")}
                       </p>
                     ) : (
@@ -398,10 +399,10 @@ const ConnectedMenuDialog = ({
                                   <img
                                     src={d.imageUrl}
                                     alt=""
-                                    className="border-border size-8 shrink-0 rounded-sm border object-cover"
+                                    className="border-border size-4xl shrink-0 rounded-sm border object-cover"
                                   />
                                 ) : (
-                                  <div className="bg-muted size-8 shrink-0 rounded-sm" />
+                                  <div className="bg-muted size-4xl shrink-0 rounded-sm" />
                                 )}
                                 <div className="min-w-0 flex-1">
                                   <p className="text-foreground typo-body truncate">{d.name}</p>

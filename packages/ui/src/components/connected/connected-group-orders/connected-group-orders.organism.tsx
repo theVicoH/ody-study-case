@@ -12,10 +12,13 @@ import { SheetOrders } from "@/components/organisms/sheet-orders/sheet-orders.or
 import { Skeleton } from "@/components/ui/skeleton";
 
 const CENTS_PER_EURO = 100;
+const SECONDS_PER_MINUTE = 60;
+const MINUTES_PER_HOUR = 60;
+const HOURS_PER_DAY = 24;
 const SECOND_MS = 1000;
-const MINUTE_MS = 60 * SECOND_MS;
-const HOUR_MS = 60 * MINUTE_MS;
-const DAY_MS = 24 * HOUR_MS;
+const MINUTE_MS = SECONDS_PER_MINUTE * SECOND_MS;
+const HOUR_MS = MINUTES_PER_HOUR * MINUTE_MS;
+const DAY_MS = HOURS_PER_DAY * HOUR_MS;
 
 type SheetOrdersLabels = ComponentProps<typeof SheetOrders>["labels"];
 type ConnectedNewOrderDialogLabels = ComponentProps<typeof ConnectedNewOrderDialog>["labels"];
@@ -119,13 +122,13 @@ const ConnectedGroupOrders = ({
       <>
         <div className="gap-sm grid shrink-0 grid-cols-3">
           {Array.from({ length: 3 }).map((_, i) => (
-            <Skeleton key={i} className="h-20 rounded-lg" />
+            <Skeleton key={i} className="h-4xl rounded-lg" />
           ))}
         </div>
-        <Skeleton className="h-9 w-full shrink-0" />
-        <div className="min-h-0 flex-1 space-y-2">
+        <Skeleton className="h-4xl w-full shrink-0" />
+        <div className="space-y-xl min-h-0 flex-1">
           {Array.from({ length: 6 }).map((_, i) => (
-            <Skeleton key={i} className="h-12 w-full rounded-md" />
+            <Skeleton key={i} className="h-4xl w-full rounded-md" />
           ))}
         </div>
       </>

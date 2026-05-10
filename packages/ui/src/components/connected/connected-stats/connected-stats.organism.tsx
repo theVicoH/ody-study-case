@@ -24,11 +24,11 @@ const StatsSkeleton = (): React.JSX.Element => (
   <div className="gap-md flex flex-col">
     <div className="gap-sm grid grid-cols-2 lg:grid-cols-3">
       {Array.from({ length: 6 }).map((_, i) => (
-        <Skeleton key={i} className="h-20 rounded-lg" />
+        <Skeleton key={i} className="h-4xl rounded-lg" />
       ))}
     </div>
-    <Skeleton className="h-48 w-full rounded-lg" />
-    <Skeleton className="h-64 w-full rounded-lg" />
+    <Skeleton className="h-4xl w-full rounded-lg" />
+    <Skeleton className="h-4xl w-full rounded-lg" />
   </div>
 );
 

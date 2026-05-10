@@ -34,6 +34,10 @@ interface RegisterFormProps {
 const TOTAL_STEPS = 3;
 const MIN_PASSWORD_LENGTH = 8;
 const MIN_BIRTH_YEAR = 1900;
+const USER_ICON_SIZE = 32;
+const CALENDAR_ICON_SIZE = 16;
+const BACK_ICON_SIZE = 12;
+const CALENDAR_DEFAULT_YEAR = 2000;
 
 const isEmail = (value: string): boolean => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 
@@ -119,16 +123,16 @@ const RegisterForm = ({
   const displayError = error ?? stepError;
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-      <div className="flex flex-col gap-1.5">
-        <span className="text-muted-foreground text-xs tracking-wide uppercase">
+    <form onSubmit={handleSubmit} className="gap-4xl flex flex-col">
+      <div className="gap-lg flex flex-col">
+        <span className="text-muted-foreground typo-overline">
           {t("register.stepLabel", { current: step + 1, total: TOTAL_STEPS })}
         </span>
-        <div className="flex w-full gap-1.5">
+        <div className="gap-lg flex w-full">
           {Array.from({ length: TOTAL_STEPS }).map((_, index) => (
             <motion.div
               key={index}
-              className="h-1 flex-1 rounded-full"
+              className="h-md flex-1 rounded-full"
               initial={false}
               animate={{
                 backgroundColor:
@@ -142,7 +146,7 @@ const RegisterForm = ({
         </div>
       </div>
 
-      <div className="relative min-h-[14rem]">
+      <div className="min-h-4xl relative">
         <AnimatePresence mode="wait" initial={false}>
           <motion.div
             key={step}
@@ -151,24 +155,24 @@ const RegisterForm = ({
             animate="center"
             exit="exit"
             transition={{ duration: 0.18, ease: "easeOut" }}
-            className="flex flex-col gap-5"
+            className="gap-4xl flex flex-col"
           >
             {step === 0 && (
               <>
-                <div className="flex flex-col gap-1">
-                  <h1 className="text-foreground text-xl font-semibold tracking-tight">
+                <div className="gap-md flex flex-col">
+                  <h1 className="text-foreground typo-h3">
                     {t("register.step1.title")}
                   </h1>
-                  <p className="text-muted-foreground text-sm">{t("register.step1.description")}</p>
+                  <p className="text-muted-foreground typo-body-sm">{t("register.step1.description")}</p>
                 </div>
-                <div className="flex flex-col items-center gap-2">
+                <div className="gap-xl flex flex-col items-center">
                   <button
                     type="button"
                     onClick={() => fileInputRef.current?.click()}
                     disabled={isLoading}
                     aria-label={t("register.step1.photoLabel")}
                     className={`
-                      border-border bg-muted hover:bg-accent relative size-20 overflow-hidden rounded-full
+                      border-border bg-muted hover:bg-accent size-4xl relative overflow-hidden rounded-full
                       border-2 border-dashed transition-colors disabled:pointer-events-none disabled:opacity-50
                     `}
                   >
@@ -180,12 +184,12 @@ const RegisterForm = ({
                       />
                     ) : (
                       <UserIcon
-                        size={32}
+                        size={USER_ICON_SIZE}
                         className="text-muted-foreground absolute inset-0 m-auto"
                       />
                     )}
                   </button>
-                  <span className="text-muted-foreground text-xs">{t("register.step1.photoHint")}</span>
+                  <span className="text-muted-foreground typo-caption">{t("register.step1.photoHint")}</span>
                   <input
                     ref={fileInputRef}
                     type="file"
@@ -234,11 +238,11 @@ const RegisterForm = ({
 
             {step === 1 && (
               <>
-                <div className="flex flex-col gap-1">
-                  <h1 className="text-foreground text-xl font-semibold tracking-tight">
+                <div className="gap-md flex flex-col">
+                  <h1 className="text-foreground typo-h3">
                     {t("register.step2.title")}
                   </h1>
-                  <p className="text-muted-foreground text-sm">{t("register.step2.description")}</p>
+                  <p className="text-muted-foreground typo-body-sm">{t("register.step2.description")}</p>
                 </div>
                 <FieldGroup>
                   <Field orientation="vertical">
@@ -263,7 +267,7 @@ const RegisterForm = ({
                             ? format(birthday, "PPP")
                             : t("register.step2.birthdayLabel")}
                         </span>
-                        <CalendarIcon size={16} className="text-muted-foreground" />
+                        <CalendarIcon size={CALENDAR_ICON_SIZE} className="text-muted-foreground" />
                       </PopoverTrigger>
                       <PopoverContent align="start" className="w-auto p-0">
                         <Calendar
@@ -273,7 +277,7 @@ const RegisterForm = ({
                           captionLayout="dropdown"
                           fromYear={MIN_BIRTH_YEAR}
                           toDate={today}
-                          defaultMonth={birthday ?? new Date(2000, 0, 1)}
+                          defaultMonth={birthday ?? new Date(CALENDAR_DEFAULT_YEAR, 0, 1)}
                         />
                       </PopoverContent>
                     </Popover>
@@ -284,11 +288,11 @@ const RegisterForm = ({
 
             {step === 2 && (
               <>
-                <div className="flex flex-col gap-1">
-                  <h1 className="text-foreground text-xl font-semibold tracking-tight">
+                <div className="gap-md flex flex-col">
+                  <h1 className="text-foreground typo-h3">
                     {t("register.step3.title")}
                   </h1>
-                  <p className="text-muted-foreground text-sm">{t("register.step3.description")}</p>
+                  <p className="text-muted-foreground typo-body-sm">{t("register.step3.description")}</p>
                 </div>
                 <FieldGroup>
                   <Field orientation="vertical">
@@ -325,7 +329,7 @@ const RegisterForm = ({
                       minLength={MIN_PASSWORD_LENGTH}
                       required
                     />
-                    <p className="text-muted-foreground text-xs">{t("register.step3.passwordHint")}</p>
+                    <p className="text-muted-foreground typo-caption">{t("register.step3.passwordHint")}</p>
                   </Field>
                   <Field orientation="vertical">
                     <FieldLabel htmlFor="register-password-confirm">
@@ -354,7 +358,7 @@ const RegisterForm = ({
         </AnimatePresence>
       </div>
 
-      <div className="flex flex-col gap-2">
+      <div className="gap-xl flex flex-col">
         {step === 2 ? (
           <Button
             type="submit"
@@ -376,25 +380,25 @@ const RegisterForm = ({
             onClick={goBack}
             disabled={isLoading}
             className={`
-              text-muted-foreground hover:text-foreground inline-flex items-center justify-center gap-1
-              self-center rounded-full px-2 py-1 text-xs font-medium transition-colors
+              text-muted-foreground hover:text-foreground typo-caption gap-md px-xl py-md inline-flex
+              items-center justify-center self-center rounded-full transition-colors
               disabled:pointer-events-none disabled:opacity-50
             `}
           >
-            <ArrowLeftIcon size={12} />
+            <ArrowLeftIcon size={BACK_ICON_SIZE} />
             {t("register.back")}
           </button>
         )}
       </div>
 
-      <p className="text-muted-foreground text-center text-sm">
+      <p className="text-muted-foreground typo-body-sm text-center">
         {t("register.hasAccount")}{" "}
         <button
           type="button"
           onClick={onSwitchToLogin}
           disabled={isLoading}
           className={`
-            text-foreground font-medium underline-offset-4 transition hover:underline
+            text-foreground typo-h5 underline-offset-4 transition hover:underline
             disabled:opacity-50
           `}
         >

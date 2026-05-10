@@ -37,12 +37,12 @@ const LoginForm = ({
   const isDisabled = !email || !password || isLoading;
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-      <div className="flex flex-col gap-1.5">
-        <h1 className="text-foreground text-xl font-semibold tracking-tight">
+    <form onSubmit={handleSubmit} className="gap-4xl flex flex-col">
+      <div className="gap-lg flex flex-col">
+        <h1 className="text-foreground typo-h3">
           {t("login.title")}
         </h1>
-        <p className="text-muted-foreground text-sm">{t("login.description")}</p>
+        <p className="text-muted-foreground typo-body-sm">{t("login.description")}</p>
       </div>
 
       <FieldGroup>
@@ -82,14 +82,14 @@ const LoginForm = ({
         {isLoading ? t("login.submitting") : t("login.submit")}
       </Button>
 
-      <p className="text-muted-foreground text-center text-sm">
+      <p className="text-muted-foreground typo-body-sm text-center">
         {t("login.noAccount")}{" "}
         <button
           type="button"
           onClick={onSwitchToRegister}
           disabled={isLoading}
           className={`
-            text-foreground font-medium underline-offset-4 transition hover:underline
+            text-foreground typo-h5 underline-offset-4 transition hover:underline
             disabled:opacity-50
           `}
         >

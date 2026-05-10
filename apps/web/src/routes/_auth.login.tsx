@@ -5,9 +5,10 @@ import { LoginForm } from "@workspace/ui/components/organisms/login-form/login-f
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
+import type { LoginCredentials } from "@workspace/ui/components/organisms/login-form/login-form.organism";
+
 import { signIn } from "@/lib/auth/auth.client";
 
-import type { LoginCredentials } from "@workspace/ui/components/organisms/login-form/login-form.organism";
 
 const LoginRoute = (): React.JSX.Element => {
   const { t } = useTranslation("auth");

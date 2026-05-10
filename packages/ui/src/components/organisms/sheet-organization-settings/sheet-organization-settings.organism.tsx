@@ -23,6 +23,7 @@ import { cn } from "@/lib/utils";
 
 const SAVE_FEEDBACK_DURATION_MS = 2000;
 const TRASH_ICON_SIZE = 14;
+const MAX_ORG_NAME_LENGTH = 80;
 
 export interface SheetOrganizationSettingsLabels {
   generalInfo: string;
@@ -165,7 +166,7 @@ const SheetOrganizationSettings = ({
             <Input
               value={name}
               onChange={(e) => setName(e.target.value)}
-              maxLength={80}
+              maxLength={MAX_ORG_NAME_LENGTH}
             />
           </div>
 

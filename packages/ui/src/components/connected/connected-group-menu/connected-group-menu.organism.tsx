@@ -75,17 +75,17 @@ const ConnectedGroupMenu = ({
       <>
         <div className="gap-sm grid shrink-0 grid-cols-3">
           {Array.from({ length: 3 }).map((_, i) => (
-            <Skeleton key={i} className="h-20 rounded-lg" />
+            <Skeleton key={i} className="h-4xl rounded-lg" />
           ))}
         </div>
         <div className="gap-xs flex shrink-0">
           {Array.from({ length: 5 }).map((_, i) => (
-            <Skeleton key={i} className="h-8 w-20 rounded-full" />
+            <Skeleton key={i} className="h-4xl w-4xl rounded-full" />
           ))}
         </div>
         <div className="gap-sm grid grid-cols-2 sm:grid-cols-3">
           {Array.from({ length: 9 }).map((_, i) => (
-            <Skeleton key={i} className="h-32 rounded-lg" />
+            <Skeleton key={i} className="h-4xl rounded-lg" />
           ))}
         </div>
       </>
