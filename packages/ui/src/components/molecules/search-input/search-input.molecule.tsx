@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
 
-const SEARCH_ICON_SIZE = 16;
+const SEARCH_ICON_SIZE = 14;
 
 interface SearchInputProps {
   value: string;
@@ -16,14 +16,14 @@ interface SearchInputProps {
 
 const SearchInput = ({ value, onChange, placeholder, className }: SearchInputProps): React.JSX.Element => (
   <div className={cn("relative", className)}>
-    <span className="text-muted-foreground left-sm pointer-events-none absolute top-1/2 -translate-y-1/2">
+    <span className="text-muted-foreground left-sm pointer-events-none absolute top-1/2 flex -translate-y-1/2 items-center justify-center leading-none">
       <SearchIcon size={SEARCH_ICON_SIZE} isAnimated={false} />
     </span>
     <Input
       value={value}
       onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChange(e.target.value)}
       placeholder={placeholder}
-      className="pl-2xl"
+      className="pl-xl"
     />
   </div>
 );
