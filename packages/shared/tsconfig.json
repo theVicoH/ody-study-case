@@ -3,6 +3,7 @@
   "compilerOptions": {
     "lib": ["ES2022"],
     "types": [],
+    "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*", "../domain/src/*"],
       "@workspace/shared": ["./src/index.ts"],

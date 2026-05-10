@@ -1,5 +1,7 @@
 export { CreateUserUseCase } from "@/use-cases/user/create-user/create-user.use-case";
 
+export { GetOrCreateDemoUserUseCase } from "@/use-cases/user/get-or-create-demo-user/get-or-create-demo-user.use-case";
+
 export { GetUserUseCase } from "@/use-cases/user/get-user/get-user.use-case";
 
 export { GetUserByEmailUseCase } from "@/use-cases/user/get-user-by-email/get-user-by-email.use-case";
