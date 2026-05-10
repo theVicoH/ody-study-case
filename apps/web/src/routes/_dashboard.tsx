@@ -24,13 +24,8 @@ import { BrandMark } from "@workspace/ui/components/atoms/brand-mark/brand-mark.
 import { FivePetalSpiralLoader } from "@workspace/ui/components/atoms/five-petal-spiral-loader/five-petal-spiral-loader.atom";
 import { KbdKey } from "@workspace/ui/components/atoms/kbd-key/kbd-key.atom";
 import { H3, Muted, Overline } from "@workspace/ui/components/atoms/typography/typography.atom";
-import { BookmarkCheckIcon } from "@workspace/ui/components/icons/bookmark-check/bookmark-check.icon";
-import { ChartLineIcon } from "@workspace/ui/components/icons/chart-line/chart-line.icon";
-import { HouseIcon } from "@workspace/ui/components/icons/home/home.icon";
 import { MenuIcon } from "@workspace/ui/components/icons/menu/menu.icon";
 import { SearchIcon } from "@workspace/ui/components/icons/search/search.icon";
-import { SettingsIcon } from "@workspace/ui/components/icons/settings/settings.icon";
-import { UsersIcon } from "@workspace/ui/components/icons/users/users.icon";
 import { DashboardLayout } from "@workspace/ui/components/layouts/dashboard-layout/dashboard-layout.layout";
 import { ControlTip } from "@workspace/ui/components/molecules/control-tip/control-tip.molecule";
 import { RestaurantListItem } from "@workspace/ui/components/molecules/restaurant-list-item/restaurant-list-item.molecule";
@@ -76,62 +71,37 @@ import type { RestaurantSceneApi } from "@workspace/threejs";
 import type { SidebarNavItem } from "@workspace/ui/components/organisms/restaurant-sidebar/restaurant-sidebar.organism";
 import type { RestaurantSummaryItem } from "@workspace/ui/components/organisms/sheet-group-overview/sheet-group-overview.organism";
 
-const SHEET_MIN_WIDTH = 360;
-const SHEET_MAX_LIMIT = 2400;
-const SHEET_DEFAULT_RIGHT = 12;
-const SHEET_DEFAULT_WIDTH = 480;
-const SIDEBAR_RESERVED = 252;
-const EXPAND_DURATION = 0.45;
-const THREED_ICON_SIZE = 16;
-const THREED_ICON_STROKE = 2;
-const FLAT_SEARCH_ICON_SIZE = 14;
-const EXPAND_EASE: [number, number, number, number] = [0.32, 0.72, 0, 1];
-const MOBILE_BREAKPOINT = 720;
-const SPLIT_GAP = 8;
-const SPLIT_MIN_RATIO = 0.2;
-const SPLIT_MAX_RATIO = 0.8;
-const TAB_FADE_DURATION = 0.22;
-const TAB_FADE_EASE: [number, number, number, number] = [0.2, 0, 0, 1];
-const TAB_FADE_OFFSET = 8;
-const DEFAULT_VIEWPORT_WIDTH = 1280;
-const SHEET_CLOSE_DELAY_MS = 280;
-const SPLIT_RATIO_HALF = 1.5;
-
-type DragMode = "left" | "right" | "move";
-
-interface DragState {
-  mode: DragMode;
-  startX: number;
-  startRight: number;
-  startWidth: number;
-}
-
-interface SplitDragState {
-  startX: number;
-  startRatio: number;
-  available: number;
-}
-
-interface SheetGeometry {
-  right: number;
-  width: number;
-}
+import {
+  DEFAULT_VIEWPORT_WIDTH,
+  EXPAND_DURATION,
+  EXPAND_EASE,
+  FLAT_SEARCH_ICON_SIZE,
+  MOBILE_BREAKPOINT,
+  NAV_ICONS,
+  NAV_ORDER,
+  SHEET_CLOSE_DELAY_MS,
+  SHEET_DEFAULT_RIGHT,
+  SHEET_DEFAULT_WIDTH,
+  SHEET_MAX_LIMIT,
+  SHEET_MIN_WIDTH,
+  SIDEBAR_RESERVED,
+  SPLIT_GAP,
+  SPLIT_MAX_RATIO,
+  SPLIT_MIN_RATIO,
+  SPLIT_RATIO_HALF,
+  TAB_FADE_DURATION,
+  TAB_FADE_EASE,
+  TAB_FADE_OFFSET,
+  THREED_ICON_SIZE,
+  THREED_ICON_STROKE,
+  type DragMode,
+  type DragState,
+  type SheetGeometry,
+  type SplitDragState
+} from "./_dashboard/dashboard-shell.types";
 
 const clamp = (min: number, max: number, v: number): number =>
   Math.max(min, Math.min(max, v));
-
-const NAV_ICONS = {
-  home: HouseIcon,
-  stats: ChartLineIcon,
-  crm: UsersIcon,
-  orders: BookmarkCheckIcon,
-  menu: MenuIcon,
-  settings: SettingsIcon
-} as const;
-
-type NavId = keyof typeof NAV_ICONS;
-
-const NAV_ORDER: ReadonlyArray<NavId> = ["home", "stats", "crm", "orders", "menu", "settings"];
 
 const performanceStatus = (perf: RestaurantPerformance): "good" | "warn" | "bad" => perf;
 
