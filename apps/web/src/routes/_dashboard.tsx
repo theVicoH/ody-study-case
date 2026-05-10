@@ -41,7 +41,7 @@ import { RestaurantSidebar } from "@workspace/ui/components/organisms/restaurant
 import { SheetGroupOverview } from "@workspace/ui/components/organisms/sheet-group-overview/sheet-group-overview.organism";
 import { SheetOrganizationSettings } from "@workspace/ui/components/organisms/sheet-organization-settings/sheet-organization-settings.organism";
 import { SheetRestaurantOverview } from "@workspace/ui/components/organisms/sheet-restaurant-overview/sheet-restaurant-overview.organism";
-import { SheetStats } from "@workspace/ui/components/organisms/sheet-stats/sheet-stats.organism";
+import { ConnectedGroupStats, ConnectedStats } from "@workspace/ui/components/connected/connected-stats/connected-stats.organism";
 import { Avatar, AvatarFallback } from "@workspace/ui/components/ui/avatar";
 import { Button } from "@workspace/ui/components/ui/button";
 import {
@@ -67,9 +67,7 @@ import restaurantsCss from "./_dashboard/restaurants.css?url";
 
 import type {
   Restaurant,
-  RestaurantDetailedStats,
-  RestaurantPerformance,
-  RestaurantTopItem
+  RestaurantPerformance
 } from "@workspace/client";
 import type { RestaurantSceneApi } from "@workspace/threejs";
 import type { SidebarNavItem } from "@workspace/ui/components/organisms/restaurant-sidebar/restaurant-sidebar.organism";
@@ -435,29 +433,13 @@ const Layout = (): React.JSX.Element => {
   );
 
   const handleToggleCompare = useCallback((): void => {
-    if (!selected && !isGroupView) return;
-    const next = !compareMode;
+    if (compareMode) {
+      setCompareMode(false);
 
-    if (next) {
-      const primaryRestaurantId = selected?.id ?? null;
-
-      if (!secondaryId || secondaryId === primaryRestaurantId) {
-        const fallback = restaurants.find((r) => r.id !== primaryRestaurantId);
-
-        if (fallback) selectSecondaryRestaurant(fallback.id);
-      }
-      setSplitRatio(0.5);
+      return;
     }
-    setCompareMode(next);
-  }, [
-    compareMode,
-    isGroupView,
-    restaurants,
-    secondaryId,
-    selectSecondaryRestaurant,
-    selected,
-    setCompareMode
-  ]);
+    setSplitDialogOpen(true);
+  }, [compareMode, setCompareMode]);
 
   const handleSelectSecondary = useCallback(
     (id: string | null): void => {
@@ -605,101 +587,6 @@ const Layout = (): React.JSX.Element => {
   );
 
   const groupRestaurantIds = useMemo(() => restaurants.map((r) => r.id), [restaurants]);
-
-  const groupAggregatedDetailedStats = useMemo<RestaurantDetailedStats>(() => {
-    const list = restaurants.map((r) => detailedStatsFor(r));
-
-    if (list.length === 0) {
-      return {
-        covers: 0,
-        revenue: 0,
-        orders: 0,
-        rating: "0.0",
-        trend: "+0%",
-        todayCovers: 0,
-        todayRevenue: 0,
-        avgTicket: 0,
-        fillRate: 0,
-        weeklyRevenue: [0, 0, 0, 0, 0, 0, 0],
-        monthlyRevenue: [],
-        yearlyRevenue: [],
-        heatmap: [],
-        topItems: [],
-        sparklineData: [],
-        customers: 0,
-        openOrders: 0
-      };
-    }
-
-    const sumNumbers = (key: keyof RestaurantDetailedStats): number =>
-      list.reduce((acc, s) => acc + (s[key] as number), 0);
-
-    const avgNumber = (key: keyof RestaurantDetailedStats): number =>
-      sumNumbers(key) / list.length;
-
-    const sumArrays = (key: "weeklyRevenue" | "monthlyRevenue" | "yearlyRevenue"): number[] => {
-      const len = list[0][key].length;
-
-      return Array.from({ length: len }, (_, i) =>
-        list.reduce((acc, s) => acc + (s[key][i] ?? 0), 0));
-    };
-
-    const avgArrays = (key: "sparklineData"): number[] => {
-      const len = list[0][key].length;
-
-      return Array.from({ length: len }, (_, i) =>
-        list.reduce((acc, s) => acc + (s[key][i] ?? 0), 0) / list.length);
-    };
-
-    const avgHeatmap = (): number[][] => {
-      const rows = list[0].heatmap.length;
-      const cols = list[0].heatmap[0]?.length ?? 0;
-
-      return Array.from({ length: rows }, (_, r) =>
-        Array.from({ length: cols }, (_, c) =>
-          list.reduce((acc, s) => acc + (s.heatmap[r]?.[c] ?? 0), 0) / list.length));
-    };
-
-    const aggregateTopItems = (): ReadonlyArray<RestaurantTopItem> => {
-      const map = new Map<string, RestaurantTopItem>();
-
-      list.flatMap((s) => s.topItems).forEach((item) => {
-        const existing = map.get(item.name);
-
-        if (existing) {
-          map.set(item.name, { ...existing, sold: existing.sold + item.sold });
-        } else {
-          map.set(item.name, { ...item });
-        }
-      });
-
-      return Array.from(map.values()).sort((a, b) => b.sold - a.sold);
-    };
-
-    const totalRevenue = sumNumbers("revenue");
-    const totalCovers = sumNumbers("covers");
-    const ratingAvg = list.reduce((acc, s) => acc + parseFloat(s.rating), 0) / list.length;
-
-    return {
-      covers: totalCovers,
-      revenue: totalRevenue,
-      orders: sumNumbers("orders"),
-      rating: ratingAvg.toFixed(1),
-      trend: list[0].trend,
-      todayCovers: sumNumbers("todayCovers"),
-      todayRevenue: sumNumbers("todayRevenue"),
-      avgTicket: totalCovers > 0 ? Math.round(totalRevenue / totalCovers) : 0,
-      fillRate: Math.round(avgNumber("fillRate")),
-      weeklyRevenue: sumArrays("weeklyRevenue"),
-      monthlyRevenue: sumArrays("monthlyRevenue"),
-      yearlyRevenue: sumArrays("yearlyRevenue"),
-      heatmap: avgHeatmap(),
-      topItems: aggregateTopItems(),
-      sparklineData: avgArrays("sparklineData"),
-      customers: sumNumbers("customers"),
-      openOrders: sumNumbers("openOrders")
-    };
-  }, [restaurants, detailedStatsFor]);
 
   const groupOverviewLabels = useMemo(() => ({
     restaurants: t("restaurants.stats.restaurants"),
@@ -897,7 +784,48 @@ const Layout = (): React.JSX.Element => {
       statusServed: t("restaurants.orders.statusServed"),
       statusPaid: t("restaurants.orders.statusPaid"),
       cancel: t("restaurants.orders.newOrderDialog.cancel"),
-      submit: t("restaurants.orders.newOrderDialog.submit")
+      submit: t("restaurants.orders.newOrderDialog.submit"),
+      clientLabel: t("restaurants.orders.newOrderDialog.clientLabel"),
+      clientNone: t("restaurants.orders.newOrderDialog.clientNone"),
+      clientPlaceholder: t("restaurants.orders.newOrderDialog.clientPlaceholder"),
+      clientModeExisting: t("restaurants.orders.newOrderDialog.clientModeExisting"),
+      clientModeNew: t("restaurants.orders.newOrderDialog.clientModeNew"),
+      clientFirstNameLabel: t("restaurants.orders.newOrderDialog.clientFirstNameLabel"),
+      clientFirstNamePlaceholder: t("restaurants.orders.newOrderDialog.clientFirstNamePlaceholder"),
+      clientLastNameLabel: t("restaurants.orders.newOrderDialog.clientLastNameLabel"),
+      clientLastNamePlaceholder: t("restaurants.orders.newOrderDialog.clientLastNamePlaceholder"),
+      clientEmailLabel: t("restaurants.orders.newOrderDialog.clientEmailLabel"),
+      clientEmailPlaceholder: t("restaurants.orders.newOrderDialog.clientEmailPlaceholder"),
+      clientPhoneLabel: t("restaurants.orders.newOrderDialog.clientPhoneLabel"),
+      clientPhonePlaceholder: t("restaurants.orders.newOrderDialog.clientPhonePlaceholder"),
+      notesLabel: t("restaurants.orders.newOrderDialog.notesLabel"),
+      notesPlaceholder: t("restaurants.orders.newOrderDialog.notesPlaceholder"),
+      emptyItems: t("restaurants.orders.newOrderDialog.emptyItems"),
+      addItem: t("restaurants.orders.newOrderDialog.addItem"),
+      itemPlaceholder: t("restaurants.orders.newOrderDialog.itemPlaceholder"),
+      itemSearchPlaceholder: t("restaurants.orders.newOrderDialog.itemSearchPlaceholder"),
+      itemEmpty: t("restaurants.orders.newOrderDialog.itemEmpty"),
+      clientSearchPlaceholder: t("restaurants.orders.newOrderDialog.clientSearchPlaceholder"),
+      clientEmpty: t("restaurants.orders.newOrderDialog.clientEmpty"),
+      removeItem: t("restaurants.orders.newOrderDialog.removeItem"),
+      statusPending: t("restaurants.orders.newOrderDialog.statusPending"),
+      step1Title: t("restaurants.orders.newOrderDialog.step1Title"),
+      step2Title: t("restaurants.orders.newOrderDialog.step2Title"),
+      step3Title: t("restaurants.orders.newOrderDialog.step3Title"),
+      stepProgress: t("restaurants.orders.newOrderDialog.stepProgress"),
+      next: t("restaurants.orders.newOrderDialog.next"),
+      back: t("restaurants.orders.newOrderDialog.back"),
+      selectedClient: t("restaurants.orders.newOrderDialog.selectedClient"),
+      catalogLabel: t("restaurants.orders.newOrderDialog.catalogLabel"),
+      catalogColName: t("restaurants.orders.newOrderDialog.catalogColName"),
+      catalogColPrice: t("restaurants.orders.newOrderDialog.catalogColPrice"),
+      catalogColAdd: t("restaurants.orders.newOrderDialog.catalogColAdd"),
+      catalogAdd: t("restaurants.orders.newOrderDialog.catalogAdd"),
+      catalogTypeMenu: t("restaurants.orders.newOrderDialog.catalogTypeMenu"),
+      catalogTypeDish: t("restaurants.orders.newOrderDialog.catalogTypeDish"),
+      selectedItemsLabel: t("restaurants.orders.newOrderDialog.selectedItemsLabel"),
+      summaryClient: t("restaurants.orders.newOrderDialog.summaryClient"),
+      summaryItems: t("restaurants.orders.newOrderDialog.summaryItems")
     }
   }), [t]);
 
@@ -1062,9 +990,7 @@ const Layout = (): React.JSX.Element => {
     }
 
     if (tabId === "stats") {
-      return (
-        <SheetStats labels={statsLabels} stats={rDetailed} restaurantId={restaurant.id} />
-      );
+      return <ConnectedStats restaurantId={restaurant.id} labels={statsLabels} />;
     }
 
     if (tabId === "crm") {
@@ -1096,13 +1022,7 @@ const Layout = (): React.JSX.Element => {
   const renderSheetContent = (tab: string): React.ReactNode => {
     if (isGroupView) {
       if (tab === "stats") {
-        return (
-          <SheetStats
-            labels={statsLabels}
-            stats={groupAggregatedDetailedStats}
-            restaurantId="__group"
-          />
-        );
+        return <ConnectedGroupStats restaurantIds={groupRestaurantIds} labels={statsLabels} />;
       }
 
       if (tab === "crm") {
@@ -1740,10 +1660,11 @@ const Layout = (): React.JSX.Element => {
       <CreateSplitDialog
         open={splitDialogOpen}
         onOpenChange={setSplitDialogOpen}
-        restaurants={railRestaurants.filter((r) => isGroupView ? true : r.id !== selected?.id)}
+        restaurants={railRestaurants}
         pages={sheetPageOptions}
         defaultRestaurantId={
           railRestaurants.find((r) => isGroupView ? true : r.id !== selected?.id)?.id
+            ?? railRestaurants[0]?.id
         }
         defaultPageId={activeTab}
         labels={{
