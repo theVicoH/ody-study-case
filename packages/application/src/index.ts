@@ -83,3 +83,93 @@ export type { PaginatedRestaurantsResponseDTO } from "@/dtos/restaurant/paginate
 export { FakeRestaurantRepository } from "@/fakes/restaurant/restaurant.fake";
 
 export { RestaurantMapper } from "@/mappers/restaurant/restaurant.mapper";
+
+export {
+  CreateClientUseCase,
+  GetClientUseCase,
+  ListClientsUseCase,
+  UpdateClientUseCase,
+  DeleteClientUseCase
+} from "@/use-cases/client/client.use-cases";
+
+export type {
+  ClientResponseDTO,
+  CreateClientDTO,
+  UpdateClientDTO,
+  GetClientDTO,
+  DeleteClientDTO,
+  ListClientsDTO,
+  PaginatedClientsResponseDTO
+} from "@/dtos/client/client.dtos";
+
+export { ClientMapper } from "@/mappers/client/client.mapper";
+
+export { FakeClientRepository } from "@/fakes/client/client.fake";
+
+export {
+  CreateDishUseCase,
+  GetDishUseCase,
+  ListDishesUseCase,
+  UpdateDishUseCase,
+  DeleteDishUseCase
+} from "@/use-cases/dish/dish.use-cases";
+
+export type {
+  DishResponseDTO,
+  CreateDishDTO,
+  UpdateDishDTO,
+  GetDishDTO,
+  DeleteDishDTO,
+  ListDishesDTO,
+  PaginatedDishesResponseDTO
+} from "@/dtos/dish/dish.dtos";
+
+export { DishMapper } from "@/mappers/dish/dish.mapper";
+
+export { FakeDishRepository } from "@/fakes/dish/dish.fake";
+
+export {
+  CreateMenuUseCase,
+  GetMenuUseCase,
+  ListMenusUseCase,
+  UpdateMenuUseCase,
+  DeleteMenuUseCase
+} from "@/use-cases/menu/menu.use-cases";
+
+export type {
+  MenuResponseDTO,
+  CreateMenuDTO,
+  UpdateMenuDTO,
+  GetMenuDTO,
+  DeleteMenuDTO,
+  ListMenusDTO,
+  PaginatedMenusResponseDTO
+} from "@/dtos/menu/menu.dtos";
+
+export { MenuMapper } from "@/mappers/menu/menu.mapper";
+
+export { FakeMenuRepository } from "@/fakes/menu/menu.fake";
+
+export {
+  CreateOrderUseCase,
+  GetOrderUseCase,
+  ListOrdersUseCase,
+  UpdateOrderStatusUseCase,
+  DeleteOrderUseCase
+} from "@/use-cases/order/order.use-cases";
+
+export type {
+  OrderResponseDTO,
+  OrderItemResponseDTO,
+  CreateOrderDTO,
+  CreateOrderItemDTO,
+  UpdateOrderStatusDTO,
+  GetOrderDTO,
+  DeleteOrderDTO,
+  ListOrdersDTO,
+  PaginatedOrdersResponseDTO
+} from "@/dtos/order/order.dtos";
+
+export { OrderMapper } from "@/mappers/order/order.mapper";
+
+export { FakeOrderRepository } from "@/fakes/order/order.fake";
