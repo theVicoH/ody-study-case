@@ -1,8 +1,7 @@
 import * as React from "react";
 
 import { Menu as MenuPrimitive } from "@base-ui/react/menu";
-import { ArrowRight01Icon, Tick02Icon } from "@hugeicons/core-free-icons";
-import { HugeiconsIcon } from "@hugeicons/react";
+import { ArrowRightIcon } from "@workspace/ui/components/icons/arrow-right/arrow-right.icon";
 import { cn } from "@workspace/ui/lib/utils";
 
 const DROPDOWN_SIDE_OFFSET = 4;
@@ -122,7 +121,7 @@ function DropdownMenuSubTrigger({
       {...props}
     >
       {children}
-      <HugeiconsIcon icon={ArrowRight01Icon} strokeWidth={2} className="ms-auto rtl:rotate-180" />
+      <ArrowRightIcon size={16} className="ms-auto rtl:rotate-180" />
     </MenuPrimitive.SubmenuTrigger>
   );
 }
@@ -173,7 +172,18 @@ function DropdownMenuCheckboxItem({
         data-slot="dropdown-menu-checkbox-item-indicator"
       >
         <MenuPrimitive.CheckboxItemIndicator>
-          <HugeiconsIcon icon={Tick02Icon} strokeWidth={2} />
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="size-3.5"
+          >
+            <path d="M20 6 9 17l-5-5" />
+          </svg>
         </MenuPrimitive.CheckboxItemIndicator>
       </span>
       {children}
@@ -213,7 +223,18 @@ function DropdownMenuRadioItem({
         data-slot="dropdown-menu-radio-item-indicator"
       >
         <MenuPrimitive.RadioItemIndicator>
-          <HugeiconsIcon icon={Tick02Icon} strokeWidth={2} />
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="size-3.5"
+          >
+            <path d="M20 6 9 17l-5-5" />
+          </svg>
         </MenuPrimitive.RadioItemIndicator>
       </span>
       {children}

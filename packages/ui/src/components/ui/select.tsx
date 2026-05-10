@@ -1,8 +1,8 @@
 import * as React from "react";
 
 import { Select as SelectPrimitive } from "@base-ui/react/select";
-import { UnfoldMoreIcon, Tick02Icon, ArrowUp01Icon, ArrowDown01Icon } from "@hugeicons/core-free-icons";
-import { HugeiconsIcon } from "@hugeicons/react";
+import { ArrowDownIcon } from "@workspace/ui/components/icons/arrow-down/arrow-down.icon";
+import { ArrowUpIcon } from "@workspace/ui/components/icons/arrow-up/arrow-up.icon";
 import { cn } from "@workspace/ui/lib/utils";
 
 const SELECT_SIDE_OFFSET = 4;
@@ -51,7 +51,19 @@ function SelectTrigger({
       {children}
       <SelectPrimitive.Icon
         render={
-          <HugeiconsIcon icon={UnfoldMoreIcon} strokeWidth={2} className="text-muted-foreground pointer-events-none size-4" />
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="text-muted-foreground pointer-events-none size-4"
+          >
+            <path d="m7 15 5 5 5-5" />
+            <path d="m7 9 5-5 5 5" />
+          </svg>
         }
       />
     </SelectPrimitive.Trigger>
@@ -124,7 +136,7 @@ function SelectItem({
       )}
       {...props}
     >
-      <SelectPrimitive.ItemText className="flex flex-1 shrink-0 gap-2 whitespace-nowrap">
+      <SelectPrimitive.ItemText className="flex flex-1 shrink-0 items-center gap-2 whitespace-nowrap">
         {children}
       </SelectPrimitive.ItemText>
       <SelectPrimitive.ItemIndicator
@@ -132,7 +144,18 @@ function SelectItem({
           <span className="pointer-events-none absolute end-2 flex size-4 items-center justify-center" />
         }
       >
-        <HugeiconsIcon icon={Tick02Icon} strokeWidth={2} className="pointer-events-none" />
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className="pointer-events-none size-3.5"
+        >
+          <path d="M20 6 9 17l-5-5" />
+        </svg>
       </SelectPrimitive.ItemIndicator>
     </SelectPrimitive.Item>
   );
@@ -164,7 +187,7 @@ function SelectScrollUpButton({
       )}
       {...props}
     >
-      <HugeiconsIcon icon={ArrowUp01Icon} strokeWidth={2} />
+      <ArrowUpIcon size={16} />
     </SelectPrimitive.ScrollUpArrow>
   );
 }
@@ -182,7 +205,7 @@ function SelectScrollDownButton({
       )}
       {...props}
     >
-      <HugeiconsIcon icon={ArrowDown01Icon} strokeWidth={2} />
+      <ArrowDownIcon size={16} />
     </SelectPrimitive.ScrollDownArrow>
   );
 }

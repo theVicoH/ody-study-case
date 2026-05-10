@@ -1,8 +1,7 @@
 import * as React from "react";
 
 import { Dialog as DialogPrimitive } from "@base-ui/react/dialog";
-import { Cancel01Icon } from "@hugeicons/core-free-icons";
-import { HugeiconsIcon } from "@hugeicons/react";
+import { XIcon } from "@workspace/ui/components/icons/x/x.icon";
 import { Button } from "@workspace/ui/components/ui/button";
 import { cn } from "@workspace/ui/lib/utils";
 
@@ -30,7 +29,7 @@ function DialogOverlay({
     <DialogPrimitive.Backdrop
       data-slot="dialog-overlay"
       className={cn(
-        "fixed inset-0 z-50 bg-black/30 transition-opacity duration-150 data-ending-style:opacity-0 data-starting-style:opacity-0 supports-backdrop-filter:backdrop-blur-xs dark:bg-black/50",
+        "fixed inset-0 z-[60] bg-black/40 backdrop-blur-md transition-opacity duration-150 data-ending-style:opacity-0 data-starting-style:opacity-0 dark:bg-black/60",
         className
       )}
       {...props}
@@ -52,7 +51,7 @@ function DialogContent({
       <DialogPrimitive.Popup
         data-slot="dialog-content"
         className={cn(
-          "bg-popover text-popover-foreground ring-foreground/10 fixed top-1/2 left-1/2 z-50 flex w-96 max-w-[calc(100vw_-_2rem)] -translate-x-1/2 -translate-y-1/2 flex-col gap-4 rounded-xl p-4 text-sm ring-1 transition-all duration-150 outline-none data-ending-style:scale-95 data-ending-style:opacity-0 data-starting-style:scale-95 data-starting-style:opacity-0 dark:shadow-2xl dark:ring-white/12 dark:backdrop-blur-2xl dark:backdrop-saturate-150",
+          "bg-popover text-popover-foreground ring-foreground/10 fixed top-1/2 left-1/2 z-[60] flex w-96 max-w-[calc(100vw_-_2rem)] -translate-x-1/2 -translate-y-1/2 flex-col gap-4 rounded-xl p-4 text-sm ring-1 transition-all duration-150 outline-none data-ending-style:scale-95 data-ending-style:opacity-0 data-starting-style:scale-95 data-starting-style:opacity-0 dark:shadow-2xl dark:ring-white/12 dark:backdrop-blur-2xl dark:backdrop-saturate-150",
           className
         )}
         {...props}
@@ -69,7 +68,7 @@ function DialogContent({
               />
             }
           >
-            <HugeiconsIcon icon={Cancel01Icon} strokeWidth={2} />
+            <XIcon size={16} />
             <span className="sr-only">Close</span>
           </DialogPrimitive.Close>
         )}
