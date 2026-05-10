@@ -362,6 +362,9 @@
     "languageLabel": "Language",
     "signOut": "Sign out",
     "signingOut": "Signing out…",
+    "signOutConfirmTitle": "Sign out?",
+    "signOutConfirmDesc": "You will need to sign in again to access your dashboard.",
+    "signOutConfirmCancel": "Cancel",
     "saveSuccess": "Profile updated",
     "saveError": "Could not update profile"
   },

@@ -18,7 +18,12 @@ if (!i18n.isInitialized) {
       },
       fallbackLng: "en",
       interpolation: { escapeValue: false },
-      initAsync: false
+      initAsync: false,
+      detection: {
+        order: ["localStorage", "navigator"],
+        caches: ["localStorage"],
+        lookupLocalStorage: "app-lang"
+      }
     });
 }
 

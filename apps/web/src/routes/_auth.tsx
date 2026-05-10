@@ -15,9 +15,13 @@ const AuthLayoutRoute = (): React.JSX.Element => {
 
 export const Route = createFileRoute("/_auth")({
   beforeLoad: async () => {
-    const { data } = await getSession();
+    try {
+      const { data, error } = await getSession();
 
-    if (data?.user) throw redirect({ to: "/" });
+      if (!error && data?.user) throw redirect({ to: "/" });
+    } catch (caught) {
+      if (caught && typeof caught === "object" && "to" in caught) throw caught;
+    }
   },
   component: AuthLayoutRoute
 });

@@ -132,7 +132,7 @@ const performanceStatus = (perf: RestaurantPerformance): "good" | "warn" | "bad"
 const Layout = (): React.JSX.Element => {
   const { t } = useTranslation("common");
   const navigate = useNavigate();
-  const { data: session } = useSession();
+  const { data: session, isPending: sessionPending } = useSession();
   const {
     statsFor,
     detailedStatsFor,
@@ -250,6 +250,13 @@ const Layout = (): React.JSX.Element => {
       sceneApiRef.current?.resetCamera();
     }
   }, [navigate, view3dEnabled, clearSelection]);
+
+  useEffect(() => {
+    // Only redirect after the session has been fetched at least once and is confirmed absent
+    if (sessionPending) return;
+    if (session?.user) return;
+    void navigate({ to: "/login" });
+  }, [session?.user, sessionPending, navigate]);
 
   useEffect(() => {
     const wantFlat = Boolean(search.flat);
@@ -1767,9 +1774,14 @@ const NotFound = (): React.JSX.Element => {
 export const Route = createFileRoute("/_dashboard")({
   beforeLoad: async () => {
     const { getSession } = await import("@/lib/auth/auth.client");
-    const { data } = await getSession();
 
-    if (!data?.user) throw redirect({ to: "/login" });
+    try {
+      const { data, error } = await getSession();
+
+      if (!error && !data?.user) throw redirect({ to: "/login" });
+    } catch (caught) {
+      if (caught && typeof caught === "object" && "to" in caught) throw caught;
+    }
   },
   head: () => ({
     links: [{ rel: "stylesheet", href: restaurantsCss }]

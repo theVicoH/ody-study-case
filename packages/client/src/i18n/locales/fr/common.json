@@ -362,6 +362,9 @@
     "languageLabel": "Langue",
     "signOut": "Se déconnecter",
     "signingOut": "Déconnexion…",
+    "signOutConfirmTitle": "Se déconnecter ?",
+    "signOutConfirmDesc": "Vous devrez vous reconnecter pour accéder à votre tableau de bord.",
+    "signOutConfirmCancel": "Annuler",
     "saveSuccess": "Profil mis à jour",
     "saveError": "Impossible de mettre à jour le profil"
   },
