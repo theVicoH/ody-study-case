@@ -11,6 +11,7 @@ export class ClientMapper {
       email: c.props.email,
       phone: c.props.phone,
       notes: c.props.notes,
+      tag: c.props.tag,
       createdAt: c.createdAt,
       updatedAt: c.updatedAt
     };

@@ -177,3 +177,19 @@ export type {
 export { OrderMapper } from "@/mappers/order/order.mapper";
 
 export { FakeOrderRepository } from "@/fakes/order/order.fake";
+
+export {
+  GetRestaurantStatsUseCase,
+  GetGroupStatsUseCase
+} from "@/use-cases/restaurant-stats/restaurant-stats.use-cases";
+
+export type {
+  GetRestaurantStatsDTO,
+  GetGroupStatsDTO,
+  RestaurantStatsResponseDTO,
+  TopItemResponseDTO
+} from "@/dtos/restaurant-stats/restaurant-stats.dtos";
+
+export { RestaurantStatsMapper } from "@/mappers/restaurant-stats/restaurant-stats.mapper";
+
+export { FakeRestaurantStatsRepository } from "@/fakes/restaurant-stats/restaurant-stats.fake";

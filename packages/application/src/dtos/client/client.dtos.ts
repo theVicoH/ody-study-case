@@ -1,3 +1,5 @@
+import type { ClientTag } from "@workspace/domain";
+
 export interface ClientResponseDTO {
   id: string;
   restaurantId: string;
@@ -6,6 +8,7 @@ export interface ClientResponseDTO {
   email: string | null;
   phone: string | null;
   notes: string | null;
+  tag: ClientTag;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -26,6 +29,7 @@ export interface UpdateClientDTO {
   email?: string | null;
   phone?: string | null;
   notes?: string | null;
+  tag?: ClientTag;
 }
 
 export interface GetClientDTO {
