@@ -3,7 +3,8 @@ RUN apk add --no-cache libc6-compat curl
 WORKDIR /app
 COPY . .
 RUN bun install
-RUN bun run --filter=web build
+WORKDIR /app/apps/web
+RUN bun run build
 
 FROM oven/bun:1.3.11-alpine AS prod
 RUN apk add --no-cache libc6-compat curl
