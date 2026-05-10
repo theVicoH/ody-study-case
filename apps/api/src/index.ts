@@ -1,11 +1,15 @@
 import "./env-config";
 
-import { swaggerUI } from "@hono/swagger-ui";
 import { OpenAPIHono } from "@hono/zod-openapi";
+import { Scalar } from "@scalar/hono-api-reference";
 import { cors } from "hono/cors";
 
 import { notFound, onError } from "./middleware/error/error.middleware";
 import { loggerMiddleware } from "./middleware/logger/logger.middleware";
+import { authRouter } from "./routes/auth/auth.routes";
+import { organizationsRouter } from "./routes/organizations/organizations.routes";
+import { restaurantsRouter } from "./routes/restaurants/restaurants.routes";
+import { usersRouter } from "./routes/users/users.routes";
 
 import type { AppEnv } from "./types/app-env.types";
 
@@ -29,16 +33,21 @@ app.use("/*", cors({
 }));
 app.use("/*", loggerMiddleware);
 
-app.doc("/doc", {
+app.route("/auth", authRouter);
+app.route("/users", usersRouter);
+app.route("/organizations", organizationsRouter);
+app.route("/restaurants", restaurantsRouter);
+
+app.doc("/openapi.json", {
   openapi: "3.0.0",
   info: {
-    title: "API",
+    title: "Ody API",
     version: "1.0.0",
-    description: "API Documentation"
+    description: "Restaurant management API"
   }
 });
 
-app.get("/ui", swaggerUI({ url: "/doc" }));
+app.get("/docs", Scalar({ url: "/openapi.json", theme: "purple", pageTitle: "Ody API" }));
 
 app.get("/health", (c) => c.text("OK"));
 

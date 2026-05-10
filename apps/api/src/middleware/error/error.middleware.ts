@@ -1,17 +1,44 @@
 import {
-  UserNotFoundError,
-  UserAlreadyExistsError
+  OrganizationAlreadyExistsError,
+  OrganizationInvalidIdError,
+  OrganizationInvalidNameError,
+  OrganizationNotFoundError,
+  RestaurantInvalidIdError,
+  RestaurantInvalidNameError,
+  RestaurantInvalidSettingsError,
+  RestaurantNotFoundError,
+  UserAlreadyExistsError,
+  UserInvalidEmailError,
+  UserInvalidIdError,
+  UserNotFoundError
 } from "@workspace/domain";
 import { HttpStatus } from "@workspace/shared";
 
 import type { Context } from "hono";
 
+const NOT_FOUND_ERRORS = [UserNotFoundError, OrganizationNotFoundError, RestaurantNotFoundError];
+const CONFLICT_ERRORS = [UserAlreadyExistsError, OrganizationAlreadyExistsError];
+const VALIDATION_ERRORS = [
+  UserInvalidEmailError,
+  UserInvalidIdError,
+  OrganizationInvalidIdError,
+  OrganizationInvalidNameError,
+  RestaurantInvalidIdError,
+  RestaurantInvalidNameError,
+  RestaurantInvalidSettingsError
+];
+
 export const onError = (err: Error, c: Context): Response => {
-  if (err instanceof UserNotFoundError) {
+  if (NOT_FOUND_ERRORS.some((E) => err instanceof E)) {
     return c.json({ error: err.message }, HttpStatus.NOT_FOUND);
   }
-  if (err instanceof UserAlreadyExistsError) {
+
+  if (CONFLICT_ERRORS.some((E) => err instanceof E)) {
     return c.json({ error: err.message }, HttpStatus.CONFLICT);
+  }
+
+  if (VALIDATION_ERRORS.some((E) => err instanceof E)) {
+    return c.json({ error: err.message }, HttpStatus.UNPROCESSABLE_ENTITY);
   }
 
   c.var.logger.error({ err }, "Unhandled error");

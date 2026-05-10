@@ -15,12 +15,15 @@
         "./src/*",
         "../../packages/domain/src/*",
         "../../packages/database/src/*",
+        "../../packages/application/src/*",
         "../../packages/shared/src/*"
       ],
       "@workspace/database": ["../../packages/database/src/index.ts"],
       "@workspace/database/*": ["../../packages/database/src/*"],
       "@workspace/domain": ["../../packages/domain/src/index.ts"],
       "@workspace/domain/*": ["../../packages/domain/src/*"],
+      "@workspace/application": ["../../packages/application/src/index.ts"],
+      "@workspace/application/*": ["../../packages/application/src/*"],
       "@workspace/shared": ["../../packages/shared/src/index.ts"],
       "@workspace/shared/*": ["../../packages/shared/src/*"]
     }
