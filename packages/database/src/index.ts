@@ -33,3 +33,27 @@ export type { AccountRow, NewAccountRow } from "@/schemas/accounts/accounts.sche
 export { verificationsTable } from "@/schemas/verifications/verifications.schema";
 
 export type { VerificationRow, NewVerificationRow } from "@/schemas/verifications/verifications.schema";
+
+export { clientsTable } from "@/schemas/clients/clients.schema";
+
+export type { ClientRow, NewClientRow } from "@/schemas/clients/clients.schema";
+
+export { dishesTable } from "@/schemas/dishes/dishes.schema";
+
+export type { DishRow, NewDishRow } from "@/schemas/dishes/dishes.schema";
+
+export { menusTable } from "@/schemas/menus/menus.schema";
+
+export type { MenuRow, NewMenuRow } from "@/schemas/menus/menus.schema";
+
+export { menuDishesTable } from "@/schemas/menu-dishes/menu-dishes.schema";
+
+export type { MenuDishRow, NewMenuDishRow } from "@/schemas/menu-dishes/menu-dishes.schema";
+
+export { ordersTable, ORDER_STATUS } from "@/schemas/orders/orders.schema";
+
+export type { OrderRow, NewOrderRow, OrderStatus } from "@/schemas/orders/orders.schema";
+
+export { orderItemsTable } from "@/schemas/order-items/order-items.schema";
+
+export type { OrderItemRow, NewOrderItemRow } from "@/schemas/order-items/order-items.schema";
