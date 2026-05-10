@@ -3,11 +3,12 @@ import type React from "react";
 import { useTheme } from "next-themes";
 import { Toaster as Sonner, type ToasterProps } from "sonner";
 
-const Toaster = ({ ...props }: ToasterProps) => {
+const Toaster = ({ position = "top-center", ...props }: ToasterProps) => {
   const { theme = "system" } = useTheme();
 
   return (
     <Sonner
+      position={position}
       theme={theme as ToasterProps["theme"]}
       className="toaster group"
       icons={{
