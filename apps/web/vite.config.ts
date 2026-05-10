@@ -3,6 +3,7 @@ import path from "path"
 import { tanstackStart } from "@tanstack/react-start/plugin/vite"
 import tailwindcss from "@tailwindcss/vite"
 import viteReact from "@vitejs/plugin-react"
+import { nitro } from "nitro/vite"
 import { defineConfig } from "vite"
 import viteTsConfigPaths from "vite-tsconfig-paths"
 import type { Plugin } from "vite"
@@ -36,6 +37,7 @@ function monorepoAtAlias(): Plugin {
 
 const config = defineConfig({
   plugins: [
+    nitro(),
     monorepoAtAlias(),
     viteTsConfigPaths({
       root: "../../",
