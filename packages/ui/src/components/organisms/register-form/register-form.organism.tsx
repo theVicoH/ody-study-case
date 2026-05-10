@@ -48,6 +48,7 @@ const RegisterForm = ({
   const [birthday, setBirthday] = useState<Date | undefined>(undefined);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [passwordConfirm, setPasswordConfirm] = useState("");
   const [stepError, setStepError] = useState<string | null>(null);
 
   const today = new Date();
@@ -80,6 +81,7 @@ const RegisterForm = ({
     if (!email || !isEmail(email)) return setStepError("emailInvalid");
     if (!password) return setStepError("passwordRequired");
     if (password.length < MIN_PASSWORD_LENGTH) return setStepError("passwordTooShort");
+    if (password !== passwordConfirm) return setStepError("passwordMismatch");
     if (isLoading) return;
     if (!birthday) return setStepError("birthdayRequired");
     onSubmit({
@@ -274,6 +276,22 @@ const RegisterForm = ({
                     />
                     <p className="text-muted-foreground text-xs">{t("register.step3.passwordHint")}</p>
                   </Field>
+                  <Field orientation="vertical">
+                    <FieldLabel htmlFor="register-password-confirm">
+                      {t("register.step3.passwordConfirmLabel")}
+                    </FieldLabel>
+                    <Input
+                      id="register-password-confirm"
+                      type="password"
+                      autoComplete="new-password"
+                      placeholder={t("register.step3.passwordConfirmPlaceholder")}
+                      value={passwordConfirm}
+                      onChange={(event) => setPasswordConfirm(event.target.value)}
+                      disabled={isLoading}
+                      aria-invalid={stepError === "passwordMismatch"}
+                      required
+                    />
+                  </Field>
                 </FieldGroup>
               </>
             )}
@@ -287,7 +305,11 @@ const RegisterForm = ({
 
       <div className="flex flex-col gap-2">
         {step === 2 ? (
-          <Button type="submit" disabled={isLoading || !email || !password} className="w-full">
+          <Button
+            type="submit"
+            disabled={isLoading || !email || !password || !passwordConfirm}
+            className="w-full"
+          >
             {isLoading ? t("register.submitting") : t("register.submit")}
           </Button>
         ) : (
@@ -298,10 +320,19 @@ const RegisterForm = ({
         )}
 
         {step > 0 && (
-          <Button type="button" variant="ghost" onClick={goBack} disabled={isLoading} className="w-full">
-            <ArrowLeftIcon data-icon="inline-start" />
+          <button
+            type="button"
+            onClick={goBack}
+            disabled={isLoading}
+            className={`
+              text-muted-foreground hover:text-foreground inline-flex items-center justify-center gap-1
+              self-center rounded-full px-2 py-1 text-xs font-medium transition-colors
+              disabled:pointer-events-none disabled:opacity-50
+            `}
+          >
+            <ArrowLeftIcon size={12} />
             {t("register.back")}
-          </Button>
+          </button>
         )}
       </div>
 
