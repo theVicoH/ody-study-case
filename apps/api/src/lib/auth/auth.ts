@@ -12,7 +12,7 @@ const SESSION_UPDATE_AGE_SECONDS = SECONDS_PER_MINUTE * MINUTES_PER_HOUR * HOURS
 const TRUSTED_ORIGINS = [
   "http://localhost:3000",
   "http://localhost:3001",
-  process.env["VITE_API_URL"] ?? ""
+  ...(process.env["ALLOWED_ORIGINS"] ?? "").split(",").map((o) => o.trim()).filter(Boolean)
 ].filter(Boolean);
 
 export const auth = betterAuth({
