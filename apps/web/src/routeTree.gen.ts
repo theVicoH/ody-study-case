@@ -10,12 +10,19 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as DashboardRouteImport } from './routes/_dashboard'
+import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as DashboardIndexRouteImport } from './routes/_dashboard/index'
 import { Route as DashboardGroupRouteImport } from './routes/_dashboard/group'
+import { Route as AuthRegisterRouteImport } from './routes/_auth.register'
+import { Route as AuthLoginRouteImport } from './routes/_auth.login'
 import { Route as DashboardRestaurantIdTabRouteImport } from './routes/_dashboard/$restaurantId/$tab'
 
 const DashboardRoute = DashboardRouteImport.update({
   id: '/_dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/_auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardIndexRoute = DashboardIndexRouteImport.update({
@@ -28,6 +35,16 @@ const DashboardGroupRoute = DashboardGroupRouteImport.update({
   path: '/group',
   getParentRoute: () => DashboardRoute,
 } as any)
+const AuthRegisterRoute = AuthRegisterRouteImport.update({
+  id: '/register',
+  path: '/register',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthLoginRoute = AuthLoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => AuthRoute,
+} as any)
 const DashboardRestaurantIdTabRoute =
   DashboardRestaurantIdTabRouteImport.update({
     id: '/$restaurantId/$tab',
@@ -36,36 +53,47 @@ const DashboardRestaurantIdTabRoute =
   } as any)
 
 export interface FileRoutesByFullPath {
+  '/login': typeof AuthLoginRoute
+  '/register': typeof AuthRegisterRoute
   '/group': typeof DashboardGroupRoute
   '/': typeof DashboardIndexRoute
   '/$restaurantId/$tab': typeof DashboardRestaurantIdTabRoute
 }
 export interface FileRoutesByTo {
+  '/login': typeof AuthLoginRoute
+  '/register': typeof AuthRegisterRoute
   '/group': typeof DashboardGroupRoute
   '/': typeof DashboardIndexRoute
   '/$restaurantId/$tab': typeof DashboardRestaurantIdTabRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/_auth': typeof AuthRouteWithChildren
   '/_dashboard': typeof DashboardRouteWithChildren
+  '/_auth/login': typeof AuthLoginRoute
+  '/_auth/register': typeof AuthRegisterRoute
   '/_dashboard/group': typeof DashboardGroupRoute
   '/_dashboard/': typeof DashboardIndexRoute
   '/_dashboard/$restaurantId/$tab': typeof DashboardRestaurantIdTabRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/group' | '/' | '/$restaurantId/$tab'
+  fullPaths: '/login' | '/register' | '/group' | '/' | '/$restaurantId/$tab'
   fileRoutesByTo: FileRoutesByTo
-  to: '/group' | '/' | '/$restaurantId/$tab'
+  to: '/login' | '/register' | '/group' | '/' | '/$restaurantId/$tab'
   id:
     | '__root__'
+    | '/_auth'
     | '/_dashboard'
+    | '/_auth/login'
+    | '/_auth/register'
     | '/_dashboard/group'
     | '/_dashboard/'
     | '/_dashboard/$restaurantId/$tab'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
+  AuthRoute: typeof AuthRouteWithChildren
   DashboardRoute: typeof DashboardRouteWithChildren
 }
 
@@ -76,6 +104,13 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: ''
       preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_auth': {
+      id: '/_auth'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_dashboard/': {
@@ -92,6 +127,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardGroupRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/_auth/register': {
+      id: '/_auth/register'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof AuthRegisterRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_auth/login': {
+      id: '/_auth/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof AuthLoginRouteImport
+      parentRoute: typeof AuthRoute
+    }
     '/_dashboard/$restaurantId/$tab': {
       id: '/_dashboard/$restaurantId/$tab'
       path: '/$restaurantId/$tab'
@@ -101,6 +150,18 @@ declare module '@tanstack/react-router' {
     }
   }
 }
+
+interface AuthRouteChildren {
+  AuthLoginRoute: typeof AuthLoginRoute
+  AuthRegisterRoute: typeof AuthRegisterRoute
+}
+
+const AuthRouteChildren: AuthRouteChildren = {
+  AuthLoginRoute: AuthLoginRoute,
+  AuthRegisterRoute: AuthRegisterRoute,
+}
+
+const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 
 interface DashboardRouteChildren {
   DashboardGroupRoute: typeof DashboardGroupRoute
@@ -119,6 +180,7 @@ const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
 )
 
 const rootRouteChildren: RootRouteChildren = {
+  AuthRoute: AuthRouteWithChildren,
   DashboardRoute: DashboardRouteWithChildren,
 }
 export const routeTree = rootRouteImport

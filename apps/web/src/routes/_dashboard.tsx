@@ -2,10 +2,12 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 
 import { ThreeDViewIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { createFileRoute, Outlet, useNavigate, useSearch } from "@tanstack/react-router";
+import { createFileRoute, Outlet, redirect, useNavigate, useSearch } from "@tanstack/react-router";
 import {
   DEFAULT_MODEL_ID,
   RESTAURANT_MODELS,
+  restaurantHoursApi,
+  restaurantTablesApi,
   useApiRestaurants,
   useRestaurants,
   useRestaurantSelectionStore
@@ -23,6 +25,7 @@ import { H3, Muted, Overline } from "@workspace/ui/components/atoms/typography/t
 import { BookmarkCheckIcon } from "@workspace/ui/components/icons/bookmark-check/bookmark-check.icon";
 import { ChartLineIcon } from "@workspace/ui/components/icons/chart-line/chart-line.icon";
 import { HouseIcon } from "@workspace/ui/components/icons/home/home.icon";
+import { MenuIcon } from "@workspace/ui/components/icons/menu/menu.icon";
 import { SearchIcon } from "@workspace/ui/components/icons/search/search.icon";
 import { SettingsIcon } from "@workspace/ui/components/icons/settings/settings.icon";
 import { UsersIcon } from "@workspace/ui/components/icons/users/users.icon";
@@ -31,13 +34,15 @@ import { ControlTip } from "@workspace/ui/components/molecules/control-tip/contr
 import { RestaurantListItem } from "@workspace/ui/components/molecules/restaurant-list-item/restaurant-list-item.molecule";
 import { CreateOrganizationDialog } from "@workspace/ui/components/organisms/create-organization-dialog/create-organization-dialog.organism";
 import { CreateRestaurantDialog } from "@workspace/ui/components/organisms/create-restaurant-dialog/create-restaurant-dialog.organism";
+import { CreateSplitDialog } from "@workspace/ui/components/organisms/create-split-dialog/create-split-dialog.organism";
 import { RestaurantSheet } from "@workspace/ui/components/organisms/restaurant-sheet/restaurant-sheet.organism";
 import { RestaurantSidebar } from "@workspace/ui/components/organisms/restaurant-sidebar/restaurant-sidebar.organism";
 import { SheetCrm } from "@workspace/ui/components/organisms/sheet-crm/sheet-crm.organism";
 import { SheetGroupOverview } from "@workspace/ui/components/organisms/sheet-group-overview/sheet-group-overview.organism";
+import { SheetMenu } from "@workspace/ui/components/organisms/sheet-menu/sheet-menu.organism";
 import { SheetOrders } from "@workspace/ui/components/organisms/sheet-orders/sheet-orders.organism";
 import { SheetRestaurantOverview } from "@workspace/ui/components/organisms/sheet-restaurant-overview/sheet-restaurant-overview.organism";
-import { SheetSettings } from "@workspace/ui/components/organisms/sheet-settings/sheet-settings.organism";
+import { RestaurantSettingsPanel } from "@/components/restaurant-settings-panel/restaurant-settings-panel.organism";
 import { SheetStats } from "@workspace/ui/components/organisms/sheet-stats/sheet-stats.organism";
 import { Avatar, AvatarFallback } from "@workspace/ui/components/ui/avatar";
 import {
@@ -110,12 +115,13 @@ const NAV_ICONS = {
   stats: ChartLineIcon,
   crm: UsersIcon,
   orders: BookmarkCheckIcon,
+  menu: MenuIcon,
   settings: SettingsIcon
 } as const;
 
 type NavId = keyof typeof NAV_ICONS;
 
-const NAV_ORDER: ReadonlyArray<NavId> = ["home", "stats", "crm", "orders", "settings"];
+const NAV_ORDER: ReadonlyArray<NavId> = ["home", "stats", "crm", "orders", "menu", "settings"];
 
 const performanceStatus = (perf: RestaurantPerformance): "good" | "warn" | "bad" => perf;
 
@@ -127,6 +133,7 @@ const Layout = (): React.JSX.Element => {
     detailedStatsFor,
     customersFor,
     ordersFor,
+    menuItemsFor,
     settingsFor
   } = useRestaurants();
   const {
@@ -162,9 +169,9 @@ const Layout = (): React.JSX.Element => {
   const selectGroup = useRestaurantSelectionStore((s) => s.selectGroup);
   const clearSelection = useRestaurantSelectionStore((s) => s.clearSelection);
   const setActiveTab = useRestaurantSelectionStore((s) => s.setActiveTab);
+  const setSecondaryTab = useRestaurantSelectionStore((s) => s.setSecondaryTab);
   const setCompareMode = useRestaurantSelectionStore((s) => s.setCompareMode);
   const selectSecondaryRestaurant = useRestaurantSelectionStore((s) => s.selectSecondaryRestaurant);
-  const openTabInSplit = useRestaurantSelectionStore((s) => s.openTabInSplit);
 
   const sheetRef = useRef<HTMLElement>(null);
   const sceneApiRef = useRef<RestaurantSceneApi | null>(null);
@@ -185,6 +192,7 @@ const Layout = (): React.JSX.Element => {
   const [flatQuery, setFlatQuery] = useState("");
   const [viewAllOpen, setViewAllOpen] = useState(false);
   const [viewAllQuery, setViewAllQuery] = useState("");
+  const [splitDialogOpen, setSplitDialogOpen] = useState(false);
   const savedGeometryRef = useRef<SheetGeometry | null>(null);
 
   const isGroupView = selectedId === "__group";
@@ -508,6 +516,16 @@ const Layout = (): React.JSX.Element => {
     [navItems]
   );
 
+  const sheetPageOptions = useMemo(
+    () => navItems.map((item) => ({ id: item.id, label: item.label })),
+    [navItems]
+  );
+
+  const groupPageOptions = useMemo(
+    () => groupNavItems.map((item) => ({ id: item.id, label: item.label })),
+    [groupNavItems]
+  );
+
   const railRestaurants = useMemo(
     () =>
       restaurants.map((r) => ({
@@ -575,6 +593,14 @@ const Layout = (): React.JSX.Element => {
   const groupAggregatedOrders = useMemo(
     () => restaurants.flatMap((r) => ordersFor(r)),
     [restaurants, ordersFor]
+  );
+
+  const groupAggregatedMenuItems = useMemo(
+    () =>
+      restaurants.flatMap((r) =>
+        menuItemsFor(r).map((item) => ({ ...item, id: `${r.id}_${item.id}` }))
+      ),
+    [restaurants, menuItemsFor]
   );
 
   const groupAggregatedDetailedStats = useMemo<RestaurantDetailedStats>(() => {
@@ -879,18 +905,45 @@ const Layout = (): React.JSX.Element => {
     saved: t("restaurants.settings.saved"),
     openingHours: t("restaurants.settings.openingHours"),
     openingHoursDesc: t("restaurants.settings.openingHoursDesc"),
+    dayMonday: t("restaurants.settings.dayMonday"),
+    dayTuesday: t("restaurants.settings.dayTuesday"),
+    dayWednesday: t("restaurants.settings.dayWednesday"),
+    dayThursday: t("restaurants.settings.dayThursday"),
+    dayFriday: t("restaurants.settings.dayFriday"),
+    daySaturday: t("restaurants.settings.daySaturday"),
+    daySunday: t("restaurants.settings.daySunday"),
+    openLabel: t("restaurants.settings.openLabel"),
+    closedLabel: t("restaurants.settings.closedLabel"),
+    openTimeLabel: t("restaurants.settings.openTimeLabel"),
+    closeTimeLabel: t("restaurants.settings.closeTimeLabel"),
+    saveHours: t("restaurants.settings.saveHours"),
     dangerZone: t("restaurants.settings.dangerZone"),
     deleteRestaurant: t("restaurants.settings.deleteRestaurant"),
     deleteRestaurantDesc: t("restaurants.settings.deleteRestaurantDesc"),
     tables: t("restaurants.settings.tables"),
     tablesDesc: t("restaurants.settings.tablesDesc"),
+    tableName: t("restaurants.settings.tableName"),
+    tableNamePlaceholder: t("restaurants.settings.tableNamePlaceholder"),
+    tableActive: t("restaurants.settings.tableActive"),
+    tableInactive: t("restaurants.settings.tableInactive"),
+    tablesGenerate: t("restaurants.settings.tablesGenerate"),
+    tablesGenerateDesc: t("restaurants.settings.tablesGenerateDesc"),
+    tablesGenerateCount: t("restaurants.settings.tablesGenerateCount"),
+    tablesGenerateCapacity: t("restaurants.settings.tablesGenerateCapacity"),
+    tablesGenerateZone: t("restaurants.settings.tablesGenerateZone"),
+    tablesGenerateConfirm: t("restaurants.settings.tablesGenerateConfirm"),
     addTable: t("restaurants.settings.addTable"),
     editTable: t("restaurants.settings.editTable"),
     deleteTable: t("restaurants.settings.deleteTable"),
     colTableNumber: t("restaurants.settings.colTableNumber"),
+    colName: t("restaurants.settings.colName"),
     colCapacity: t("restaurants.settings.colCapacity"),
     colZone: t("restaurants.settings.colZone"),
     colTableStatus: t("restaurants.settings.colTableStatus"),
+    colActive: t("restaurants.settings.colActive"),
+    tablesPagePrev: t("restaurants.settings.tablesPagePrev"),
+    tablesPageNext: t("restaurants.settings.tablesPageNext"),
+    tablesPageInfo: t("restaurants.settings.tablesPageInfo"),
     statusAvailable: t("restaurants.settings.statusAvailable"),
     statusOccupied: t("restaurants.settings.statusOccupied"),
     statusReserved: t("restaurants.settings.statusReserved"),
@@ -951,6 +1004,7 @@ const Layout = (): React.JSX.Element => {
     const rDetailed = detailedStatsFor(restaurant);
     const rCustomers = customersFor(restaurant);
     const rOrders = ordersFor(restaurant);
+    const rMenu = menuItemsFor(restaurant);
     const rSettings = settingsFor(restaurant);
     const rVip = rCustomers.filter((c) => c.tag === "VIP").length;
 
@@ -996,8 +1050,12 @@ const Layout = (): React.JSX.Element => {
       return <SheetOrders labels={ordersLabels} orders={rOrders} />;
     }
 
+    if (tabId === "menu") {
+      return <SheetMenu items={rMenu} />;
+    }
+
     if (tabId === "settings") {
-      return <SheetSettings labels={settingsLabels} settings={rSettings} />;
+      return <RestaurantSettingsPanel restaurantId={restaurant.id} labels={settingsLabels} settings={rSettings} />;
     }
 
     return null;
@@ -1028,6 +1086,10 @@ const Layout = (): React.JSX.Element => {
 
       if (tab === "orders") {
         return <SheetOrders labels={ordersLabels} orders={groupAggregatedOrders} />;
+      }
+
+      if (tab === "menu") {
+        return <SheetMenu items={groupAggregatedMenuItems} />;
       }
 
       return (
@@ -1098,12 +1160,12 @@ const Layout = (): React.JSX.Element => {
   }, [createOrganization]);
 
   const handleSubmitRestaurant = useCallback(async (
-    values: { name: string; address: string; phone: string; maxCovers: number; modelId: string }
+    values: { name: string; address: string; phone: string; maxCovers: number; modelId: string; openingHours: ReadonlyArray<{ dayOfWeek: number; isOpen: boolean; openTime: string; closeTime: string }> }
   ): Promise<void> => {
     setCreateSubmitting(true);
     setCreateError(null);
     try {
-      await createRestaurantViaApi(
+      const created = await createRestaurantViaApi(
         {
           name: values.name,
           address: values.address,
@@ -1112,6 +1174,26 @@ const Layout = (): React.JSX.Element => {
         },
         values.modelId
       );
+
+      if (values.openingHours.length > 0) {
+        try {
+          await restaurantHoursApi.upsert(created.id, values.openingHours.map((h) => ({ ...h })));
+        } catch {
+          // non-blocking — restaurant created, hours will fall back to defaults
+        }
+      }
+      if (values.maxCovers > 0) {
+        try {
+          await restaurantTablesApi.bulkGenerate(created.id, {
+            count: values.maxCovers,
+            startNumber: 1,
+            capacity: 1,
+            zone: "salle"
+          });
+        } catch {
+          // non-blocking — tables can be added manually
+        }
+      }
       setCreateRestaurantOpen(false);
     } catch (e) {
       setCreateError(e instanceof Error ? e.message : "Failed");
@@ -1259,10 +1341,6 @@ const Layout = (): React.JSX.Element => {
         compareLabel={t("restaurants.sheet.compare")}
         onToggleCompare={view3dEnabled && !isGroupView && selected ? handleToggleCompare : undefined}
         secondaryTabId={isCompareActive ? secondaryTab : null}
-        onSplitTab={
-          view3dEnabled && !isGroupView && selected ? openTabInSplit : undefined
-        }
-        splitTabLabel={t("restaurants.sheet.openBeside")}
         miniSlot={
           view3dEnabled ? (
             isGroupView ? (
@@ -1396,6 +1474,9 @@ const Layout = (): React.JSX.Element => {
                   selectorRestaurants={railRestaurants}
                   selectedRestaurantId={selected.id}
                   onSelectRestaurant={(id) => { if (id) handleSelectRestaurantById(id); }}
+                  pageOptions={sheetPageOptions}
+                  selectedPageId={activeTab}
+                  onSelectPage={setActiveTab}
                   onClose={handleCloseLeftInCompare}
                 >
                   {renderAnimatedTabContent(
@@ -1423,6 +1504,9 @@ const Layout = (): React.JSX.Element => {
                   selectorRestaurants={railRestaurants}
                   selectedRestaurantId={secondary?.id}
                   onSelectRestaurant={handleSelectSecondary}
+                  pageOptions={sheetPageOptions}
+                  selectedPageId={rightTab}
+                  onSelectPage={setSecondaryTab}
                   onClose={handleCloseRightInCompare}
                 >
                   {renderAnimatedTabContent(
@@ -1477,6 +1561,14 @@ const Layout = (): React.JSX.Element => {
             }
             handleSelectRestaurantById(id);
           }}
+          pageOptions={isGroupView ? groupPageOptions : sheetPageOptions}
+          selectedPageId={activeTab}
+          onSelectPage={setActiveTab}
+          splitSides={view3dEnabled && !isGroupView && selected ? ["left", "right"] : undefined}
+          splitLabel={t("restaurants.sheet.openBeside")}
+          onRequestSplit={
+            view3dEnabled && !isGroupView && selected ? () => setSplitDialogOpen(true) : undefined
+          }
           onClose={handleClose}
           onToggleExpand={view3dEnabled ? onToggleExpand : undefined}
           onResizerLeftPointerDown={view3dEnabled ? onResizerLeftPointerDown : undefined}
@@ -1526,6 +1618,16 @@ const Layout = (): React.JSX.Element => {
           phonePlaceholder: t("restaurants.create.phonePlaceholder"),
           maxCoversLabel: t("restaurants.create.maxCoversLabel"),
           modelLabel: t("restaurants.create.modelLabel"),
+          openingHoursLabel: t("restaurants.settings.openingHours"),
+          dayLabels: [
+            t("restaurants.settings.daySunday"),
+            t("restaurants.settings.dayMonday"),
+            t("restaurants.settings.dayTuesday"),
+            t("restaurants.settings.dayWednesday"),
+            t("restaurants.settings.dayThursday"),
+            t("restaurants.settings.dayFriday"),
+            t("restaurants.settings.daySaturday")
+          ],
           cancel: t("restaurants.create.cancel"),
           submit: t("restaurants.create.submit")
         }}
@@ -1533,6 +1635,32 @@ const Layout = (): React.JSX.Element => {
         renderModelPreview={(model) => (
           <RestaurantModelPreview modelUrl={model.url} className="absolute inset-0" />
         )}
+      />
+
+      <CreateSplitDialog
+        open={splitDialogOpen}
+        onOpenChange={setSplitDialogOpen}
+        restaurants={railRestaurants.filter((r) => r.id !== selected?.id)}
+        pages={sheetPageOptions}
+        defaultRestaurantId={
+          railRestaurants.find((r) => r.id !== selected?.id)?.id
+        }
+        defaultPageId={activeTab}
+        labels={{
+          title: t("restaurants.split.title"),
+          description: t("restaurants.split.description"),
+          restaurantLabel: t("restaurants.split.restaurantLabel"),
+          pageLabel: t("restaurants.split.pageLabel"),
+          cancel: t("restaurants.split.cancel"),
+          submit: t("restaurants.split.submit")
+        }}
+        onSubmit={({ restaurantId, pageId }) => {
+          selectSecondaryRestaurant(restaurantId);
+          setSecondaryTab(pageId);
+          setCompareMode(true);
+          setSplitRatio(0.5);
+          setSplitDialogOpen(false);
+        }}
       />
 
       {apiError ? (
@@ -1559,6 +1687,12 @@ const NotFound = (): React.JSX.Element => {
 };
 
 export const Route = createFileRoute("/_dashboard")({
+  beforeLoad: async () => {
+    const { getSession } = await import("@/lib/auth/auth.client");
+    const { data } = await getSession();
+
+    if (!data?.user) throw redirect({ to: "/login" });
+  },
   head: () => ({
     links: [{ rel: "stylesheet", href: restaurantsCss }]
   }),

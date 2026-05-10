@@ -4,10 +4,13 @@ import { OpenAPIHono } from "@hono/zod-openapi";
 import { Scalar } from "@scalar/hono-api-reference";
 import { cors } from "hono/cors";
 
+import { auth } from "./lib/auth/auth";
 import { notFound, onError } from "./middleware/error/error.middleware";
 import { loggerMiddleware } from "./middleware/logger/logger.middleware";
 import { authRouter } from "./routes/auth/auth.routes";
 import { organizationsRouter } from "./routes/organizations/organizations.routes";
+import { restaurantOpeningHoursRouter } from "./routes/restaurant-opening-hours/restaurant-opening-hours.routes";
+import { restaurantTablesRouter } from "./routes/restaurant-tables/restaurant-tables.routes";
 import { restaurantsRouter } from "./routes/restaurants/restaurants.routes";
 import { usersRouter } from "./routes/users/users.routes";
 
@@ -33,10 +36,14 @@ app.use("/*", cors({
 }));
 app.use("/*", loggerMiddleware);
 
+app.on(["GET", "POST"], "/api/auth/*", (c) => auth.handler(c.req.raw));
+
 app.route("/auth", authRouter);
 app.route("/users", usersRouter);
 app.route("/organizations", organizationsRouter);
 app.route("/restaurants", restaurantsRouter);
+app.route("/restaurants", restaurantOpeningHoursRouter);
+app.route("/restaurants", restaurantTablesRouter);
 
 app.doc("/openapi.json", {
   openapi: "3.0.0",
