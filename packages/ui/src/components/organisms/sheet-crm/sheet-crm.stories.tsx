@@ -54,6 +54,7 @@ export const Default: Story = {
     labels,
     totalCustomers: 248,
     vipCount: 34,
+    newThisMonth: 12,
     customers: [
       {
         id: "1",

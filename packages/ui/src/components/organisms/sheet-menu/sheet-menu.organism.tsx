@@ -102,6 +102,10 @@ const SheetMenu = ({
   const [editingItem, setEditingItem] = useState<RestaurantMenuItem | null>(null);
   const [availability, setAvailability] = useState(() => buildAvailabilityMap(items));
 
+  useEffect(() => {
+    setAvailability(buildAvailabilityMap(items));
+  }, [items]);
+
   const toggleAvailability = (id: string): void => {
     setAvailability((prev) => ({ ...prev, [id]: !prev[id] }));
   };

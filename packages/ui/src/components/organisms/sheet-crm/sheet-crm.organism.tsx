@@ -66,6 +66,7 @@ interface SheetCrmProps {
   customers: ReadonlyArray<RestaurantCustomer>;
   totalCustomers: number;
   vipCount: number;
+  newThisMonth: number;
   onCreateCustomer?: (values: NewCustomerFormValues) => void;
   onUpdateCustomer?: (id: string, values: NewCustomerFormValues) => void;
   onDeleteCustomer?: (id: string) => void;
@@ -78,6 +79,7 @@ const SheetCrm = ({
   customers,
   totalCustomers,
   vipCount,
+  newThisMonth,
   onCreateCustomer,
   onUpdateCustomer,
   onDeleteCustomer,
@@ -155,7 +157,7 @@ const SheetCrm = ({
           variant="subtle"
           label={labels.registeredCustomers}
           value={totalCustomers}
-          trend={labels.thisMonth}
+          trend={`+${newThisMonth} ${labels.thisMonth}`}
           trendDirection="up"
         />
         <KpiCard

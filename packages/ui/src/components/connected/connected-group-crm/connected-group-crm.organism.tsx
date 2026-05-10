@@ -4,11 +4,9 @@ import { useClientsMulti, useOrdersMulti } from "@workspace/client";
 import { SheetCrm } from "@workspace/ui/components/organisms/sheet-crm/sheet-crm.organism";
 import { Skeleton } from "@workspace/ui/components/ui/skeleton";
 
-import type { ApiClient, ApiOrder, CustomerTag, RestaurantCustomer } from "@workspace/client";
+import type { ApiClient, ApiOrder, RestaurantCustomer } from "@workspace/client";
 import type { ComponentProps } from "react";
 
-const VIP_VISIT_THRESHOLD = 10;
-const REGULAR_VISIT_THRESHOLD = 3;
 const CENTS_PER_EURO = 100;
 
 type SheetCrmLabels = ComponentProps<typeof SheetCrm>["labels"];
@@ -17,13 +15,6 @@ interface ConnectedGroupCrmProps {
   restaurantIds: ReadonlyArray<string>;
   labels: SheetCrmLabels;
 }
-
-const computeTag = (visits: number): CustomerTag => {
-  if (visits >= VIP_VISIT_THRESHOLD) return "VIP";
-  if (visits >= REGULAR_VISIT_THRESHOLD) return "Regular";
-
-  return "New";
-};
 
 const buildCustomers = (
   clients: ReadonlyArray<ApiClient>,
@@ -51,7 +42,7 @@ const buildCustomers = (
       email: c.email ?? "",
       visits: s.visits,
       spent: s.spentCents / CENTS_PER_EURO,
-      tag: computeTag(s.visits)
+      tag: c.tag
     };
   });
 };
@@ -66,6 +57,18 @@ const ConnectedGroupCrm = ({ restaurantIds, labels }: ConnectedGroupCrmProps): R
   );
 
   const vipCount = useMemo(() => customers.filter((c) => c.tag === "VIP").length, [customers]);
+
+  const newThisMonth = useMemo(() => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth();
+
+    return clients.flat.filter((c) => {
+      const d = new Date(c.createdAt);
+
+      return d.getFullYear() === year && d.getMonth() === month;
+    }).length;
+  }, [clients.flat]);
 
   if (clients.isLoading || orders.isLoading) {
     return (
@@ -91,6 +94,7 @@ const ConnectedGroupCrm = ({ restaurantIds, labels }: ConnectedGroupCrmProps): R
       customers={customers}
       totalCustomers={customers.length}
       vipCount={vipCount}
+      newThisMonth={newThisMonth}
     />
   );
 };

@@ -167,22 +167,24 @@ const NewCustomerDialog = ({
             />
           </div>
 
-          <div className="gap-xs flex flex-col">
-            <Label htmlFor="new-customer-tag">{labels.tagLabel}</Label>
-            <Select
-              value={tag}
-              onValueChange={(value) => { if (value !== null) setTag(value as CustomerTag); }}
-            >
-              <SelectTrigger id="new-customer-tag" className="w-full">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="New">{labels.tagNew}</SelectItem>
-                <SelectItem value="Regular">{labels.tagRegular}</SelectItem>
-                <SelectItem value="VIP">{labels.tagVip}</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+          {isEdit ? (
+            <div className="gap-xs flex flex-col">
+              <Label htmlFor="new-customer-tag">{labels.tagLabel}</Label>
+              <Select
+                value={tag}
+                onValueChange={(value) => { if (value !== null) setTag(value as CustomerTag); }}
+              >
+                <SelectTrigger id="new-customer-tag" className="w-full">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="New">{labels.tagNew}</SelectItem>
+                  <SelectItem value="Regular">{labels.tagRegular}</SelectItem>
+                  <SelectItem value="VIP">{labels.tagVip}</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          ) : null}
         </form>
 
         <div className="gap-xs flex justify-end">

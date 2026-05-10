@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import type { ApiDish } from "@workspace/client";
 
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
   DialogClose,
@@ -259,7 +260,7 @@ const ConnectedDishDialog = ({
                   {t("restaurants.menu.dishImagePreview")}
                 </div>
               )}
-              <div className="gap-xs flex flex-1 flex-col">
+              <div className="gap-xs flex min-w-0 flex-1 flex-col">
                 <Input
                   id="connected-dish-image-url"
                   type="url"
@@ -313,10 +314,9 @@ const ConnectedDishDialog = ({
 
           {isEdit ? (
             <label className="gap-xs typo-caption flex cursor-pointer items-center">
-              <input
-                type="checkbox"
+              <Checkbox
                 checked={isActive}
-                onChange={(event) => setIsActive(event.target.checked)}
+                onCheckedChange={(v) => setIsActive(v === true)}
               />
               {isActive ? t("restaurants.menu.available") : t("restaurants.menu.unavailable")}
             </label>

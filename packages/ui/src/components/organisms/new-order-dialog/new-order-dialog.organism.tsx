@@ -35,6 +35,47 @@ interface NewOrderDialogLabels {
   statusPaid: string;
   cancel: string;
   submit: string;
+  clientLabel: string;
+  clientNone: string;
+  clientPlaceholder: string;
+  clientModeExisting: string;
+  clientModeNew: string;
+  clientFirstNameLabel: string;
+  clientFirstNamePlaceholder: string;
+  clientLastNameLabel: string;
+  clientLastNamePlaceholder: string;
+  clientEmailLabel: string;
+  clientEmailPlaceholder: string;
+  clientPhoneLabel: string;
+  clientPhonePlaceholder: string;
+  notesLabel: string;
+  notesPlaceholder: string;
+  emptyItems: string;
+  addItem: string;
+  itemPlaceholder: string;
+  itemSearchPlaceholder: string;
+  itemEmpty: string;
+  clientSearchPlaceholder: string;
+  clientEmpty: string;
+  removeItem: string;
+  statusPending: string;
+  step1Title: string;
+  step2Title: string;
+  step3Title: string;
+  stepProgress: string;
+  next: string;
+  back: string;
+  selectedClient: string;
+  catalogLabel: string;
+  catalogColName: string;
+  catalogColPrice: string;
+  catalogColAdd: string;
+  catalogAdd: string;
+  catalogTypeMenu: string;
+  catalogTypeDish: string;
+  selectedItemsLabel: string;
+  summaryClient: string;
+  summaryItems: string;
 }
 
 interface NewOrderFormValues {

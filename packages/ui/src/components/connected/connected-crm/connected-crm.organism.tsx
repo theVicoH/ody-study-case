@@ -10,12 +10,10 @@ import {
 import { SheetCrm } from "@workspace/ui/components/organisms/sheet-crm/sheet-crm.organism";
 import { Skeleton } from "@workspace/ui/components/ui/skeleton";
 
-import type { ApiClient, ApiOrder, CustomerTag, RestaurantCustomer } from "@workspace/client";
+import type { ApiClient, ApiOrder, RestaurantCustomer } from "@workspace/client";
 import type { NewCustomerFormValues } from "@workspace/ui/components/organisms/new-customer-dialog/new-customer-dialog.organism";
 import type { ComponentProps } from "react";
 
-const VIP_VISIT_THRESHOLD = 10;
-const REGULAR_VISIT_THRESHOLD = 3;
 const CENTS_PER_EURO = 100;
 const PAGE_SIZE = 20;
 
@@ -25,13 +23,6 @@ interface ConnectedCrmProps {
   restaurantId: string;
   labels: SheetCrmLabels;
 }
-
-const computeTag = (visits: number): CustomerTag => {
-  if (visits >= VIP_VISIT_THRESHOLD) return "VIP";
-  if (visits >= REGULAR_VISIT_THRESHOLD) return "Regular";
-
-  return "New";
-};
 
 const buildCustomers = (
   clients: ReadonlyArray<ApiClient>,
@@ -59,7 +50,7 @@ const buildCustomers = (
       email: c.email ?? "",
       visits: s.visits,
       spent: s.spentCents / CENTS_PER_EURO,
-      tag: computeTag(s.visits)
+      tag: c.tag
     };
   });
 };
@@ -97,6 +88,18 @@ const ConnectedCrm = ({ restaurantId, labels }: ConnectedCrmProps): React.JSX.El
   const totalPages = clientsQuery.data?.totalPages ?? 1;
   const vipCount = useMemo(() => customers.filter((c) => c.tag === "VIP").length, [customers]);
 
+  const newThisMonth = useMemo(() => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth();
+
+    return (clientsQuery.data?.data ?? []).filter((c) => {
+      const d = new Date(c.createdAt);
+
+      return d.getFullYear() === year && d.getMonth() === month;
+    }).length;
+  }, [clientsQuery.data]);
+
   const handleCreate = (values: NewCustomerFormValues): void => {
     createMutation.mutate({
       firstName: values.firstName,
@@ -111,7 +114,8 @@ const ConnectedCrm = ({ restaurantId, labels }: ConnectedCrmProps): React.JSX.El
       input: {
         firstName: values.firstName,
         lastName: values.lastName,
-        email: values.email === "" ? null : values.email
+        email: values.email === "" ? null : values.email,
+        tag: values.tag
       }
     });
   };
@@ -128,6 +132,7 @@ const ConnectedCrm = ({ restaurantId, labels }: ConnectedCrmProps): React.JSX.El
       customers={customers}
       totalCustomers={totalCustomers}
       vipCount={vipCount}
+      newThisMonth={newThisMonth}
       pageSize={PAGE_SIZE}
       serverPagination={{ page, totalPages, onPageChange: setPage }}
       onCreateCustomer={handleCreate}
