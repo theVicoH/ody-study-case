@@ -55,13 +55,11 @@ export const SettingsActive: Story = {
   }
 };
 
-export const WithSplitAffordance: Story = {
+export const WithSecondaryActive: Story = {
   args: {
     items,
     activeId: "home",
     secondaryActiveId: "reservations",
-    splitLabel: "Open beside",
-    onSelect: () => undefined,
-    onSplit: () => undefined
+    onSelect: () => undefined
   }
 };

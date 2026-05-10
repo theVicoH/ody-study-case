@@ -27,7 +27,7 @@ export const RESTAURANT_MODELS: ReadonlyArray<RestaurantModelDef> = [
   {
     id: "sushi-shop",
     label: "Sushi Shop",
-    url: "/models/sushi-shop/scene.gltf",
+    url: "/models/sushi-shop/scene-optimized.glb",
     thumbnail: "/models/sushi-shop/screenshot/screenshot.png"
   }
 ];

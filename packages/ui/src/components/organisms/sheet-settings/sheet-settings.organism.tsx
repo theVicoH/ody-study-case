@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 import type { RestaurantSettings, RestaurantTable, TableStatus, TableZone } from "@workspace/client";
 
@@ -44,6 +44,7 @@ import { cn } from "@/lib/utils";
 
 const SAVE_FEEDBACK_DURATION_MS = 2000;
 const ICON_SIZE = 14;
+const DAYS_IN_WEEK = 7;
 
 const ZONES: ReadonlyArray<TableZone> = ["salle", "terrasse", "bar", "vip"];
 const STATUSES: ReadonlyArray<TableStatus> = ["available", "occupied", "reserved"];
@@ -70,26 +71,50 @@ const ToggleRow = ({
   </div>
 );
 
+export interface OpeningHourValue {
+  dayOfWeek: number;
+  isOpen: boolean;
+  openTime: string;
+  closeTime: string;
+}
+
+export interface SettingsTableValue {
+  id: string;
+  number: number;
+  name: string | null;
+  capacity: number;
+  zone: TableZone;
+  status: TableStatus;
+  isActive: boolean;
+}
+
 interface TableFormState {
   number: string;
+  name: string;
   capacity: string;
   zone: TableZone;
   status: TableStatus;
+  isActive: boolean;
 }
 
 const DEFAULT_FORM: TableFormState = {
   number: "",
-  capacity: "",
+  name: "",
+  capacity: "2",
   zone: "salle",
-  status: "available"
+  status: "available",
+  isActive: true
 };
 
 interface TableDialogLabels {
   title: string;
   tableNumber: string;
+  tableName: string;
+  tableNamePlaceholder: string;
   tableCapacity: string;
   tableZone: string;
   tableStatus: string;
+  tableActive: string;
   cancel: string;
   confirm: string;
   zoneLabels: Record<TableZone, string>;
@@ -98,9 +123,9 @@ interface TableDialogLabels {
 
 interface TableDialogProps {
   labels: TableDialogLabels;
-  initial?: RestaurantTable;
+  initial?: SettingsTableValue;
   trigger: React.ReactNode;
-  onSubmit: (data: Omit<RestaurantTable, "id">) => void;
+  onSubmit: (data: Omit<SettingsTableValue, "id">) => void;
 }
 
 const TableDialog = ({
@@ -111,13 +136,27 @@ const TableDialog = ({
 }: TableDialogProps): React.JSX.Element => {
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState<TableFormState>(initial
-    ? { number: String(initial.number), capacity: String(initial.capacity), zone: initial.zone, status: initial.status }
+    ? {
+        number: String(initial.number),
+        name: initial.name ?? "",
+        capacity: String(initial.capacity),
+        zone: initial.zone,
+        status: initial.status,
+        isActive: initial.isActive
+      }
     : DEFAULT_FORM);
 
   const handleOpen = (v: boolean): void => {
     setOpen(v);
     if (v && initial) {
-      setForm({ number: String(initial.number), capacity: String(initial.capacity), zone: initial.zone, status: initial.status });
+      setForm({
+        number: String(initial.number),
+        name: initial.name ?? "",
+        capacity: String(initial.capacity),
+        zone: initial.zone,
+        status: initial.status,
+        isActive: initial.isActive
+      });
     } else if (v) {
       setForm(DEFAULT_FORM);
     }
@@ -128,7 +167,14 @@ const TableDialog = ({
     const capacity = parseInt(form.capacity, 10);
 
     if (!number || !capacity) return;
-    onSubmit({ number, capacity, zone: form.zone, status: form.status });
+    onSubmit({
+      number,
+      name: form.name.trim() ? form.name.trim() : null,
+      capacity,
+      zone: form.zone,
+      status: form.status,
+      isActive: form.isActive
+    });
     setOpen(false);
   };
 
@@ -142,52 +188,71 @@ const TableDialog = ({
         </DialogHeader>
 
         <div className="gap-sm flex flex-col">
+          <div className="gap-sm grid grid-cols-2">
+            <div className="gap-xs flex flex-col">
+              <label className="text-muted-foreground typo-overline">{labels.tableNumber}</label>
+              <Input
+                type="number"
+                min={1}
+                value={form.number}
+                onChange={(e) => setForm((p) => ({ ...p, number: e.target.value }))}
+              />
+            </div>
+
+            <div className="gap-xs flex flex-col">
+              <label className="text-muted-foreground typo-overline">{labels.tableCapacity}</label>
+              <Input
+                type="number"
+                min={1}
+                value={form.capacity}
+                onChange={(e) => setForm((p) => ({ ...p, capacity: e.target.value }))}
+              />
+            </div>
+          </div>
+
           <div className="gap-xs flex flex-col">
-            <label className="text-muted-foreground typo-overline">{labels.tableNumber}</label>
+            <label className="text-muted-foreground typo-overline">{labels.tableName}</label>
             <Input
-              type="number"
-              min={1}
-              value={form.number}
-              onChange={(e) => setForm((p) => ({ ...p, number: e.target.value }))}
+              type="text"
+              placeholder={labels.tableNamePlaceholder}
+              value={form.name}
+              onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))}
             />
           </div>
 
-          <div className="gap-xs flex flex-col">
-            <label className="text-muted-foreground typo-overline">{labels.tableCapacity}</label>
-            <Input
-              type="number"
-              min={1}
-              value={form.capacity}
-              onChange={(e) => setForm((p) => ({ ...p, capacity: e.target.value }))}
-            />
+          <div className="gap-sm grid grid-cols-2">
+            <div className="gap-xs flex flex-col">
+              <label className="text-muted-foreground typo-overline">{labels.tableZone}</label>
+              <Select value={form.zone} onValueChange={(v) => setForm((p) => ({ ...p, zone: v as TableZone }))}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {ZONES.map((z) => (
+                    <SelectItem key={z} value={z}>{labels.zoneLabels[z]}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="gap-xs flex flex-col">
+              <label className="text-muted-foreground typo-overline">{labels.tableStatus}</label>
+              <Select value={form.status} onValueChange={(v) => setForm((p) => ({ ...p, status: v as TableStatus }))}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {STATUSES.map((s) => (
+                    <SelectItem key={s} value={s}>{labels.statusLabels[s]}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
 
-          <div className="gap-xs flex flex-col">
-            <label className="text-muted-foreground typo-overline">{labels.tableZone}</label>
-            <Select value={form.zone} onValueChange={(v) => setForm((p) => ({ ...p, zone: v as TableZone }))}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {ZONES.map((z) => (
-                  <SelectItem key={z} value={z}>{labels.zoneLabels[z]}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="gap-xs flex flex-col">
-            <label className="text-muted-foreground typo-overline">{labels.tableStatus}</label>
-            <Select value={form.status} onValueChange={(v) => setForm((p) => ({ ...p, status: v as TableStatus }))}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {STATUSES.map((s) => (
-                  <SelectItem key={s} value={s}>{labels.statusLabels[s]}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+          <div className="py-xs flex items-center justify-between">
+            <label className="text-foreground typo-button">{labels.tableActive}</label>
+            <Switch checked={form.isActive} onCheckedChange={(v) => setForm((p) => ({ ...p, isActive: v }))} />
           </div>
         </div>
 
@@ -247,7 +312,7 @@ const DeleteDialog = ({ labels, trigger, onConfirm }: DeleteDialogProps): React.
   );
 };
 
-interface SheetSettingsLabels {
+export interface SheetSettingsLabels {
   generalInfo: string;
   name: string;
   address: string;
@@ -266,18 +331,45 @@ interface SheetSettingsLabels {
   saved: string;
   openingHours: string;
   openingHoursDesc: string;
+  dayMonday: string;
+  dayTuesday: string;
+  dayWednesday: string;
+  dayThursday: string;
+  dayFriday: string;
+  daySaturday: string;
+  daySunday: string;
+  openLabel: string;
+  closedLabel: string;
+  openTimeLabel: string;
+  closeTimeLabel: string;
+  saveHours: string;
   dangerZone: string;
   deleteRestaurant: string;
   deleteRestaurantDesc: string;
   tables: string;
   tablesDesc: string;
+  tableName: string;
+  tableNamePlaceholder: string;
+  tableActive: string;
+  tableInactive: string;
+  tablesGenerate: string;
+  tablesGenerateDesc: string;
+  tablesGenerateCount: string;
+  tablesGenerateCapacity: string;
+  tablesGenerateZone: string;
+  tablesGenerateConfirm: string;
   addTable: string;
   editTable: string;
   deleteTable: string;
   colTableNumber: string;
+  colName: string;
   colCapacity: string;
   colZone: string;
   colTableStatus: string;
+  colActive: string;
+  tablesPagePrev: string;
+  tablesPageNext: string;
+  tablesPageInfo: string;
   statusAvailable: string;
   statusOccupied: string;
   statusReserved: string;
@@ -297,11 +389,23 @@ interface SheetSettingsLabels {
   confirm: string;
 }
 
-interface SheetSettingsProps {
+export interface SheetSettingsProps {
   labels: SheetSettingsLabels;
   settings: RestaurantSettings;
   tables?: ReadonlyArray<RestaurantTable>;
   onDelete?: () => void;
+  onSaveGeneral?: (input: { name: string; address: string; phone: string; maxCovers: number }) => Promise<void> | void;
+  openingHours?: ReadonlyArray<OpeningHourValue>;
+  onSaveOpeningHours?: (hours: ReadonlyArray<OpeningHourValue>) => Promise<void> | void;
+  tablesPaged?: ReadonlyArray<SettingsTableValue>;
+  tablesPage?: number;
+  tablesTotalPages?: number;
+  tablesTotal?: number;
+  tablesLoading?: boolean;
+  onTablesPageChange?: (page: number) => void;
+  onCreateTable?: (data: Omit<SettingsTableValue, "id">) => Promise<unknown> | void;
+  onUpdateTable?: (id: string, data: Omit<SettingsTableValue, "id">) => Promise<unknown> | void;
+  onDeleteTable?: (id: string) => Promise<unknown> | void;
 }
 
 const STATUS_CLASS: Record<TableStatus, string> = {
@@ -310,36 +414,194 @@ const STATUS_CLASS: Record<TableStatus, string> = {
   reserved: "bg-status-warn/15 text-status-warn"
 };
 
+interface OpeningHoursEditorProps {
+  labels: SheetSettingsLabels;
+  hours: ReadonlyArray<OpeningHourValue>;
+  onChange: (next: ReadonlyArray<OpeningHourValue>) => void;
+}
+
+const OpeningHoursEditor = ({ labels, hours, onChange }: OpeningHoursEditorProps): React.JSX.Element => {
+  const dayLabels: ReadonlyArray<string> = [
+    labels.daySunday,
+    labels.dayMonday,
+    labels.dayTuesday,
+    labels.dayWednesday,
+    labels.dayThursday,
+    labels.dayFriday,
+    labels.daySaturday
+  ];
+  const ordered = Array.from({ length: DAYS_IN_WEEK }, (_, i) => {
+    const dayOfWeek = (i + 1) % DAYS_IN_WEEK;
+
+    return hours.find((h) => h.dayOfWeek === dayOfWeek) ?? {
+      dayOfWeek,
+      isOpen: dayOfWeek !== 0,
+      openTime: "12:00",
+      closeTime: "22:30"
+    };
+  });
+
+  const updateDay = (dayOfWeek: number, patch: Partial<OpeningHourValue>): void => {
+    const merged = ordered.map((h) => (h.dayOfWeek === dayOfWeek ? { ...h, ...patch } : h));
+
+    onChange(merged);
+  };
+
+  return (
+    <div className="gap-sm flex flex-col">
+      {ordered.map((h) => (
+        <div key={h.dayOfWeek} className="gap-sm grid grid-cols-[1fr_auto_auto_auto] items-center">
+          <span className="text-foreground typo-button">{dayLabels[h.dayOfWeek]}</span>
+          <Switch checked={h.isOpen} onCheckedChange={(v) => updateDay(h.dayOfWeek, { isOpen: v })} />
+          <Input
+            type="time"
+            disabled={!h.isOpen}
+            value={h.openTime}
+            onChange={(e) => updateDay(h.dayOfWeek, { openTime: e.target.value })}
+            className="w-28"
+          />
+          <Input
+            type="time"
+            disabled={!h.isOpen}
+            value={h.closeTime}
+            onChange={(e) => updateDay(h.dayOfWeek, { closeTime: e.target.value })}
+            className="w-28"
+          />
+        </div>
+      ))}
+    </div>
+  );
+};
+
+const fallbackTablesToValues = (tables: ReadonlyArray<RestaurantTable>): SettingsTableValue[] =>
+  tables.map((t) => ({
+    id: t.id,
+    number: t.number,
+    name: null,
+    capacity: t.capacity,
+    zone: t.zone,
+    status: t.status,
+    isActive: true
+  }));
+
 const SheetSettings = ({
   labels,
   settings,
-  tables: initialTables = [],
-  onDelete
+  tables: legacyTables = [],
+  onDelete,
+  onSaveGeneral,
+  openingHours,
+  onSaveOpeningHours,
+  tablesPaged,
+  tablesPage,
+  tablesTotalPages,
+  tablesTotal,
+  tablesLoading = false,
+  onTablesPageChange,
+  onCreateTable,
+  onUpdateTable,
+  onDeleteTable
 }: SheetSettingsProps): React.JSX.Element => {
+  const [name, setName] = useState(settings.name);
+  const [address, setAddress] = useState(settings.address);
+  const [phone, setPhone] = useState(settings.phone);
+  const [maxCovers, setMaxCovers] = useState(String(settings.maxCovers));
   const [tableService, setTableService] = useState(settings.tableService);
   const [clickAndCollect, setClickAndCollect] = useState(settings.clickAndCollect);
   const [kitchenNotifications, setKitchenNotifications] = useState(settings.kitchenNotifications);
   const [testMode, setTestMode] = useState(settings.testMode);
   const [saved, setSaved] = useState(false);
-  const [tables, setTables] = useState<ReadonlyArray<RestaurantTable>>(initialTables);
 
-  const handleSave = (): void => {
+  const [hoursDraft, setHoursDraft] = useState<ReadonlyArray<OpeningHourValue>>(openingHours ?? []);
+  const [hoursSaved, setHoursSaved] = useState(false);
+
+  const isGeneralDirty =
+    name !== settings.name ||
+    address !== settings.address ||
+    phone !== settings.phone ||
+    maxCovers !== String(settings.maxCovers) ||
+    tableService !== settings.tableService ||
+    clickAndCollect !== settings.clickAndCollect ||
+    kitchenNotifications !== settings.kitchenNotifications ||
+    testMode !== settings.testMode;
+
+  const isHoursDirty = useMemo(() => {
+    if (!openingHours) return hoursDraft.length > 0;
+    if (hoursDraft.length !== openingHours.length) return true;
+    const byDay = new Map(openingHours.map((h) => [h.dayOfWeek, h]));
+
+    return hoursDraft.some((h) => {
+      const ref = byDay.get(h.dayOfWeek);
+
+      return !ref || ref.isOpen !== h.isOpen || ref.openTime !== h.openTime || ref.closeTime !== h.closeTime;
+    });
+  }, [hoursDraft, openingHours]);
+
+  useEffect(() => {
+    if (openingHours) setHoursDraft(openingHours);
+  }, [openingHours]);
+
+  useEffect(() => {
+    setName(settings.name);
+    setAddress(settings.address);
+    setPhone(settings.phone);
+    setMaxCovers(String(settings.maxCovers));
+    setTableService(settings.tableService);
+    setClickAndCollect(settings.clickAndCollect);
+    setKitchenNotifications(settings.kitchenNotifications);
+    setTestMode(settings.testMode);
+  }, [settings]);
+
+  const [localTables, setLocalTables] = useState<ReadonlyArray<SettingsTableValue>>(
+    fallbackTablesToValues(legacyTables)
+  );
+  const tablesSource: ReadonlyArray<SettingsTableValue> = tablesPaged ?? localTables;
+
+  const handleSave = async (): Promise<void> => {
+    const covers = parseInt(maxCovers, 10);
+
+    if (onSaveGeneral && Number.isFinite(covers) && covers > 0) {
+      await onSaveGeneral({ name, address, phone, maxCovers: covers });
+    }
     setSaved(true);
     setTimeout(() => setSaved(false), SAVE_FEEDBACK_DURATION_MS);
   };
 
-  const handleAddTable = (data: Omit<RestaurantTable, "id">): void => {
+  const handleSaveHours = async (): Promise<void> => {
+    if (onSaveOpeningHours) {
+      await onSaveOpeningHours(hoursDraft);
+    }
+    setHoursSaved(true);
+    setTimeout(() => setHoursSaved(false), SAVE_FEEDBACK_DURATION_MS);
+  };
+
+  const handleAddTable = async (data: Omit<SettingsTableValue, "id">): Promise<void> => {
+    if (onCreateTable) {
+      await onCreateTable(data);
+
+      return;
+    }
     const id = `table-${Date.now()}`;
 
-    setTables((prev) => [...prev, { id, ...data }]);
+    setLocalTables((prev) => [...prev, { id, ...data }]);
   };
 
-  const handleEditTable = (id: string, data: Omit<RestaurantTable, "id">): void => {
-    setTables((prev) => prev.map((t) => (t.id === id ? { id, ...data } : t)));
+  const handleEditTable = async (id: string, data: Omit<SettingsTableValue, "id">): Promise<void> => {
+    if (onUpdateTable) {
+      await onUpdateTable(id, data);
+
+      return;
+    }
+    setLocalTables((prev) => prev.map((t) => (t.id === id ? { id, ...data } : t)));
   };
 
-  const handleDeleteTable = (id: string): void => {
-    setTables((prev) => prev.filter((t) => t.id !== id));
+  const handleDeleteTable = async (id: string): Promise<void> => {
+    if (onDeleteTable) {
+      await onDeleteTable(id);
+
+      return;
+    }
+    setLocalTables((prev) => prev.filter((t) => t.id !== id));
   };
 
   const zoneLabels: Record<TableZone, string> = {
@@ -355,6 +617,26 @@ const SheetSettings = ({
     reserved: labels.statusReserved
   };
 
+  const dialogLabels = useMemo<TableDialogLabels>(() => ({
+    title: labels.addTable,
+    tableNumber: labels.tableNumber,
+    tableName: labels.tableName,
+    tableNamePlaceholder: labels.tableNamePlaceholder,
+    tableCapacity: labels.tableCapacity,
+    tableZone: labels.tableZone,
+    tableStatus: labels.tableStatus,
+    tableActive: labels.tableActive,
+    cancel: labels.cancel,
+    confirm: labels.confirm,
+    zoneLabels,
+    statusLabels
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }), [labels]);
+
+  const currentPage = tablesPage ?? 1;
+  const currentTotalPages = tablesTotalPages ?? 1;
+  const currentTotal = tablesTotal ?? tablesSource.length;
+
   return (
     <>
       <Card>
@@ -363,9 +645,10 @@ const SheetSettings = ({
             <CardTitle>{labels.generalInfo}</CardTitle>
             <button
               type="button"
-              onClick={handleSave}
+              onClick={() => { void handleSave(); }}
+              disabled={!isGeneralDirty && !saved}
               className={cn(
-                "px-md py-xs typo-button rounded-md transition-all",
+                "px-sm py-2xs typo-caption rounded-md transition-all disabled:opacity-40 disabled:cursor-not-allowed",
                 saved
                   ? "bg-status-good/20 text-status-good"
                   : "bg-primary text-primary-foreground hover:opacity-90"
@@ -377,43 +660,53 @@ const SheetSettings = ({
         </CardHeader>
         <CardContent className="gap-md flex flex-col">
           <div className="gap-xs flex flex-col">
-            <label className="text-muted-foreground typo-overline">
-              {labels.name}
-            </label>
-            <Input defaultValue={settings.name} />
+            <label className="text-muted-foreground typo-overline">{labels.name}</label>
+            <Input value={name} onChange={(e) => setName(e.target.value)} />
           </div>
 
           <div className="gap-xs flex flex-col">
-            <label className="text-muted-foreground typo-overline">
-              {labels.address}
-            </label>
-            <Input defaultValue={settings.address} />
+            <label className="text-muted-foreground typo-overline">{labels.address}</label>
+            <Input value={address} onChange={(e) => setAddress(e.target.value)} />
           </div>
 
           <div className="gap-sm grid grid-cols-2">
             <div className="gap-xs flex flex-col">
-              <label className="text-muted-foreground typo-overline">
-                {labels.phone}
-              </label>
-              <Input defaultValue={settings.phone} />
+              <label className="text-muted-foreground typo-overline">{labels.phone}</label>
+              <Input value={phone} onChange={(e) => setPhone(e.target.value)} />
             </div>
 
             <div className="gap-xs flex flex-col">
-              <label className="text-muted-foreground typo-overline">
-                {labels.maxCovers}
-              </label>
-              <Input type="number" defaultValue={settings.maxCovers} />
+              <label className="text-muted-foreground typo-overline">{labels.maxCovers}</label>
+              <Input
+                type="number"
+                value={maxCovers}
+                onChange={(e) => setMaxCovers(e.target.value)}
+              />
             </div>
           </div>
-        </CardContent>
-      </Card>
 
-      <Card>
-        <CardHeader className="border-b">
-          <CardTitle>{labels.openingHours}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Muted className="typo-caption">{labels.openingHoursDesc}</Muted>
+          <div className="gap-sm border-border flex flex-col border-t pt-4">
+            <div className="flex items-center justify-between">
+              <div className="gap-xs flex flex-col">
+                <p className="text-foreground typo-button">{labels.openingHours}</p>
+                <Muted className="typo-caption">{labels.openingHoursDesc}</Muted>
+              </div>
+              <button
+                type="button"
+                onClick={() => { void handleSaveHours(); }}
+                disabled={!isHoursDirty && !hoursSaved}
+                className={cn(
+                  "px-sm py-2xs typo-caption rounded-md transition-all disabled:opacity-40 disabled:cursor-not-allowed",
+                  hoursSaved
+                    ? "bg-status-good/20 text-status-good"
+                    : "border-border text-foreground hover:bg-muted/50 border bg-transparent"
+                )}
+              >
+                {hoursSaved ? labels.saved : labels.saveHours}
+              </button>
+            </div>
+            <OpeningHoursEditor labels={labels} hours={hoursDraft} onChange={setHoursDraft} />
+          </div>
         </CardContent>
       </Card>
 
@@ -422,30 +715,10 @@ const SheetSettings = ({
           <CardTitle>{labels.preferences}</CardTitle>
         </CardHeader>
         <CardContent className="divide-border divide-y">
-          <ToggleRow
-            label={labels.tableService}
-            description={labels.tableServiceDesc}
-            checked={tableService}
-            onChange={setTableService}
-          />
-          <ToggleRow
-            label={labels.clickCollect}
-            description={labels.clickCollectDesc}
-            checked={clickAndCollect}
-            onChange={setClickAndCollect}
-          />
-          <ToggleRow
-            label={labels.kitchenNotif}
-            description={labels.kitchenNotifDesc}
-            checked={kitchenNotifications}
-            onChange={setKitchenNotifications}
-          />
-          <ToggleRow
-            label={labels.testMode}
-            description={labels.testModeDesc}
-            checked={testMode}
-            onChange={setTestMode}
-          />
+          <ToggleRow label={labels.tableService} description={labels.tableServiceDesc} checked={tableService} onChange={setTableService} />
+          <ToggleRow label={labels.clickCollect} description={labels.clickCollectDesc} checked={clickAndCollect} onChange={setClickAndCollect} />
+          <ToggleRow label={labels.kitchenNotif} description={labels.kitchenNotifDesc} checked={kitchenNotifications} onChange={setKitchenNotifications} />
+          <ToggleRow label={labels.testMode} description={labels.testModeDesc} checked={testMode} onChange={setTestMode} />
         </CardContent>
       </Card>
 
@@ -457,24 +730,14 @@ const SheetSettings = ({
               <Muted className="typo-caption">{labels.tablesDesc}</Muted>
             </div>
             <TableDialog
-              labels={{
-                title: labels.addTable,
-                tableNumber: labels.tableNumber,
-                tableCapacity: labels.tableCapacity,
-                tableZone: labels.tableZone,
-                tableStatus: labels.tableStatus,
-                cancel: labels.cancel,
-                confirm: labels.confirm,
-                zoneLabels,
-                statusLabels
-              }}
-              onSubmit={handleAddTable}
+              labels={{ ...dialogLabels, title: labels.addTable }}
+              onSubmit={(data) => { void handleAddTable(data); }}
               trigger={
                 <button
                   type="button"
-                  className="bg-primary text-primary-foreground gap-2xs px-sm py-xs typo-button inline-flex items-center rounded-md transition-all hover:opacity-90"
+                  className="bg-primary text-primary-foreground gap-2xs px-sm py-2xs typo-caption inline-flex items-center rounded-md transition-all hover:opacity-90"
                 >
-                  <PlusIcon size={ICON_SIZE} />
+                  <PlusIcon size={12} />
                   {labels.addTable}
                 </button>
               }
@@ -482,25 +745,28 @@ const SheetSettings = ({
           </div>
         </CardHeader>
         <CardContent className="p-0">
-          {tables.length === 0 ? (
+          {tablesSource.length === 0 ? (
             <p className="text-muted-foreground typo-caption px-md py-lg text-center">
-              {labels.emptyTables}
+              {tablesLoading ? "…" : labels.emptyTables}
             </p>
           ) : (
             <Table>
               <TableHeader>
                 <TableRow className="hover:bg-transparent">
                   <TableHead className="text-muted-foreground typo-overline">{labels.colTableNumber}</TableHead>
+                  <TableHead className="text-muted-foreground typo-overline">{labels.colName}</TableHead>
                   <TableHead className="text-muted-foreground typo-overline">{labels.colCapacity}</TableHead>
                   <TableHead className="text-muted-foreground typo-overline">{labels.colZone}</TableHead>
                   <TableHead className="text-muted-foreground typo-overline">{labels.colTableStatus}</TableHead>
+                  <TableHead className="text-muted-foreground typo-overline">{labels.colActive}</TableHead>
                   <TableHead className="w-3xl" />
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {tables.map((table) => (
-                  <TableRow key={table.id}>
+                {tablesSource.map((table) => (
+                  <TableRow key={table.id} className={cn(!table.isActive && "opacity-50")}>
                     <TableCell className="typo-button">T{table.number}</TableCell>
+                    <TableCell className="text-muted-foreground">{table.name ?? "—"}</TableCell>
                     <TableCell>{table.capacity}</TableCell>
                     <TableCell>{zoneLabels[table.zone]}</TableCell>
                     <TableCell>
@@ -509,21 +775,17 @@ const SheetSettings = ({
                       </span>
                     </TableCell>
                     <TableCell>
+                      <Switch
+                        checked={table.isActive}
+                        onCheckedChange={(v) => { void handleEditTable(table.id, { ...table, isActive: v }); }}
+                      />
+                    </TableCell>
+                    <TableCell>
                       <div className="gap-2xs flex items-center justify-end">
                         <TableDialog
-                          labels={{
-                            title: labels.editTable,
-                            tableNumber: labels.tableNumber,
-                            tableCapacity: labels.tableCapacity,
-                            tableZone: labels.tableZone,
-                            tableStatus: labels.tableStatus,
-                            cancel: labels.cancel,
-                            confirm: labels.confirm,
-                            zoneLabels,
-                            statusLabels
-                          }}
+                          labels={{ ...dialogLabels, title: labels.editTable }}
                           initial={table}
-                          onSubmit={(data) => handleEditTable(table.id, data)}
+                          onSubmit={(data) => { void handleEditTable(table.id, data); }}
                           trigger={
                             <button
                               type="button"
@@ -541,7 +803,7 @@ const SheetSettings = ({
                             cancel: labels.cancel,
                             confirm: labels.deleteTable
                           }}
-                          onConfirm={() => handleDeleteTable(table.id)}
+                          onConfirm={() => { void handleDeleteTable(table.id); }}
                           trigger={
                             <button
                               type="button"
@@ -559,6 +821,35 @@ const SheetSettings = ({
               </TableBody>
             </Table>
           )}
+
+          {onTablesPageChange && currentTotalPages > 1 ? (
+            <div className="border-border px-md py-xs flex items-center justify-between border-t">
+              <span className="text-muted-foreground typo-caption">
+                {labels.tablesPageInfo
+                  .replace("{{current}}", String(currentPage))
+                  .replace("{{total}}", String(currentTotalPages))
+                  .replace("{{count}}", String(currentTotal))}
+              </span>
+              <div className="gap-xs flex items-center">
+                <button
+                  type="button"
+                  disabled={currentPage <= 1}
+                  onClick={() => onTablesPageChange(currentPage - 1)}
+                  className="border-border text-foreground hover:bg-muted/50 px-sm py-2xs typo-button rounded-md border bg-transparent transition-colors disabled:opacity-40"
+                >
+                  {labels.tablesPagePrev}
+                </button>
+                <button
+                  type="button"
+                  disabled={currentPage >= currentTotalPages}
+                  onClick={() => onTablesPageChange(currentPage + 1)}
+                  className="border-border text-foreground hover:bg-muted/50 px-sm py-2xs typo-button rounded-md border bg-transparent transition-colors disabled:opacity-40"
+                >
+                  {labels.tablesPageNext}
+                </button>
+              </div>
+            </div>
+          ) : null}
         </CardContent>
       </Card>
 
@@ -569,9 +860,7 @@ const SheetSettings = ({
         <CardContent>
           <div className="py-xs gap-sm flex items-center justify-between">
             <div className="gap-xs flex flex-col">
-              <p className="text-foreground typo-button">
-                {labels.deleteRestaurant}
-              </p>
+              <p className="text-foreground typo-button">{labels.deleteRestaurant}</p>
               <Muted className="typo-caption">{labels.deleteRestaurantDesc}</Muted>
             </div>
             <button
@@ -589,5 +878,3 @@ const SheetSettings = ({
 };
 
 export { SheetSettings };
-
-export type { SheetSettingsProps, SheetSettingsLabels };

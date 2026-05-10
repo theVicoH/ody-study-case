@@ -13,7 +13,12 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
+
+const DAYS_IN_WEEK = 7;
+const DEFAULT_OPEN = "12:00";
+const DEFAULT_CLOSE = "22:30";
 
 interface CreateRestaurantDialogLabels {
   title: string;
@@ -26,8 +31,17 @@ interface CreateRestaurantDialogLabels {
   phonePlaceholder: string;
   maxCoversLabel: string;
   modelLabel: string;
+  openingHoursLabel?: string;
+  dayLabels?: ReadonlyArray<string>;
   cancel: string;
   submit: string;
+}
+
+interface OpeningHourDraft {
+  dayOfWeek: number;
+  isOpen: boolean;
+  openTime: string;
+  closeTime: string;
 }
 
 interface CreateRestaurantValues {
@@ -36,7 +50,22 @@ interface CreateRestaurantValues {
   phone: string;
   maxCovers: number;
   modelId: string;
+  openingHours: OpeningHourDraft[];
 }
+
+const buildDefaultDraft = (): OpeningHourDraft[] =>
+  Array.from({ length: DAYS_IN_WEEK }, (_, i) => {
+    const dayOfWeek = (i + 1) % DAYS_IN_WEEK;
+
+    return {
+      dayOfWeek,
+      isOpen: dayOfWeek !== 0,
+      openTime: DEFAULT_OPEN,
+      closeTime: DEFAULT_CLOSE
+    };
+  });
+
+const DEFAULT_DAY_LABELS: ReadonlyArray<string> = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 interface CreateRestaurantDialogProps {
   open: boolean;
@@ -70,6 +99,7 @@ const CreateRestaurantDialog = ({
   const [phone, setPhone] = useState("");
   const [maxCovers, setMaxCovers] = useState(DEFAULT_MAX_COVERS);
   const [modelId, setModelId] = useState(defaultModelId);
+  const [openingHours, setOpeningHours] = useState<OpeningHourDraft[]>(buildDefaultDraft);
 
   const reset = (): void => {
     setName("");
@@ -77,6 +107,11 @@ const CreateRestaurantDialog = ({
     setPhone("");
     setMaxCovers(DEFAULT_MAX_COVERS);
     setModelId(defaultModelId);
+    setOpeningHours(buildDefaultDraft());
+  };
+
+  const updateHour = (dayOfWeek: number, patch: Partial<OpeningHourDraft>): void => {
+    setOpeningHours((prev) => prev.map((h) => (h.dayOfWeek === dayOfWeek ? { ...h, ...patch } : h)));
   };
 
   const handleOpenChange = (next: boolean): void => {
@@ -104,13 +139,16 @@ const CreateRestaurantDialog = ({
       address: address.trim(),
       phone: phone.trim(),
       maxCovers: covers,
-      modelId
+      modelId,
+      openingHours
     });
   };
 
+  const dayLabels = labels.dayLabels ?? DEFAULT_DAY_LABELS;
+
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="w-[36rem] max-w-[calc(100vw_-_2rem)]">
+      <DialogContent className="w-[36rem] max-w-[calc(100vw_-_2rem)] max-h-[calc(100vh_-_2rem)] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{labels.title}</DialogTitle>
           <DialogDescription>{labels.description}</DialogDescription>
@@ -202,6 +240,34 @@ const CreateRestaurantDialog = ({
               })}
             </div>
           </div>
+
+          {labels.openingHoursLabel ? (
+            <div className="gap-xs flex flex-col">
+              <Label>{labels.openingHoursLabel}</Label>
+              <div className="gap-2xs flex flex-col">
+                {openingHours.map((h) => (
+                  <div key={h.dayOfWeek} className="gap-sm grid grid-cols-[3rem_auto_auto_auto] items-center">
+                    <span className="text-foreground typo-caption">{dayLabels[h.dayOfWeek]}</span>
+                    <Switch checked={h.isOpen} onCheckedChange={(v) => updateHour(h.dayOfWeek, { isOpen: v })} />
+                    <Input
+                      type="time"
+                      disabled={!h.isOpen}
+                      value={h.openTime}
+                      onChange={(e) => updateHour(h.dayOfWeek, { openTime: e.target.value })}
+                      className="w-28"
+                    />
+                    <Input
+                      type="time"
+                      disabled={!h.isOpen}
+                      value={h.closeTime}
+                      onChange={(e) => updateHour(h.dayOfWeek, { closeTime: e.target.value })}
+                      className="w-28"
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : null}
 
           {error ? <p className="text-destructive typo-caption">{error}</p> : null}
         </form>

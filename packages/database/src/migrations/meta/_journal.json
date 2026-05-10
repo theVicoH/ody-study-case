@@ -8,6 +8,20 @@
       "when": 1778383848146,
       "tag": "0000_wide_blizzard",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1778420000000,
+      "tag": "0001_restaurant_hours_tables",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1778430000000,
+      "tag": "0002_better_auth",
+      "breakpoints": true
     }
   ]
 }

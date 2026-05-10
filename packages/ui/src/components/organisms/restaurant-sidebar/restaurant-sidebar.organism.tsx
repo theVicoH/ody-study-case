@@ -42,8 +42,6 @@ interface RestaurantSidebarProps {
   activeTabId: string;
   secondaryTabId?: string | null;
   onTabChange: (id: string) => void;
-  onSplitTab?: (id: string) => void;
-  splitTabLabel?: string;
   groupLabel: string;
   groupOverview: string;
   isGroupActive: boolean;
@@ -73,8 +71,6 @@ const RestaurantSidebar = ({
   activeTabId,
   secondaryTabId,
   onTabChange,
-  onSplitTab,
-  splitTabLabel,
   groupLabel,
   groupOverview,
   isGroupActive,
@@ -156,8 +152,6 @@ const RestaurantSidebar = ({
             activeId={activeTabId}
             secondaryActiveId={secondaryTabId}
             onSelect={onTabChange}
-            onSplit={onSplitTab}
-            splitLabel={splitTabLabel}
             className="mt-md gap-3xs flex flex-col"
           />
         </div>
