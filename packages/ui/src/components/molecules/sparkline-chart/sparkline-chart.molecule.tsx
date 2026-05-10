@@ -45,6 +45,10 @@ const SparklineChart = ({
   const width = SPARKLINE_VIEWBOX_WIDTH;
   const innerHeight = height - SPARKLINE_PADDING_TOP - SPARKLINE_PADDING_BOTTOM;
 
+  if (data.length === 0) {
+    return <div className={cn("w-full", className)} style={{ height }} />;
+  }
+
   const min = Math.min(...data);
   const max = Math.max(...data);
   const range = max - min || 1;
