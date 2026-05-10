@@ -3,14 +3,15 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
+import type { ApiOrganization, ApiUser, CreateRestaurantInput } from "@/types/api/api.types";
+import type { Restaurant } from "@/types/restaurant/restaurant.types";
+
 import { restaurantModelsStorage } from "@/lib/restaurant-visuals/restaurant-models-storage.util";
 import { toVisualRestaurant } from "@/lib/restaurant-visuals/restaurant-visuals.util";
 import { authApi } from "@/services/api/auth-api/auth-api.service";
 import { organizationsApi } from "@/services/api/organizations-api/organizations-api.service";
 import { restaurantsApi } from "@/services/api/restaurants-api/restaurants-api.service";
 
-import type { ApiOrganization, ApiUser, CreateRestaurantInput } from "@/types/api/api.types";
-import type { Restaurant } from "@/types/restaurant/restaurant.types";
 
 export interface UseApiRestaurantsReturn {
   user: ApiUser | null;

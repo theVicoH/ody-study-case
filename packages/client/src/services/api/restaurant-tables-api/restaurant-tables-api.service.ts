@@ -1,4 +1,4 @@
-import { api } from "@/lib/api/api.client";
+import { apiRoutes, buildQuery } from "@workspace/shared";
 
 import type {
   ApiPaginated,
@@ -9,32 +9,31 @@ import type {
   UpdateTableInput
 } from "@/types/api/api.types";
 
-const buildQuery = (query?: ListTablesQuery): string => {
-  const params = new URLSearchParams();
+import { api } from "@/lib/api/api.client";
 
-  if (query?.page) params.set("page", String(query.page));
-  if (query?.limit) params.set("limit", String(query.limit));
-  if (query?.zone) params.set("zone", query.zone);
-  if (query?.status) params.set("status", query.status);
-  const qs = params.toString();
-
-  return qs ? `?${qs}` : "";
-};
 
 export const restaurantTablesApi = {
   list(restaurantId: string, query?: ListTablesQuery): Promise<ApiPaginated<ApiRestaurantTable>> {
-    return api.get<ApiPaginated<ApiRestaurantTable>>(`/restaurants/${restaurantId}/tables${buildQuery(query)}`);
+    return api.get<ApiPaginated<ApiRestaurantTable>>(`${apiRoutes.restaurants.tables.base(restaurantId)}${buildQuery({
+      page: query?.page,
+      limit: query?.limit,
+      zone: query?.zone,
+      status: query?.status
+    })}`);
   },
   create(restaurantId: string, input: CreateTableInput): Promise<ApiRestaurantTable> {
-    return api.post<ApiRestaurantTable>(`/restaurants/${restaurantId}/tables`, input);
+    return api.post<ApiRestaurantTable>(apiRoutes.restaurants.tables.base(restaurantId), input);
   },
   update(restaurantId: string, id: string, input: UpdateTableInput): Promise<ApiRestaurantTable> {
-    return api.patch<ApiRestaurantTable>(`/restaurants/${restaurantId}/tables/${id}`, input);
+    return api.patch<ApiRestaurantTable>(apiRoutes.restaurants.tables.byId(restaurantId, id), input);
   },
   delete(restaurantId: string, id: string): Promise<void> {
-    return api.delete<void>(`/restaurants/${restaurantId}/tables/${id}`);
+    return api.delete<void>(apiRoutes.restaurants.tables.byId(restaurantId, id));
   },
   bulkGenerate(restaurantId: string, input: BulkGenerateTablesInput): Promise<ApiPaginated<ApiRestaurantTable>> {
-    return api.post<ApiPaginated<ApiRestaurantTable>>(`/restaurants/${restaurantId}/tables/bulk-generate`, input);
+    return api.post<ApiPaginated<ApiRestaurantTable>>(
+      apiRoutes.restaurants.tables.bulkGenerate(restaurantId),
+      input
+    );
   }
 };

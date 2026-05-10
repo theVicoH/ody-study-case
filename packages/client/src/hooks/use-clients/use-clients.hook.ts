@@ -1,6 +1,5 @@
 import { useMutation, useQueries, useQuery, useQueryClient } from "@tanstack/react-query";
 
-import { clientsApi } from "@/services/api/clients-api/clients-api.service";
 
 import type {
   ApiClient,
@@ -9,6 +8,8 @@ import type {
   UpdateClientInput
 } from "@/types/api/api.types";
 import type { UseMutationResult, UseQueryResult } from "@tanstack/react-query";
+
+import { clientsApi } from "@/services/api/clients-api/clients-api.service";
 
 const KEYS = {
   all: (restaurantId: string) => ["clients", restaurantId] as const,
@@ -29,9 +30,7 @@ export const useClients = (
     enabled: Boolean(restaurantId)
   });
 
-export const useCreateClient = (
-  restaurantId: string
-): UseMutationResult<ApiClient, Error, CreateClientInput> => {
+export const useCreateClient = (restaurantId: string): UseMutationResult<ApiClient, Error, CreateClientInput> => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -40,9 +39,7 @@ export const useCreateClient = (
   });
 };
 
-export const useUpdateClient = (
-  restaurantId: string
-): UseMutationResult<ApiClient, Error, { id: string; input: UpdateClientInput }> => {
+export const useUpdateClient = (restaurantId: string): UseMutationResult<ApiClient, Error, { id: string; input: UpdateClientInput }> => {
   const queryClient = useQueryClient();
 
   return useMutation({

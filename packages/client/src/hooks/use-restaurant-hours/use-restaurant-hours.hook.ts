@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
 
+import type { ApiOpeningHour } from "@/types/api/api.types";
+
 import { restaurantHoursApi } from "@/services/api/restaurant-hours-api/restaurant-hours-api.service";
 
-import type { ApiOpeningHour } from "@/types/api/api.types";
 
 const DAYS_IN_WEEK = 7;
 

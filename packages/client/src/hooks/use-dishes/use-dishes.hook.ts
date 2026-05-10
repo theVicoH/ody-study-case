@@ -1,9 +1,10 @@
 import { useMutation, useQueries, useQuery, useQueryClient } from "@tanstack/react-query";
 
-import { dishesApi } from "@/services/api/dishes-api/dishes-api.service";
 
 import type { ApiDish, ApiPaginated, CreateDishInput, UpdateDishInput } from "@/types/api/api.types";
 import type { UseMutationResult, UseQueryResult } from "@tanstack/react-query";
+
+import { dishesApi } from "@/services/api/dishes-api/dishes-api.service";
 
 const KEYS = {
   all: (restaurantId: string) => ["dishes", restaurantId] as const
@@ -16,9 +17,7 @@ export const useDishes = (restaurantId: string): UseQueryResult<ApiPaginated<Api
     enabled: Boolean(restaurantId)
   });
 
-export const useCreateDish = (
-  restaurantId: string
-): UseMutationResult<ApiDish, Error, CreateDishInput> => {
+export const useCreateDish = (restaurantId: string): UseMutationResult<ApiDish, Error, CreateDishInput> => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -27,15 +26,20 @@ export const useCreateDish = (
   });
 };
 
-export const useUpdateDish = (
-  restaurantId: string
-): UseMutationResult<ApiDish, Error, { id: string; input: UpdateDishInput }> => {
+export const useUpdateDish = (restaurantId: string): UseMutationResult<ApiDish, Error, { id: string; input: UpdateDishInput }> => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: ({ id, input }: { id: string; input: UpdateDishInput }) =>
       dishesApi.update(restaurantId, id, input),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: KEYS.all(restaurantId) })
+    onSuccess: (updatedDish) => {
+      queryClient.setQueryData<ApiPaginated<ApiDish>>(KEYS.all(restaurantId), (old) => {
+        if (!old) return old;
+
+        return { ...old, data: old.data.map((d) => d.id === updatedDish.id ? updatedDish : d) };
+      });
+      void queryClient.invalidateQueries({ queryKey: KEYS.all(restaurantId) });
+    }
   });
 };
 

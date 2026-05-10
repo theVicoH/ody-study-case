@@ -24,6 +24,16 @@ export { menusApi } from "@/services/api/menus-api/menus-api.service";
 
 export { ordersApi } from "@/services/api/orders-api/orders-api.service";
 
+export { restaurantStatsApi } from "@/services/api/restaurant-stats-api/restaurant-stats-api.service";
+
+export {
+  useRestaurantStats,
+  useGroupStats,
+  mapApiStatsToDetailed
+} from "@/hooks/use-restaurant-stats/use-restaurant-stats.hook";
+
+export type { UseRestaurantStatsReturn } from "@/hooks/use-restaurant-stats/use-restaurant-stats.hook";
+
 export {
   useClients,
   useClientsMulti,
@@ -74,6 +84,8 @@ export type {
   ApiOrganization,
   ApiPaginated,
   ApiRestaurant,
+  ApiRestaurantStats,
+  ApiTopItem,
   ApiRestaurantTable,
   ApiTableStatus,
   ApiTableZone,

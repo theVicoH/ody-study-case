@@ -1,6 +1,5 @@
 import { useMutation, useQueries, useQuery, useQueryClient } from "@tanstack/react-query";
 
-import { ordersApi } from "@/services/api/orders-api/orders-api.service";
 
 import type {
   ApiOrder,
@@ -9,6 +8,8 @@ import type {
   CreateOrderInput
 } from "@/types/api/api.types";
 import type { UseMutationResult, UseQueryResult } from "@tanstack/react-query";
+
+import { ordersApi } from "@/services/api/orders-api/orders-api.service";
 
 const KEYS = {
   all: (restaurantId: string) => ["orders", restaurantId] as const,
@@ -25,9 +26,7 @@ export const useOrders = (
     enabled: Boolean(restaurantId)
   });
 
-export const useCreateOrder = (
-  restaurantId: string
-): UseMutationResult<ApiOrder, Error, CreateOrderInput> => {
+export const useCreateOrder = (restaurantId: string): UseMutationResult<ApiOrder, Error, CreateOrderInput> => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -36,9 +35,7 @@ export const useCreateOrder = (
   });
 };
 
-export const useUpdateOrderStatus = (
-  restaurantId: string
-): UseMutationResult<ApiOrder, Error, { id: string; status: ApiOrderStatus }> => {
+export const useUpdateOrderStatus = (restaurantId: string): UseMutationResult<ApiOrder, Error, { id: string; status: ApiOrderStatus }> => {
   const queryClient = useQueryClient();
 
   return useMutation({

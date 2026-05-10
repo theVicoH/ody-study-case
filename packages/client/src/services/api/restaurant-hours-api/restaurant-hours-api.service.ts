@@ -1,6 +1,9 @@
-import { api } from "@/lib/api/api.client";
+import { apiRoutes } from "@workspace/shared";
 
 import type { ApiOpeningHour } from "@/types/api/api.types";
+
+import { api } from "@/lib/api/api.client";
+
 
 interface OpeningHoursResponse {
   data: ApiOpeningHour[];
@@ -8,9 +11,9 @@ interface OpeningHoursResponse {
 
 export const restaurantHoursApi = {
   list(restaurantId: string): Promise<OpeningHoursResponse> {
-    return api.get<OpeningHoursResponse>(`/restaurants/${restaurantId}/opening-hours`);
+    return api.get<OpeningHoursResponse>(apiRoutes.restaurants.openingHours(restaurantId));
   },
   upsert(restaurantId: string, hours: ReadonlyArray<ApiOpeningHour>): Promise<OpeningHoursResponse> {
-    return api.put<OpeningHoursResponse>(`/restaurants/${restaurantId}/opening-hours`, { hours });
+    return api.put<OpeningHoursResponse>(apiRoutes.restaurants.openingHours(restaurantId), { hours });
   }
 };

@@ -1,7 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
 
-import { restaurantTablesApi } from "@/services/api/restaurant-tables-api/restaurant-tables-api.service";
-
 import type {
   ApiRestaurantTable,
   BulkGenerateTablesInput,
@@ -9,6 +7,9 @@ import type {
   ListTablesQuery,
   UpdateTableInput
 } from "@/types/api/api.types";
+
+import { restaurantTablesApi } from "@/services/api/restaurant-tables-api/restaurant-tables-api.service";
+
 
 const DEFAULT_PAGE = 1;
 const DEFAULT_LIMIT = 10;

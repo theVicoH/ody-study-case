@@ -1,6 +1,9 @@
-import { api } from "@/lib/api/api.client";
+import { apiRoutes } from "@workspace/shared";
 
 import type { ApiUser } from "@/types/api/api.types";
+
+import { api } from "@/lib/api/api.client";
+
 
 interface BetterAuthSession {
   user: {
@@ -31,7 +34,7 @@ const toApiUser = (session: BetterAuthSession): ApiUser => ({
 export const authApi = {
   async me(): Promise<ApiUser | null> {
     try {
-      const session = await api.get<BetterAuthSession | null>("/api/auth/get-session");
+      const session = await api.get<BetterAuthSession | null>(apiRoutes.auth.session);
 
       if (!session?.user) return null;
 

@@ -1,4 +1,4 @@
-import { api } from "@/lib/api/api.client";
+import { apiRoutes, buildQuery } from "@workspace/shared";
 
 import type {
   ApiOrder,
@@ -8,31 +8,27 @@ import type {
   ListOrdersQuery
 } from "@/types/api/api.types";
 
-const buildQuery = (query?: ListOrdersQuery): string => {
-  const params = new URLSearchParams();
+import { api } from "@/lib/api/api.client";
 
-  if (query?.page) params.set("page", String(query.page));
-  if (query?.limit) params.set("limit", String(query.limit));
-  if (query?.clientId) params.set("clientId", query.clientId);
-  const qs = params.toString();
-
-  return qs ? `?${qs}` : "";
-};
 
 export const ordersApi = {
   list(restaurantId: string, query?: ListOrdersQuery): Promise<ApiPaginated<ApiOrder>> {
-    return api.get<ApiPaginated<ApiOrder>>(`/restaurants/${restaurantId}/orders${buildQuery(query)}`);
+    return api.get<ApiPaginated<ApiOrder>>(`${apiRoutes.restaurants.orders.base(restaurantId)}${buildQuery({
+      page: query?.page,
+      limit: query?.limit,
+      clientId: query?.clientId
+    })}`);
   },
   get(restaurantId: string, id: string): Promise<ApiOrder> {
-    return api.get<ApiOrder>(`/restaurants/${restaurantId}/orders/${id}`);
+    return api.get<ApiOrder>(apiRoutes.restaurants.orders.byId(restaurantId, id));
   },
   create(restaurantId: string, input: CreateOrderInput): Promise<ApiOrder> {
-    return api.post<ApiOrder>(`/restaurants/${restaurantId}/orders`, input);
+    return api.post<ApiOrder>(apiRoutes.restaurants.orders.base(restaurantId), input);
   },
   updateStatus(restaurantId: string, id: string, status: ApiOrderStatus): Promise<ApiOrder> {
-    return api.patch<ApiOrder>(`/restaurants/${restaurantId}/orders/${id}/status`, { status });
+    return api.patch<ApiOrder>(apiRoutes.restaurants.orders.status(restaurantId, id), { status });
   },
   delete(restaurantId: string, id: string): Promise<void> {
-    return api.delete<void>(`/restaurants/${restaurantId}/orders/${id}`);
+    return api.delete<void>(apiRoutes.restaurants.orders.byId(restaurantId, id));
   }
 };

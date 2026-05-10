@@ -124,6 +124,8 @@ export interface ListTablesQuery {
   status?: ApiTableStatus;
 }
 
+export type ApiClientTag = "New" | "Regular" | "VIP";
+
 export interface ApiClient {
   id: string;
   restaurantId: string;
@@ -132,6 +134,7 @@ export interface ApiClient {
   email: string | null;
   phone: string | null;
   notes: string | null;
+  tag: ApiClientTag;
   createdAt: string;
   updatedAt: string;
 }
@@ -144,7 +147,14 @@ export interface CreateClientInput {
   notes?: string | null;
 }
 
-export type UpdateClientInput = CreateClientInput;
+export interface UpdateClientInput {
+  firstName: string;
+  lastName: string;
+  email?: string | null;
+  phone?: string | null;
+  notes?: string | null;
+  tag?: ApiClientTag;
+}
 
 export interface ApiDish {
   id: string;
@@ -244,4 +254,32 @@ export interface ListOrdersQuery {
   page?: number;
   limit?: number;
   clientId?: string;
+}
+
+export interface ApiTopItem {
+  id: string;
+  name: string;
+  category: string;
+  priceCents: number;
+  sold: number;
+}
+
+export interface ApiRestaurantStats {
+  todayRevenueCents: number;
+  todayCovers: number;
+  avgTicketCents: number;
+  fillRate: number;
+  weeklyRevenueCents: number[];
+  monthlyRevenueCents: number[];
+  yearlyRevenueCents: number[];
+  heatmap: number[][];
+  topItems: ApiTopItem[];
+  sparklineData: number[];
+  customers: number;
+  openOrders: number;
+  covers: number;
+  revenueCents: number;
+  orders: number;
+  trendPercent: number;
+  rating: number;
 }
