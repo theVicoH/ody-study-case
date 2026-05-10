@@ -23,7 +23,8 @@ const LoginRoute = (): React.JSX.Element => {
     try {
       const result = await signIn.email({
         email: credentials.email,
-        password: credentials.password
+        password: credentials.password,
+        rememberMe: true
       });
 
       if (result.error) {

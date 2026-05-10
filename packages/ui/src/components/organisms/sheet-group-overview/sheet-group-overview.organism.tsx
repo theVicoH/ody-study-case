@@ -4,6 +4,7 @@ import { Muted } from "@/components/atoms/typography/typography.atom";
 import { KpiCard } from "@/components/molecules/kpi-card/kpi-card.molecule";
 import { PerfSummaryCell } from "@/components/molecules/perf-summary-cell/perf-summary-cell.molecule";
 import { RestaurantsPerfTable } from "@/components/organisms/restaurants-perf-table/restaurants-perf-table.organism";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardAction,
@@ -40,6 +41,7 @@ interface SheetGroupOverviewLabels {
   paginationPrev: string;
   paginationNext: string;
   filterAll: string;
+  addRestaurant?: string;
 }
 
 interface SheetGroupOverviewProps {
@@ -50,6 +52,7 @@ interface SheetGroupOverviewProps {
   bad: number;
   totalRevenue?: number;
   restaurants?: ReadonlyArray<RestaurantSummaryItem>;
+  onAddRestaurant?: () => void;
 }
 
 const PERF_TABLE_PAGE_SIZE = 6;
@@ -61,9 +64,18 @@ const SheetGroupOverview = ({
   warn,
   bad,
   totalRevenue,
-  restaurants
+  restaurants,
+  onAddRestaurant
 }: SheetGroupOverviewProps): React.JSX.Element => (
   <>
+    {onAddRestaurant && labels.addRestaurant ? (
+      <div className="flex justify-end">
+        <Button variant="outline" size="sm" onClick={onAddRestaurant}>
+          <span aria-hidden className="text-base leading-none">+</span>
+          <span className="typo-body-sm">{labels.addRestaurant}</span>
+        </Button>
+      </div>
+    ) : null}
     <div className="gap-sm grid grid-cols-2">
       <KpiCard variant="subtle" label={labels.restaurants} value={total} />
       <KpiCard

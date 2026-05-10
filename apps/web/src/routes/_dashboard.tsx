@@ -202,7 +202,8 @@ const Layout = (): React.JSX.Element => {
       ? restaurants.find((r) => r.id === selectedId) ?? null
       : null;
   const isOpen = selectedId !== null;
-  const isCompareActive = compareMode && !isGroupView && selected !== null;
+  const isCompareActive =
+    compareMode && (selected !== null || isGroupView) && secondaryId !== null;
   const secondary =
     isCompareActive && secondaryId
       ? restaurants.find((r) => r.id === secondaryId) ?? null
@@ -420,12 +421,14 @@ const Layout = (): React.JSX.Element => {
   );
 
   const handleToggleCompare = useCallback((): void => {
-    if (!selected) return;
+    if (!selected && !isGroupView) return;
     const next = !compareMode;
 
     if (next) {
-      if (!secondaryId || secondaryId === selected.id) {
-        const fallback = restaurants.find((r) => r.id !== selected.id);
+      const primaryRestaurantId = selected?.id ?? null;
+
+      if (!secondaryId || secondaryId === primaryRestaurantId) {
+        const fallback = restaurants.find((r) => r.id !== primaryRestaurantId);
 
         if (fallback) selectSecondaryRestaurant(fallback.id);
       }
@@ -434,6 +437,7 @@ const Layout = (): React.JSX.Element => {
     setCompareMode(next);
   }, [
     compareMode,
+    isGroupView,
     restaurants,
     secondaryId,
     selectSecondaryRestaurant,
@@ -722,7 +726,8 @@ const Layout = (): React.JSX.Element => {
     empty: t("restaurants.stats.empty"),
     paginationPrev: t("restaurants.orders.paginationPrev"),
     paginationNext: t("restaurants.orders.paginationNext"),
-    filterAll: t("restaurants.orders.filterAll")
+    filterAll: t("restaurants.orders.filterAll"),
+    addRestaurant: t("restaurants.create.addRestaurant")
   }), [t]);
 
   const overviewLabels = useMemo(() => ({
@@ -1102,6 +1107,7 @@ const Layout = (): React.JSX.Element => {
           bad={summary.bad}
           totalRevenue={groupTotalRevenue}
           restaurants={groupRestaurantSummaries}
+          onAddRestaurant={handleOpenCreateRestaurant}
         />
       );
     }
@@ -1212,34 +1218,32 @@ const Layout = (): React.JSX.Element => {
 
   const headerActions = (
     <>
-      <button
-        type="button"
+      <Button
+        variant="outline"
+        size="sm"
         onClick={handleOpenCreateRestaurant}
         aria-label={t("restaurants.create.addRestaurant")}
-        title={t("restaurants.create.addRestaurant")}
         disabled={apiLoading || !demoUser}
-        className="border-primary/40 bg-primary/15 text-primary hover:bg-primary/25 flex h-8 w-8 items-center justify-center rounded-lg border transition-all duration-200 disabled:opacity-50"
       >
         <span aria-hidden className="text-base leading-none">+</span>
-      </button>
-      <button
-        type="button"
+        <span className="typo-body-sm">{t("restaurants.create.addRestaurant")}</span>
+      </Button>
+      <Button
+        variant={view3dEnabled ? "tertiary" : "ghost"}
+        size="sm"
         onClick={handleToggleView3d}
         aria-label={view3dEnabled ? t("restaurants.flatList.disable3d") : t("restaurants.flatList.enable3d")}
         aria-pressed={view3dEnabled}
-        className={[
-          "flex h-8 w-8 items-center justify-center rounded-lg border transition-all duration-200",
-          view3dEnabled
-            ? "border-primary/40 bg-primary/15 text-primary hover:bg-primary/25"
-            : "border-border bg-muted text-muted-foreground hover:bg-muted/80"
-        ].join(" ")}
       >
         <HugeiconsIcon
           icon={ThreeDViewIcon}
           size={THREED_ICON_SIZE}
           strokeWidth={THREED_ICON_STROKE}
         />
-      </button>
+        <span className="typo-body-sm">
+          {view3dEnabled ? t("restaurants.flatList.disable3d") : t("restaurants.flatList.enable3d")}
+        </span>
+      </Button>
       <Avatar size="default" aria-label="Vico">
         <AvatarFallback>VC</AvatarFallback>
       </Avatar>
@@ -1441,7 +1445,7 @@ const Layout = (): React.JSX.Element => {
         </DialogContent>
       </Dialog>
 
-      {isCompareActive && selected ? (
+      {isCompareActive ? (
         <>
           {(() => {
             const leftWidth = Math.max(SHEET_MIN_WIDTH, splitAvailableWidth * splitRatio);
@@ -1455,6 +1459,14 @@ const Layout = (): React.JSX.Element => {
             const rightTab = secondaryTab ?? activeTab;
             const leftCategoryLabel = t(`restaurants.nav.${activeTab}`);
             const rightCategoryLabel = t(`restaurants.nav.${rightTab}`);
+            const leftPrimaryId = isGroupView ? "__group" : selected?.id ?? "";
+            const leftTitle = isGroupView
+              ? organization?.name ?? t("restaurants.rail.allRestaurants")
+              : selected?.name ?? "—";
+            const leftCaption = isGroupView
+              ? t("restaurants.sheet.activeEstablishments", { count: summary.total })
+              : selected?.address ?? "";
+            const leftPageOptions = isGroupView ? groupPageOptions : sheetPageOptions;
 
             return (
               <>
@@ -1463,8 +1475,8 @@ const Layout = (): React.JSX.Element => {
                   resizing={resizing}
                   status={sheetStatus}
                   eyebrow={leftCategoryLabel}
-                  title={selected.name}
-                  caption={selected.address}
+                  title={leftTitle}
+                  caption={leftCaption}
                   closeLabel={t("restaurants.sheet.close")}
                   expandLabel={t("restaurants.sheet.expand")}
                   collapseLabel={t("restaurants.sheet.collapse")}
@@ -1472,16 +1484,24 @@ const Layout = (): React.JSX.Element => {
                   resizeLabel={t("restaurants.sheet.resizeSheet")}
                   width={leftWidth}
                   right={leftSheetRight}
-                  selectorRestaurants={railRestaurants}
-                  selectedRestaurantId={selected.id}
-                  onSelectRestaurant={(id) => { if (id) handleSelectRestaurantById(id); }}
-                  pageOptions={sheetPageOptions}
+                  selectorRestaurants={sheetSelectorItems}
+                  selectedRestaurantId={leftPrimaryId}
+                  onSelectRestaurant={(id) => {
+                    if (!id) return;
+                    if (id === "__group") {
+                      handleSelectGroup();
+
+                      return;
+                    }
+                    handleSelectRestaurantById(id);
+                  }}
+                  pageOptions={leftPageOptions}
                   selectedPageId={activeTab}
                   onSelectPage={setActiveTab}
                   onClose={handleCloseLeftInCompare}
                 >
                   {renderAnimatedTabContent(
-                    `${selected.id}:${activeTab}`,
+                    `${leftPrimaryId}:${activeTab}`,
                     renderSheetContent(activeTab)
                   )}
                 </RestaurantSheet>
@@ -1565,10 +1585,14 @@ const Layout = (): React.JSX.Element => {
           pageOptions={isGroupView ? groupPageOptions : sheetPageOptions}
           selectedPageId={activeTab}
           onSelectPage={setActiveTab}
-          splitSides={view3dEnabled && !isGroupView && selected ? ["left", "right"] : undefined}
+          splitSides={
+            view3dEnabled && (selected !== null || isGroupView) ? ["left", "right"] : undefined
+          }
           splitLabel={t("restaurants.sheet.openBeside")}
           onRequestSplit={
-            view3dEnabled && !isGroupView && selected ? () => setSplitDialogOpen(true) : undefined
+            view3dEnabled && (selected !== null || isGroupView)
+              ? () => setSplitDialogOpen(true)
+              : undefined
           }
           onClose={handleClose}
           onToggleExpand={view3dEnabled ? onToggleExpand : undefined}

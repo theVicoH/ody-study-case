@@ -1,4 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+
+import type { PlusIconHandle } from "@/components/icons/plus/plus.icon";
 
 import { AnimatePresence, motion } from "motion/react";
 import { createPortal } from "react-dom";
@@ -110,6 +112,13 @@ const RestaurantSheet = React.forwardRef<HTMLElement, RestaurantSheetProps>(({
   className
 }, ref): React.JSX.Element => {
   const [hoveringSplitArea, setHoveringSplitArea] = useState(false);
+  const hideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const leftPlusIconRef = useRef<PlusIconHandle>(null);
+  const rightPlusIconRef = useRef<PlusIconHandle>(null);
+
+  useEffect(() => () => {
+    if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
+  }, []);
 
   useEffect(() => {
     if (!open) return undefined;
@@ -133,11 +142,24 @@ const RestaurantSheet = React.forwardRef<HTMLElement, RestaurantSheetProps>(({
     "fixed top-1/2 z-40 flex -translate-y-1/2 items-center justify-center rounded-md",
     "border border-foreground/30 bg-background/80 text-foreground/80 outline outline-2 outline-transparent backdrop-blur-sm",
     "hover:border-primary hover:text-primary hover:outline-primary/20",
-    "duration-fast transition-all",
+    "duration-fast transition-[opacity,color,border-color,outline-color,background-color]",
     "focus-visible:ring-ring focus-visible:ring-2 focus-visible:outline-none"
   );
-  const handleSplitAreaEnter = (): void => setHoveringSplitArea(true);
-  const handleSplitAreaLeave = (): void => setHoveringSplitArea(false);
+  const SPLIT_HIDE_DELAY_MS = 220;
+  const handleSplitAreaEnter = (): void => {
+    if (hideTimerRef.current) {
+      clearTimeout(hideTimerRef.current);
+      hideTimerRef.current = null;
+    }
+    setHoveringSplitArea(true);
+  };
+  const handleSplitAreaLeave = (): void => {
+    if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
+    hideTimerRef.current = setTimeout(() => {
+      setHoveringSplitArea(false);
+      hideTimerRef.current = null;
+    }, SPLIT_HIDE_DELAY_MS);
+  };
 
   return createPortal(
     <>
@@ -322,8 +344,14 @@ const RestaurantSheet = React.forwardRef<HTMLElement, RestaurantSheetProps>(({
         type="button"
         aria-label={splitLabel}
         onClick={() => onRequestSplit?.("left")}
-        onMouseEnter={handleSplitAreaEnter}
-        onMouseLeave={handleSplitAreaLeave}
+        onMouseEnter={() => {
+          handleSplitAreaEnter();
+          leftPlusIconRef.current?.startAnimation();
+        }}
+        onMouseLeave={() => {
+          handleSplitAreaLeave();
+          leftPlusIconRef.current?.stopAnimation();
+        }}
         className={cn(
           splitButtonClassName,
           hoveringSplitArea ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
@@ -331,10 +359,11 @@ const RestaurantSheet = React.forwardRef<HTMLElement, RestaurantSheetProps>(({
         style={{
           right: `${leftButtonRight}px`,
           width: `${SPLIT_BUTTON_SIZE_PX}px`,
-          height: `${SPLIT_BUTTON_SIZE_PX}px`
+          height: `${SPLIT_BUTTON_SIZE_PX}px`,
+          willChange: "right"
         }}
       >
-        <PlusIcon size={SPLIT_BUTTON_ICON_SIZE} />
+        <PlusIcon ref={leftPlusIconRef} size={SPLIT_BUTTON_ICON_SIZE} isAnimated={false} />
       </button>
     )}
     {showSplitButtons && splitSides?.includes("right") && rightButtonRight >= 0 && (
@@ -342,8 +371,14 @@ const RestaurantSheet = React.forwardRef<HTMLElement, RestaurantSheetProps>(({
         type="button"
         aria-label={splitLabel}
         onClick={() => onRequestSplit?.("right")}
-        onMouseEnter={handleSplitAreaEnter}
-        onMouseLeave={handleSplitAreaLeave}
+        onMouseEnter={() => {
+          handleSplitAreaEnter();
+          rightPlusIconRef.current?.startAnimation();
+        }}
+        onMouseLeave={() => {
+          handleSplitAreaLeave();
+          rightPlusIconRef.current?.stopAnimation();
+        }}
         className={cn(
           splitButtonClassName,
           hoveringSplitArea ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
@@ -351,10 +386,11 @@ const RestaurantSheet = React.forwardRef<HTMLElement, RestaurantSheetProps>(({
         style={{
           right: `${rightButtonRight}px`,
           width: `${SPLIT_BUTTON_SIZE_PX}px`,
-          height: `${SPLIT_BUTTON_SIZE_PX}px`
+          height: `${SPLIT_BUTTON_SIZE_PX}px`,
+          willChange: "right"
         }}
       >
-        <PlusIcon size={SPLIT_BUTTON_ICON_SIZE} />
+        <PlusIcon ref={rightPlusIconRef} size={SPLIT_BUTTON_ICON_SIZE} isAnimated={false} />
       </button>
     )}
     </>,

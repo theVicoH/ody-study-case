@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 
@@ -40,7 +40,7 @@ const labels = {
   submit: "Open"
 };
 
-const StoryHarness = (): JSX.Element => {
+const StoryHarness = (): React.JSX.Element => {
   const [open, setOpen] = useState(true);
 
   return (
