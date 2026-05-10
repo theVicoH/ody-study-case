@@ -66,6 +66,7 @@ const PIXEL_RATIO_CAP = 2;
 const PARTICLE_DRIFT_SPEED = 0.003;
 
 const CLICK_DRAG_THRESHOLD_PX = 4;
+const ZOOM_LERP_SPEED = 0.1;
 
 interface RestaurantNode {
   group: THREE.Group;
@@ -328,21 +329,47 @@ export function initRestaurantScene(config: InitConfig): RestaurantSceneApi {
   scene.add(rim2);
 
   const ground = new THREE.Mesh(
-    new THREE.PlaneGeometry(80, 80),
-    new THREE.MeshStandardMaterial({ color: 0x141019, roughness: 0.85, metalness: 0.1 })
+    new THREE.CircleGeometry(40, 128),
+    new THREE.MeshStandardMaterial({ color: 0x000000, roughness: 0.85, metalness: 0.1 })
   );
 
   ground.rotation.x = -Math.PI / 2;
   ground.receiveShadow = true;
   scene.add(ground);
 
-  const grid = new THREE.GridHelper(80, 40, COLOR_PURPLE, 0x352a4a);
-  const gridMaterial = grid.material as THREE.Material;
+  // Square grid clipped to circle (Blender-style)
+  const gridGroup = new THREE.Group();
+  gridGroup.position.y = 0.002;
+  const gridRadius = 40;
+  const gridStep = 2;
+  const gridMajorStep = 10;
+  const gridVertices: number[] = [];
+  const majorGridVertices: number[] = [];
 
-  gridMaterial.transparent = true;
-  gridMaterial.opacity = 0.3;
-  grid.position.y = 0.001;
-  scene.add(grid);
+  for (let i = -gridRadius; i <= gridRadius; i += gridStep) {
+    const halfLen = Math.sqrt(gridRadius * gridRadius - i * i);
+    if (isNaN(halfLen)) continue;
+    const isMajor = i % gridMajorStep === 0;
+    const target = isMajor ? majorGridVertices : gridVertices;
+    target.push(i, 0, -halfLen, i, 0, halfLen);
+    target.push(-halfLen, 0, i, halfLen, 0, i);
+  }
+
+  const gridGeo = new THREE.BufferGeometry();
+  gridGeo.setAttribute("position", new THREE.Float32BufferAttribute(gridVertices, 3));
+  gridGroup.add(new THREE.LineSegments(
+    gridGeo,
+    new THREE.LineBasicMaterial({ color: 0x352a4a, transparent: true, opacity: 0.6 })
+  ));
+
+  const majorGridGeo = new THREE.BufferGeometry();
+  majorGridGeo.setAttribute("position", new THREE.Float32BufferAttribute(majorGridVertices, 3));
+  gridGroup.add(new THREE.LineSegments(
+    majorGridGeo,
+    new THREE.LineBasicMaterial({ color: COLOR_PURPLE, transparent: true, opacity: 0.65 })
+  ));
+
+  scene.add(gridGroup);
 
   const glow = new THREE.Mesh(
     new THREE.CircleGeometry(20, 64),
@@ -741,11 +768,13 @@ export function initRestaurantScene(config: InitConfig): RestaurantSceneApi {
   controls.dampingFactor = CONTROLS_DAMPING;
   controls.minDistance = CONTROLS_MIN_DISTANCE;
   controls.maxDistance = CONTROLS_MAX_DISTANCE;
-  controls.zoomSpeed = CONTROLS_ZOOM_SPEED;
+  controls.enableZoom = false;
   controls.maxPolarAngle = CONTROLS_MAX_POLAR;
   controls.minPolarAngle = CONTROLS_MIN_POLAR;
   controls.target.copy(CAMERA_TARGET);
   controls.update();
+
+  let zoomTargetDist = camera.position.distanceTo(controls.target);
 
   let lastInteraction = performance.now();
   let autoRotate = true;
@@ -923,9 +952,21 @@ export function initRestaurantScene(config: InitConfig): RestaurantSceneApi {
     callbacks.onEmptyClick?.();
   };
 
+  const onWheel = (e: WheelEvent): void => {
+    e.preventDefault();
+    const rawDelta = e.deltaY * (e.deltaMode === 1 ? 16 : 1);
+    zoomTargetDist = Math.max(
+      CONTROLS_MIN_DISTANCE,
+      Math.min(CONTROLS_MAX_DISTANCE, zoomTargetDist * (1 + rawDelta * 0.001))
+    );
+    lastInteraction = performance.now();
+    autoRotate = false;
+  };
+
   renderer.domElement.addEventListener("pointermove", onPointerMove);
   renderer.domElement.addEventListener("pointerdown", onPointerDown);
   renderer.domElement.addEventListener("click", onClick);
+  renderer.domElement.addEventListener("wheel", onWheel, { passive: false });
 
   const onResize = (): void => {
     camera.aspect = width() / height();
@@ -950,6 +991,14 @@ export function initRestaurantScene(config: InitConfig): RestaurantSceneApi {
       camera.position.x = x * Math.cos(a) - z * Math.sin(a);
       camera.position.z = x * Math.sin(a) + z * Math.cos(a);
     }
+
+    const currentDist = camera.position.distanceTo(controls.target);
+    if (Math.abs(currentDist - zoomTargetDist) > 0.001) {
+      const newDist = currentDist + (zoomTargetDist - currentDist) * ZOOM_LERP_SPEED;
+      const dir = camera.position.clone().sub(controls.target).normalize();
+      camera.position.copy(controls.target).addScaledVector(dir, newDist);
+    }
+
     controls.update();
 
     const arr = particleGeo.attributes.position.array as Float32Array;
@@ -995,6 +1044,7 @@ export function initRestaurantScene(config: InitConfig): RestaurantSceneApi {
     renderer.domElement.removeEventListener("pointermove", onPointerMove);
     renderer.domElement.removeEventListener("pointerdown", onPointerDown);
     renderer.domElement.removeEventListener("click", onClick);
+    renderer.domElement.removeEventListener("wheel", onWheel);
     restaurantNodes.forEach((node) => node.unmountLabel());
     unmountSunLabel();
     controls.dispose();
