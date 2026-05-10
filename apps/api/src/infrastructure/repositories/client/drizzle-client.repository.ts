@@ -3,7 +3,7 @@ import { Client, ClientId, RestaurantId } from "@workspace/domain";
 import { count, eq } from "drizzle-orm";
 
 import type { ClientRow, Database } from "@workspace/database";
-import type { IClientRepository, PaginatedResult, PaginationParams } from "@workspace/domain";
+import type { ClientTag, IClientRepository, PaginatedResult, PaginationParams } from "@workspace/domain";
 
 export class DrizzleClientRepository implements IClientRepository {
   constructor(private readonly db: Database) {}
@@ -48,6 +48,7 @@ export class DrizzleClientRepository implements IClientRepository {
       email: client.props.email,
       phone: client.props.phone,
       notes: client.props.notes,
+      tag: client.props.tag,
       createdAt: client.createdAt,
       updatedAt: client.updatedAt
     };
@@ -63,6 +64,7 @@ export class DrizzleClientRepository implements IClientRepository {
           email: values.email,
           phone: values.phone,
           notes: values.notes,
+          tag: values.tag,
           updatedAt: values.updatedAt
         }
       });
@@ -81,7 +83,8 @@ export class DrizzleClientRepository implements IClientRepository {
         lastName: row.lastName,
         email: row.email,
         phone: row.phone,
-        notes: row.notes
+        notes: row.notes,
+        tag: row.tag as ClientTag
       },
       row.createdAt,
       row.updatedAt

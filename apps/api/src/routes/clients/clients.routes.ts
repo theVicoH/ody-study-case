@@ -10,6 +10,8 @@ import { errorSchema, paginationMetaSchema, paginationQuery } from "@/routes/_sh
 
 const tags = ["Clients"];
 
+const tagSchema = z.enum(["New", "Regular", "VIP"]);
+
 const clientSchema = z.object({
   id: z.string().uuid(),
   restaurantId: z.string().uuid(),
@@ -18,6 +20,7 @@ const clientSchema = z.object({
   email: z.string().nullable(),
   phone: z.string().nullable(),
   notes: z.string().nullable(),
+  tag: tagSchema,
   createdAt: z.string(),
   updatedAt: z.string()
 });
@@ -32,7 +35,9 @@ const createBody = z.object({
   notes: z.string().nullable().optional()
 });
 
-const updateBody = createBody;
+const updateBody = createBody.extend({
+  tag: tagSchema.optional()
+});
 
 const restaurantIdParam = z.object({ restaurantId: z.string().uuid() });
 const clientIdParams = z.object({ restaurantId: z.string().uuid(), id: z.string().uuid() });

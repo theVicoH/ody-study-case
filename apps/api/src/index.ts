@@ -15,6 +15,7 @@ import { ordersRouter } from "./routes/orders/orders.routes";
 import { organizationsRouter } from "./routes/organizations/organizations.routes";
 import { restaurantOpeningHoursRouter } from "./routes/restaurant-opening-hours/restaurant-opening-hours.routes";
 import { restaurantTablesRouter } from "./routes/restaurant-tables/restaurant-tables.routes";
+import { groupStatsRouter, restaurantStatsRouter } from "./routes/restaurant-stats/restaurant-stats.routes";
 import { restaurantsRouter } from "./routes/restaurants/restaurants.routes";
 import { usersRouter } from "./routes/users/users.routes";
 
@@ -52,6 +53,8 @@ app.route("/restaurants", clientsRouter);
 app.route("/restaurants", dishesRouter);
 app.route("/restaurants", menusRouter);
 app.route("/restaurants", ordersRouter);
+app.route("/restaurants", restaurantStatsRouter);
+app.route("/stats", groupStatsRouter);
 
 app.doc("/openapi.json", {
   openapi: "3.0.0",

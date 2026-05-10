@@ -12,6 +12,8 @@ import {
   DeleteOrderUseCase,
   DeleteOrganizationUseCase,
   DeleteRestaurantUseCase,
+  GetGroupStatsUseCase,
+  GetRestaurantStatsUseCase,
   GetClientUseCase,
   GetDishUseCase,
   GetMenuUseCase,
@@ -45,6 +47,7 @@ import { DrizzleMenuRepository } from "@/infrastructure/repositories/menu/drizzl
 import { DrizzleOrderRepository } from "@/infrastructure/repositories/order/drizzle-order.repository";
 import { DrizzleOrganizationRepository } from "@/infrastructure/repositories/organization/drizzle-organization.repository";
 import { DrizzleRestaurantRepository } from "@/infrastructure/repositories/restaurant/drizzle-restaurant.repository";
+import { DrizzleRestaurantStatsRepository } from "@/infrastructure/repositories/restaurant-stats/drizzle-restaurant-stats.repository";
 import { DrizzleUserRepository } from "@/infrastructure/repositories/user/drizzle-user.repository";
 
 const userRepository = new DrizzleUserRepository(db);
@@ -54,6 +57,7 @@ const clientRepository = new DrizzleClientRepository(db);
 const dishRepository = new DrizzleDishRepository(db);
 const menuRepository = new DrizzleMenuRepository(db);
 const orderRepository = new DrizzleOrderRepository(db);
+const restaurantStatsRepository = new DrizzleRestaurantStatsRepository(db);
 
 export const container = {
   user: {
@@ -82,7 +86,7 @@ export const container = {
   client: {
     create: new CreateClientUseCase(clientRepository),
     get: new GetClientUseCase(clientRepository),
-    list: new ListClientsUseCase(clientRepository),
+    list: new ListClientsUseCase(clientRepository, orderRepository),
     update: new UpdateClientUseCase(clientRepository),
     delete: new DeleteClientUseCase(clientRepository)
   },
@@ -106,5 +110,9 @@ export const container = {
     list: new ListOrdersUseCase(orderRepository),
     updateStatus: new UpdateOrderStatusUseCase(orderRepository),
     delete: new DeleteOrderUseCase(orderRepository)
+  },
+  restaurantStats: {
+    get: new GetRestaurantStatsUseCase(restaurantStatsRepository),
+    getGroup: new GetGroupStatsUseCase(restaurantStatsRepository)
   }
 } as const;
