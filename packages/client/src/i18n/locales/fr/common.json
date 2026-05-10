@@ -349,6 +349,22 @@
     "settings": "Paramètres",
     "loading": "Chargement"
   },
+  "profile": {
+    "title": "Profil",
+    "sectionProfile": "Informations personnelles",
+    "firstNameLabel": "Prénom",
+    "firstNamePlaceholder": "Sophie",
+    "lastNameLabel": "Nom",
+    "lastNamePlaceholder": "Martin",
+    "save": "Enregistrer",
+    "saving": "Enregistrement…",
+    "sectionPreferences": "Préférences",
+    "languageLabel": "Langue",
+    "signOut": "Se déconnecter",
+    "signingOut": "Déconnexion…",
+    "saveSuccess": "Profil mis à jour",
+    "saveError": "Impossible de mettre à jour le profil"
+  },
   "errors": {
     "loadFailed": "Échec du chargement des données",
     "createOrganizationFailed": "Impossible de créer l'organisation",

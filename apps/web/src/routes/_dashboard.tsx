@@ -35,6 +35,7 @@ import { RestaurantListItem } from "@workspace/ui/components/molecules/restauran
 import { CreateOrganizationDialog } from "@workspace/ui/components/organisms/create-organization-dialog/create-organization-dialog.organism";
 import { CreateRestaurantDialog } from "@workspace/ui/components/organisms/create-restaurant-dialog/create-restaurant-dialog.organism";
 import { CreateSplitDialog } from "@workspace/ui/components/organisms/create-split-dialog/create-split-dialog.organism";
+import { ProfileDialog } from "@workspace/ui/components/organisms/profile-dialog/profile-dialog.organism";
 import { RestaurantSheet } from "@workspace/ui/components/organisms/restaurant-sheet/restaurant-sheet.organism";
 import { RestaurantSidebar } from "@workspace/ui/components/organisms/restaurant-sidebar/restaurant-sidebar.organism";
 import { SheetCrm } from "@workspace/ui/components/organisms/sheet-crm/sheet-crm.organism";
@@ -42,7 +43,6 @@ import { SheetGroupOverview } from "@workspace/ui/components/organisms/sheet-gro
 import { SheetMenu } from "@workspace/ui/components/organisms/sheet-menu/sheet-menu.organism";
 import { SheetOrders } from "@workspace/ui/components/organisms/sheet-orders/sheet-orders.organism";
 import { SheetRestaurantOverview } from "@workspace/ui/components/organisms/sheet-restaurant-overview/sheet-restaurant-overview.organism";
-import { RestaurantSettingsPanel } from "@/components/restaurant-settings-panel/restaurant-settings-panel.organism";
 import { SheetStats } from "@workspace/ui/components/organisms/sheet-stats/sheet-stats.organism";
 import { Avatar, AvatarFallback } from "@workspace/ui/components/ui/avatar";
 import { Button } from "@workspace/ui/components/ui/button";
@@ -55,6 +55,9 @@ import {
 import { Input } from "@workspace/ui/components/ui/input";
 import { animate, AnimatePresence, motion } from "motion/react";
 import { useTranslation } from "react-i18next";
+
+import { RestaurantSettingsPanel } from "@/components/restaurant-settings-panel/restaurant-settings-panel.organism";
+import { signOut, updateUser, useSession } from "@/lib/auth/auth.client";
 
 import restaurantsCss from "./_dashboard/restaurants.css?url";
 
@@ -129,6 +132,7 @@ const performanceStatus = (perf: RestaurantPerformance): "good" | "warn" | "bad"
 const Layout = (): React.JSX.Element => {
   const { t } = useTranslation("common");
   const navigate = useNavigate();
+  const { data: session } = useSession();
   const {
     statsFor,
     detailedStatsFor,
@@ -157,6 +161,8 @@ const Layout = (): React.JSX.Element => {
 
     return { total, good, warn, bad, worstCount: 0, worstClass: "good" as const, worstLabel: "Tout va bien" };
   }, [restaurants]);
+  const [profileOpen, setProfileOpen] = useState(false);
+  const [profileError, setProfileError] = useState<string | null>(null);
   const [createOrgOpen, setCreateOrgOpen] = useState(false);
   const [createRestaurantOpen, setCreateRestaurantOpen] = useState(false);
   const [createSubmitting, setCreateSubmitting] = useState(false);
@@ -1216,6 +1222,29 @@ const Layout = (): React.JSX.Element => {
     }
   }, [organization, demoUser]);
 
+  const handleSaveProfile = useCallback(async (data: { firstName: string; lastName: string }): Promise<void> => {
+    setProfileError(null);
+    const result = await updateUser({
+      firstName: data.firstName,
+      lastName: data.lastName,
+      name: `${data.firstName} ${data.lastName}`.trim()
+    });
+
+    if (result.error) {
+      setProfileError(t("profile.saveError"));
+    }
+  }, [t]);
+
+  const handleSignOut = useCallback(async (): Promise<void> => {
+    await signOut();
+    await navigate({ to: "/login" });
+  }, [navigate]);
+
+  const sessionUser = session?.user;
+  const avatarInitials = sessionUser
+    ? `${(sessionUser.firstName as string | undefined)?.[0] ?? ""}${(sessionUser.lastName as string | undefined)?.[0] ?? ""}`.toUpperCase() || sessionUser.name?.[0]?.toUpperCase() || "?"
+    : "?";
+
   const headerActions = (
     <>
       <Button
@@ -1244,9 +1273,16 @@ const Layout = (): React.JSX.Element => {
           {view3dEnabled ? t("restaurants.flatList.disable3d") : t("restaurants.flatList.enable3d")}
         </span>
       </Button>
-      <Avatar size="default" aria-label="Vico">
-        <AvatarFallback>VC</AvatarFallback>
-      </Avatar>
+      <button
+        type="button"
+        onClick={() => setProfileOpen(true)}
+        aria-label={t("profile.title")}
+        className="focus-visible:ring-ring rounded-full focus-visible:ring-2 focus-visible:outline-none"
+      >
+        <Avatar size="default">
+          <AvatarFallback>{avatarInitials}</AvatarFallback>
+        </Avatar>
+      </button>
     </>
   );
 
@@ -1344,7 +1380,9 @@ const Layout = (): React.JSX.Element => {
         open={isOpen}
         compareMode={view3dEnabled ? isCompareActive : false}
         compareLabel={t("restaurants.sheet.compare")}
-        onToggleCompare={view3dEnabled && !isGroupView && selected ? handleToggleCompare : undefined}
+        onToggleCompare={
+          view3dEnabled && (selected !== null || isGroupView) ? handleToggleCompare : undefined
+        }
         secondaryTabId={isCompareActive ? secondaryTab : null}
         miniSlot={
           view3dEnabled ? (
@@ -1665,10 +1703,10 @@ const Layout = (): React.JSX.Element => {
       <CreateSplitDialog
         open={splitDialogOpen}
         onOpenChange={setSplitDialogOpen}
-        restaurants={railRestaurants.filter((r) => r.id !== selected?.id)}
+        restaurants={railRestaurants.filter((r) => isGroupView ? true : r.id !== selected?.id)}
         pages={sheetPageOptions}
         defaultRestaurantId={
-          railRestaurants.find((r) => r.id !== selected?.id)?.id
+          railRestaurants.find((r) => isGroupView ? true : r.id !== selected?.id)?.id
         }
         defaultPageId={activeTab}
         labels={{
@@ -1692,6 +1730,21 @@ const Layout = (): React.JSX.Element => {
         <div className="bg-destructive/10 text-destructive border-destructive/40 typo-caption fixed bottom-4 left-1/2 z-50 -translate-x-1/2 rounded-lg border px-4 py-2">
           {apiError}
         </div>
+      ) : null}
+
+      {sessionUser ? (
+        <ProfileDialog
+          open={profileOpen}
+          onOpenChange={(next) => { setProfileOpen(next); if (!next) setProfileError(null); }}
+          user={{
+            firstName: (sessionUser.firstName as string | undefined) ?? sessionUser.name ?? "",
+            lastName: (sessionUser.lastName as string | undefined) ?? "",
+            email: sessionUser.email ?? ""
+          }}
+          onSave={handleSaveProfile}
+          onSignOut={handleSignOut}
+          error={profileError}
+        />
       ) : null}
     </DashboardLayout>
   );

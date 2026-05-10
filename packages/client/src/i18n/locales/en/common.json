@@ -349,6 +349,22 @@
     "settings": "Settings",
     "loading": "Loading"
   },
+  "profile": {
+    "title": "Profile",
+    "sectionProfile": "Personal information",
+    "firstNameLabel": "First name",
+    "firstNamePlaceholder": "Sophie",
+    "lastNameLabel": "Last name",
+    "lastNamePlaceholder": "Martin",
+    "save": "Save changes",
+    "saving": "Saving…",
+    "sectionPreferences": "Preferences",
+    "languageLabel": "Language",
+    "signOut": "Sign out",
+    "signingOut": "Signing out…",
+    "saveSuccess": "Profile updated",
+    "saveError": "Could not update profile"
+  },
   "errors": {
     "loadFailed": "Failed to load data",
     "createOrganizationFailed": "Could not create organization",
