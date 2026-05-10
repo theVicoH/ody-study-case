@@ -34,6 +34,14 @@ export const auth = betterAuth({
       birthday: { type: "date", required: true, input: true }
     }
   },
+  session: {
+    expiresIn: 60 * 60 * 24 * 30,
+    updateAge: 60 * 60 * 24,
+    cookieCache: {
+      enabled: true,
+      maxAge: 60 * 60 * 24 * 30
+    }
+  },
   advanced: {
     database: {
       generateId: (): string => crypto.randomUUID()
