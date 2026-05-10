@@ -53,3 +53,69 @@ export { RestaurantNotFoundError } from "@/errors/restaurant/restaurant-not-foun
 export type { PaginationParams } from "@/types/pagination/pagination-params.type";
 
 export type { PaginatedResult } from "@/types/pagination/pagination-result.type";
+
+export { Money } from "@/value-objects/shared/money/money.value-object";
+
+export { InvalidMoneyError } from "@/errors/shared/invalid-money/invalid-money.error";
+
+export { Client } from "@/entities/client/client.entity";
+
+export type { ClientProps } from "@/entities/client/client.entity";
+
+export { ClientId } from "@/value-objects/client/client-id/client-id.value-object";
+
+export type { IClientRepository } from "@/repositories/client/client.repository";
+
+export { ClientInvalidIdError } from "@/errors/client/client-invalid-id/client-invalid-id.error";
+
+export { ClientInvalidDataError } from "@/errors/client/client-invalid-data/client-invalid-data.error";
+
+export { ClientNotFoundError } from "@/errors/client/client-not-found/client-not-found.error";
+
+export { Dish } from "@/entities/dish/dish.entity";
+
+export type { DishProps } from "@/entities/dish/dish.entity";
+
+export { DishId } from "@/value-objects/dish/dish-id/dish-id.value-object";
+
+export type { IDishRepository } from "@/repositories/dish/dish.repository";
+
+export { DishInvalidIdError } from "@/errors/dish/dish-invalid-id/dish-invalid-id.error";
+
+export { DishInvalidDataError } from "@/errors/dish/dish-invalid-data/dish-invalid-data.error";
+
+export { DishNotFoundError } from "@/errors/dish/dish-not-found/dish-not-found.error";
+
+export { Menu } from "@/entities/menu/menu.entity";
+
+export type { MenuProps } from "@/entities/menu/menu.entity";
+
+export { MenuId } from "@/value-objects/menu/menu-id/menu-id.value-object";
+
+export type { IMenuRepository } from "@/repositories/menu/menu.repository";
+
+export { MenuInvalidIdError } from "@/errors/menu/menu-invalid-id/menu-invalid-id.error";
+
+export { MenuInvalidDataError } from "@/errors/menu/menu-invalid-data/menu-invalid-data.error";
+
+export { MenuNotFoundError } from "@/errors/menu/menu-not-found/menu-not-found.error";
+
+export { Order, ORDER_STATUS } from "@/entities/order/order.entity";
+
+export type { OrderProps, OrderStatus } from "@/entities/order/order.entity";
+
+export { OrderItem } from "@/entities/order/order-item.entity";
+
+export type { OrderItemProps, OrderItemRef } from "@/entities/order/order-item.entity";
+
+export { OrderId } from "@/value-objects/order/order-id/order-id.value-object";
+
+export { OrderItemId } from "@/value-objects/order/order-item-id/order-item-id.value-object";
+
+export type { IOrderRepository } from "@/repositories/order/order.repository";
+
+export { OrderInvalidIdError } from "@/errors/order/order-invalid-id/order-invalid-id.error";
+
+export { OrderInvalidDataError } from "@/errors/order/order-invalid-data/order-invalid-data.error";
+
+export { OrderNotFoundError } from "@/errors/order/order-not-found/order-not-found.error";
