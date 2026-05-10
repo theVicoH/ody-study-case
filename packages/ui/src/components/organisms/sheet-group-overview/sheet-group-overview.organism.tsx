@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useRef } from "react";
 
 import { Muted } from "@/components/atoms/typography/typography.atom";
+import { PlusIcon } from "@/components/icons/plus/plus.icon";
 import { KpiCard } from "@/components/molecules/kpi-card/kpi-card.molecule";
 import { PerfSummaryCell } from "@/components/molecules/perf-summary-cell/perf-summary-cell.molecule";
 import { RestaurantsPerfTable } from "@/components/organisms/restaurants-perf-table/restaurants-perf-table.organism";
@@ -12,6 +13,10 @@ import {
   CardHeader,
   CardTitle
 } from "@/components/ui/card";
+
+import type { PlusIconHandle } from "@/components/icons/plus/plus.icon";
+
+const ADD_RESTAURANT_ICON_SIZE = 16;
 
 
 interface RestaurantSummaryItem {
@@ -66,12 +71,25 @@ const SheetGroupOverview = ({
   totalRevenue,
   restaurants,
   onAddRestaurant
-}: SheetGroupOverviewProps): React.JSX.Element => (
+}: SheetGroupOverviewProps): React.JSX.Element => {
+  const plusIconRef = useRef<PlusIconHandle>(null);
+
+  return (
   <>
     {onAddRestaurant && labels.addRestaurant ? (
       <div className="flex justify-end">
-        <Button variant="outline" size="sm" onClick={onAddRestaurant}>
-          <span aria-hidden className="text-base leading-none">+</span>
+        <Button
+          size="sm"
+          onClick={onAddRestaurant}
+          onMouseEnter={() => plusIconRef.current?.startAnimation()}
+          onMouseLeave={() => plusIconRef.current?.stopAnimation()}
+        >
+          <PlusIcon
+            ref={plusIconRef}
+            size={ADD_RESTAURANT_ICON_SIZE}
+            isAnimated={false}
+            data-icon="inline-start"
+          />
           <span className="typo-body-sm">{labels.addRestaurant}</span>
         </Button>
       </div>
@@ -96,17 +114,17 @@ const SheetGroupOverview = ({
     </div>
 
     <Card>
-      <CardHeader className="border-b">
+      <CardHeader className="border-b py-sm">
         <CardTitle>{labels.perfBreakdown}</CardTitle>
         <CardAction>
           <Muted>{labels.today}</Muted>
         </CardAction>
       </CardHeader>
-      <CardContent>
+      <CardContent className="py-sm">
         <div className="gap-sm grid grid-cols-3">
-          <PerfSummaryCell value={good} label={labels.good} tone="good" />
-          <PerfSummaryCell value={warn} label={labels.warn} tone="warn" />
-          <PerfSummaryCell value={bad} label={labels.bad} tone="bad" />
+          <PerfSummaryCell value={good} label={labels.good} tone="good" className="p-sm" />
+          <PerfSummaryCell value={warn} label={labels.warn} tone="warn" className="p-sm" />
+          <PerfSummaryCell value={bad} label={labels.bad} tone="bad" className="p-sm" />
         </div>
       </CardContent>
     </Card>
@@ -136,7 +154,8 @@ const SheetGroupOverview = ({
       </div>
     )}
   </>
-);
+  );
+};
 
 export { SheetGroupOverview };
 

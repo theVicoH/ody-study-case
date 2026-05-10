@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import { StatusDot } from "@/components/atoms/status-dot/status-dot.atom";
 import { Button } from "@/components/ui/button";
@@ -64,13 +64,25 @@ const CreateSplitDialog = ({
     defaultRestaurantId ?? restaurants[0]?.id ?? ""
   );
   const [pageId, setPageId] = useState<string>(defaultPageId ?? pages[0]?.id ?? "");
+  const prevOpenRef = useRef(open);
 
   useEffect(() => {
-    if (open) {
+    if (open && !prevOpenRef.current) {
       setRestaurantId(defaultRestaurantId ?? restaurants[0]?.id ?? "");
       setPageId(defaultPageId ?? pages[0]?.id ?? "");
     }
+    prevOpenRef.current = open;
   }, [open, defaultRestaurantId, defaultPageId, restaurants, pages]);
+
+  useEffect(() => {
+    if (!open) return;
+    if (!restaurantId && restaurants.length > 0) {
+      setRestaurantId(defaultRestaurantId ?? restaurants[0].id);
+    }
+    if (!pageId && pages.length > 0) {
+      setPageId(defaultPageId ?? pages[0].id);
+    }
+  }, [open, restaurantId, pageId, defaultRestaurantId, defaultPageId, restaurants, pages]);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
@@ -91,21 +103,15 @@ const CreateSplitDialog = ({
           <div className="gap-2xs flex flex-col">
             <Label htmlFor="split-restaurant">{labels.restaurantLabel}</Label>
             <Select value={restaurantId} onValueChange={(v) => v && setRestaurantId(v)}>
-              <SelectTrigger id="split-restaurant" size="sm">
+              <SelectTrigger id="split-restaurant" size="sm" className="gap-2xs">
+                {selectedRestaurant && (
+                  <StatusDot status={selectedRestaurant.status} size="sm" />
+                )}
                 <SelectValue>
-                  {(id: string) => {
-                    const r = restaurants.find((it) => it.id === id);
-
-                    return r ? (
-                      <span className="gap-2xs flex items-center">
-                        <StatusDot status={r.status} size="sm" />
-                        {r.name}
-                      </span>
-                    ) : id;
-                  }}
+                  {(id: string) => restaurants.find((it) => it.id === id)?.name ?? ""}
                 </SelectValue>
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent align="start" sideOffset={4} alignItemWithTrigger={false}>
                 {restaurants.map((r) => (
                   <SelectItem key={r.id} value={r.id} label={r.name}>
                     <StatusDot status={r.status} size="sm" />
@@ -123,7 +129,7 @@ const CreateSplitDialog = ({
                   {(id: string) => pages.find((p) => p.id === id)?.label ?? id}
                 </SelectValue>
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent align="start" sideOffset={4} alignItemWithTrigger={false}>
                 {pages.map((p) => (
                   <SelectItem key={p.id} value={p.id} label={p.label}>
                     {p.label}

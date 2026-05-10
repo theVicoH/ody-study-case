@@ -744,7 +744,7 @@ const SheetSettings = ({
             />
           </div>
         </CardHeader>
-        <CardContent className="p-0">
+        <CardContent className="p-0 [&_[data-slot=table-container]]:[scrollbar-width:none] [&_[data-slot=table-container]::-webkit-scrollbar]:hidden">
           {tablesSource.length === 0 ? (
             <p className="text-muted-foreground typo-caption px-md py-lg text-center">
               {tablesLoading ? "…" : labels.emptyTables}
@@ -863,13 +863,23 @@ const SheetSettings = ({
               <p className="text-foreground typo-button">{labels.deleteRestaurant}</p>
               <Muted className="typo-caption">{labels.deleteRestaurantDesc}</Muted>
             </div>
-            <button
-              type="button"
-              onClick={onDelete}
-              className={cn("bg-destructive/10 text-destructive hover:bg-destructive/20 px-md py-xs typo-button rounded-md transition-all")}
-            >
-              {labels.deleteRestaurant}
-            </button>
+            <DeleteDialog
+              labels={{
+                title: labels.deleteRestaurant,
+                description: labels.deleteRestaurantDesc,
+                cancel: labels.cancel,
+                confirm: labels.deleteRestaurant
+              }}
+              onConfirm={() => { if (onDelete) onDelete(); }}
+              trigger={
+                <button
+                  type="button"
+                  className={cn("bg-destructive/10 text-destructive hover:bg-destructive/20 px-md py-xs typo-button rounded-md transition-all")}
+                >
+                  {labels.deleteRestaurant}
+                </button>
+              }
+            />
           </div>
         </CardContent>
       </Card>

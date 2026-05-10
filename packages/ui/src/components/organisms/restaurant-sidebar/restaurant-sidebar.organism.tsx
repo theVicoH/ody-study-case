@@ -1,5 +1,7 @@
 import React, { useMemo, useState } from "react";
 
+import { AnimatePresence, motion } from "motion/react";
+
 
 import type { NavIconComponent } from "@/components/molecules/sidebar-nav/sidebar-nav.molecule";
 
@@ -17,6 +19,11 @@ import { cn } from "@/lib/utils";
 
 
 const COMPARE_ICON_SIZE = 16;
+const SHELL_OPEN_DURATION = 0.42;
+const SHELL_CLOSE_DURATION = 0.55;
+const SHELL_EASE: [number, number, number, number] = [0.22, 0.61, 0.36, 1];
+const CONTENT_DURATION = 0.32;
+const CONTENT_OFFSET = 6;
 
 interface SidebarRestaurant {
   id: string;
@@ -97,14 +104,26 @@ const RestaurantSidebar = ({
     return restaurants.filter((r) => r.name.toLowerCase().includes(q) || r.caption.toLowerCase().includes(q));
   }, [restaurants, query]);
 
+  const selectionKey = isGroupActive
+    ? "__group"
+    : activeRestaurantId ?? "__none";
+
   return (
-    <aside
-      data-state={open ? "open" : "closed"}
+    <motion.aside
+      initial={false}
+      animate={open ? "open" : "closed"}
+      variants={{
+        open: { x: 0, opacity: 1 },
+        closed: { x: "calc(-100% - 2rem)", opacity: 0 }
+      }}
+      transition={{
+        duration: open ? SHELL_OPEN_DURATION : SHELL_CLOSE_DURATION,
+        ease: SHELL_EASE
+      }}
+      style={{ pointerEvents: open ? "auto" : "none" }}
       className={cn(
-        "glass-strong pointer-events-auto absolute z-30",
+        "glass-strong absolute z-30",
         "top-sm bottom-sm left-sm w-60 rounded-xl",
-        "ease-emphasized transition-[transform,opacity] duration-[380ms]",
-        "data-[state=closed]:pointer-events-none data-[state=closed]:-translate-x-[calc(100%+2rem)] data-[state=closed]:opacity-0",
         className
       )}
     >
@@ -125,27 +144,37 @@ const RestaurantSidebar = ({
               </Button>
             )}
           </div>
-          {miniSecondarySlot ? (
-            <div className="gap-2xs flex aspect-[4/3]">
-              <div className="glass relative isolate flex-1 overflow-hidden rounded-lg">
-                {miniSlot}
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.div
+              key={`mini-${selectionKey}-${miniSecondarySlot ? "split" : "single"}`}
+              initial={{ opacity: 0, y: CONTENT_OFFSET }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -CONTENT_OFFSET }}
+              transition={{ duration: CONTENT_DURATION, ease: SHELL_EASE }}
+            >
+              {miniSecondarySlot ? (
+                <div className="gap-2xs flex aspect-[4/3]">
+                  <div className="glass relative isolate flex-1 overflow-hidden rounded-lg">
+                    {miniSlot}
+                  </div>
+                  <div className="glass relative isolate flex-1 overflow-hidden rounded-lg">
+                    {miniSecondarySlot}
+                  </div>
+                </div>
+              ) : (
+                <div className="glass relative isolate aspect-[4/3] overflow-hidden rounded-lg">
+                  {miniSlot}
+                </div>
+              )}
+              <div className="px-sm">
+                <H4 className="text-foreground mt-md scroll-m-0 truncate">{miniName}</H4>
+                <div className="mt-xs gap-xs flex items-center">
+                  <StatusDot status={miniStatus} size="sm" />
+                  <Overline className="text-muted-foreground">{miniCaption}</Overline>
+                </div>
               </div>
-              <div className="glass relative isolate flex-1 overflow-hidden rounded-lg">
-                {miniSecondarySlot}
-              </div>
-            </div>
-          ) : (
-            <div className="glass relative isolate aspect-[4/3] overflow-hidden rounded-lg">
-              {miniSlot}
-            </div>
-          )}
-          <div className="px-sm">
-            <H4 className="text-foreground mt-md scroll-m-0 truncate">{miniName}</H4>
-            <div className="mt-xs gap-xs flex items-center">
-              <StatusDot status={miniStatus} size="sm" />
-              <Overline className="text-muted-foreground">{miniCaption}</Overline>
-            </div>
-          </div>
+            </motion.div>
+          </AnimatePresence>
 
           <SidebarNav
             items={navItems}
@@ -219,7 +248,7 @@ const RestaurantSidebar = ({
           </div>
         </div>
       </div>
-    </aside>
+    </motion.aside>
   );
 };
 
