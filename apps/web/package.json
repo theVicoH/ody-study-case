@@ -24,6 +24,7 @@
     "@workspace/client": "workspace:*",
     "@workspace/ui": "workspace:*",
     "better-auth": "1.5.6",
+    "motion": "12.38.0",
     "date-fns": "4.1.0",
     "i18next": "26.0.8",
     "nitro": "latest",
