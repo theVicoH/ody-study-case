@@ -27,6 +27,7 @@ export class DrizzleUserRepository implements IUserRepository {
       .values({
         id: user.id.toString(),
         email: user.email.toString(),
+        name: `${user.firstName} ${user.lastName}`.trim(),
         firstName: user.firstName,
         lastName: user.lastName,
         birthday: user.birthday,
@@ -39,6 +40,7 @@ export class DrizzleUserRepository implements IUserRepository {
         target: usersTable.id,
         set: {
           email: user.email.toString(),
+          name: `${user.firstName} ${user.lastName}`.trim(),
           firstName: user.firstName,
           lastName: user.lastName,
           birthday: user.birthday,

@@ -1,9 +1,9 @@
 import React, { useMemo } from "react";
+import type { ComponentProps } from "react";
 
 import { useOrders, useUpdateOrderStatus } from "@workspace/client";
 
 import type { ApiOrder, ApiOrderStatus, OrderStatus, RestaurantOrder } from "@workspace/client";
-import type { ComponentProps } from "react";
 
 import { ConnectedNewOrderDialog } from "@/components/connected/connected-new-order-dialog/connected-new-order-dialog.organism";
 import { SheetOrders } from "@/components/organisms/sheet-orders/sheet-orders.organism";

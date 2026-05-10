@@ -1,5 +1,5 @@
-import { check, index, integer, pgTable, text, uuid } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
+import { check, index, integer, pgTable, text, uuid } from "drizzle-orm/pg-core";
 
 import { dishesTable } from "@/schemas/dishes/dishes.schema";
 import { menusTable } from "@/schemas/menus/menus.schema";

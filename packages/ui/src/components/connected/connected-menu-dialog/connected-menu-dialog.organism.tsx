@@ -43,7 +43,7 @@ interface ConnectedMenuDialogProps {
 const formatEuro = (cents: number): string => `€${(cents / CENTS_PER_EURO).toFixed(2)}`;
 
 const StepIndicator = ({ current, total }: { current: Step; total: number }): React.JSX.Element => (
-  <div className="flex items-center justify-center gap-xs">
+  <div className="gap-xs flex items-center justify-center">
     {Array.from({ length: total }, (_, i) => {
       const stepNum = (i + 1) as Step;
       const isDone = stepNum < current;
@@ -61,7 +61,7 @@ const StepIndicator = ({ current, total }: { current: Step; total: number }): Re
           )}
           <div
             className={cn(
-              "typo-caption flex size-xl items-center justify-center rounded-full border transition-colors",
+              "typo-caption size-xl flex items-center justify-center rounded-full border transition-colors",
               isActive && "border-primary bg-primary text-primary-foreground",
               isDone && "border-primary bg-primary/20 text-primary",
               !isActive && !isDone && "border-border text-muted-foreground"
@@ -119,7 +119,6 @@ const ConnectedMenuDialog = ({
     setShowSelectedOnly(false);
     createMenu.reset();
     updateMenu.reset();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, menu?.id]);
 
   const dishes: ReadonlyArray<ApiDish> = useMemo(
@@ -433,7 +432,7 @@ const ConnectedMenuDialog = ({
 
           {step === TOTAL_STEPS && (
             <div className="gap-sm flex flex-col">
-              <div className="bg-muted/30 border-border gap-sm flex flex-col rounded-lg border p-md">
+              <div className="bg-muted/30 border-border gap-sm p-md flex flex-col rounded-lg border">
                 <div className="gap-xs flex flex-col">
                   <span className="text-muted-foreground typo-caption">
                     {t("restaurants.menu.menuName")}
@@ -504,7 +503,7 @@ const ConnectedMenuDialog = ({
               ) : null}
 
               {errorMessage ? (
-                <p className="bg-destructive/10 text-destructive typo-caption rounded-md px-sm py-xs">
+                <p className="bg-destructive/10 text-destructive typo-caption px-sm py-xs rounded-md">
                   {errorMessage}
                 </p>
               ) : null}

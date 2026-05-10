@@ -1,4 +1,4 @@
-import type { DishResponseDTO } from "@/dtos/dish/dish.dtos";
+import type { DishResponseDTO } from "@/dtos/dish/dish.dto";
 import type { Dish } from "@workspace/domain";
 
 export class DishMapper {

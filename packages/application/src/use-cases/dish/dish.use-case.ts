@@ -1,7 +1,5 @@
 import { Dish, DishId, DishNotFoundError, Money, RestaurantId } from "@workspace/domain";
 
-import type { IDishRepository } from "@workspace/domain";
-
 import type {
   CreateDishDTO,
   DeleteDishDTO,
@@ -10,7 +8,9 @@ import type {
   ListDishesDTO,
   PaginatedDishesResponseDTO,
   UpdateDishDTO
-} from "@/dtos/dish/dish.dtos";
+} from "@/dtos/dish/dish.dto";
+import type { IDishRepository } from "@workspace/domain";
+
 
 import { DishMapper } from "@/mappers/dish/dish.mapper";
 

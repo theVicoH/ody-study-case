@@ -30,12 +30,19 @@ const HEIGHT_RANGE = 1.6;
 const WIDTH_MIN = 2.8;
 const WIDTH_RANGE = 1.4;
 const TWO_PI = Math.PI * 2;
+const HASH_BUCKET = 100;
+const HASH_HALF = 0.5;
+const ROUND_FACTOR = 100;
+const HASH_BIT_SHIFT_4 = 4;
+const HASH_BIT_SHIFT_8 = 8;
+const HASH_SHIFT = 5;
+const WOBBLE_RANGE = 0.5;
 
 function hashId(id: string): number {
   let hash = 0;
 
   for (let i = 0; i < id.length; i += 1) {
-    hash = ((hash << 5) - hash + id.charCodeAt(i)) | 0;
+    hash = ((hash << HASH_SHIFT) - hash + id.charCodeAt(i)) | 0;
   }
 
   return Math.abs(hash);
@@ -50,26 +57,41 @@ interface ApiRestaurantLike {
   name: string;
 }
 
+const JAPANESE_KEYWORDS = ["sushi", "japan", "ramen", "izakaya", "nippon", "zen"];
+const ITALIAN_KEYWORDS = ["pizza", "italia", "roma", "trattoria", "pasta"];
+const FRENCH_KEYWORDS = ["bistrot", "bistro", "brasserie", "parisien", "français", "francais"];
+const ALL_MODEL_IDS = ["corner-shop", "japanese-street", "japanese-tea-shop"] as const;
+
+function defaultModelForRestaurant(name: string, id: string): string {
+  const lower = name.toLowerCase();
+
+  if (JAPANESE_KEYWORDS.some((k) => lower.includes(k))) return "japanese-tea-shop";
+  if (ITALIAN_KEYWORDS.some((k) => lower.includes(k))) return "corner-shop";
+  if (FRENCH_KEYWORDS.some((k) => lower.includes(k))) return "japanese-street";
+
+  return ALL_MODEL_IDS[hashId(id) % ALL_MODEL_IDS.length]!;
+}
+
 export interface VisualOverrides {
   modelId?: string;
 }
 
 export function deriveRestaurantPosition(id: string, index: number, total: number): RestaurantPosition {
   const angle = total > 0 ? (index / total) * TWO_PI : 0;
-  const wobble = ((hashId(id) % 100) / 100 - 0.5) * 0.5;
+  const wobble = ((hashId(id) % HASH_BUCKET) / HASH_BUCKET - HASH_HALF) * WOBBLE_RANGE;
   const radius = ORBIT_RADIUS + wobble;
 
   return {
-    x: Math.round(Math.cos(angle) * radius * 100) / 100,
-    z: Math.round(Math.sin(angle) * radius * 100) / 100
+    x: Math.round(Math.cos(angle) * radius * ROUND_FACTOR) / ROUND_FACTOR,
+    z: Math.round(Math.sin(angle) * radius * ROUND_FACTOR) / ROUND_FACTOR
   };
 }
 
 export function deriveRestaurantDimensions(id: string): RestaurantDimensions {
   const hash = hashId(id);
-  const width = Math.round((WIDTH_MIN + ((hash % 100) / 100) * WIDTH_RANGE) * 100) / 100;
-  const depth = Math.round((WIDTH_MIN + (((hash >> 4) % 100) / 100) * WIDTH_RANGE) * 100) / 100;
-  const height = Math.round((HEIGHT_MIN + (((hash >> 8) % 100) / 100) * HEIGHT_RANGE) * 100) / 100;
+  const width = Math.round((WIDTH_MIN + ((hash % HASH_BUCKET) / HASH_BUCKET) * WIDTH_RANGE) * ROUND_FACTOR) / ROUND_FACTOR;
+  const depth = Math.round((WIDTH_MIN + (((hash >> HASH_BIT_SHIFT_4) % HASH_BUCKET) / HASH_BUCKET) * WIDTH_RANGE) * ROUND_FACTOR) / ROUND_FACTOR;
+  const height = Math.round((HEIGHT_MIN + (((hash >> HASH_BIT_SHIFT_8) % HASH_BUCKET) / HASH_BUCKET) * HEIGHT_RANGE) * ROUND_FACTOR) / ROUND_FACTOR;
 
   return { width, depth, height };
 }
@@ -92,7 +114,9 @@ export function toVisualRestaurant(
   total: number,
   overrides: VisualOverrides = {}
 ): Restaurant {
-  const model = findModelById(overrides.modelId ?? "corner-shop");
+  const overrideValid = overrides.modelId && ALL_MODEL_IDS.includes(overrides.modelId as typeof ALL_MODEL_IDS[number]);
+  const modelId = overrideValid ? overrides.modelId! : defaultModelForRestaurant(api.name, api.id);
+  const model = findModelById(modelId);
 
   return {
     id: api.id,

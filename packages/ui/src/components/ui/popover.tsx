@@ -27,10 +27,10 @@ const PopoverContent = ({
       <PopoverPrimitive.Popup
         className={cn(
           `bg-popover text-popover-foreground border-border z-50 rounded-2xl border p-2 shadow-xl
-          outline-none
-          data-[ending-style]:opacity-0 data-[ending-style]:scale-95
-          data-[starting-style]:opacity-0 data-[starting-style]:scale-95
-          transition-all duration-150 ease-out`,
+          transition-all
+          duration-150 ease-out
+          outline-none data-[ending-style]:scale-95
+          data-[ending-style]:opacity-0 data-[starting-style]:scale-95 data-[starting-style]:opacity-0`,
           className
         )}
         {...props}

@@ -55,9 +55,7 @@ export interface UseRestaurantStatsReturn {
   isError: boolean;
 }
 
-const toReturn = (
-  query: UseQueryResult<ApiRestaurantStats>
-): UseRestaurantStatsReturn => ({
+const toReturn = (query: UseQueryResult<ApiRestaurantStats>): UseRestaurantStatsReturn => ({
   stats: query.data ? mapApiStatsToDetailed(query.data) : null,
   isLoading: query.isPending,
   isError: query.isError
@@ -88,9 +86,7 @@ export interface UseRestaurantStatsMultiReturn {
   isLoading: boolean;
 }
 
-export const useRestaurantStatsMulti = (
-  restaurantIds: ReadonlyArray<string>
-): UseRestaurantStatsMultiReturn => {
+export const useRestaurantStatsMulti = (restaurantIds: ReadonlyArray<string>): UseRestaurantStatsMultiReturn => {
   const results = useQueries({
     queries: restaurantIds.map((id) => ({
       queryKey: KEYS.one(id),

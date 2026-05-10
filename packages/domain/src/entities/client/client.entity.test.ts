@@ -27,9 +27,7 @@ describe("Client", () => {
   });
 
   test("rejects invalid email", () => {
-    expect(() => Client.create(restaurantId, { ...validProps, email: "not-an-email" })).toThrow(
-      ClientInvalidDataError
-    );
+    expect(() => Client.create(restaurantId, { ...validProps, email: "not-an-email" })).toThrow(ClientInvalidDataError);
   });
 
   test("normalizes empty optional to null", () => {

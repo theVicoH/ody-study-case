@@ -2,10 +2,11 @@ import React, { useRef } from "react";
 
 import { CalendarIcon } from "./calendar.icon";
 
-import { Button } from "@/components/ui/button";
 
 import type { CalendarIconHandle } from "./calendar.icon";
 import type { Meta, StoryObj } from "@storybook/react";
+
+import { Button } from "@/components/ui/button";
 
 const CONTROLLED_SIZE = 40;
 

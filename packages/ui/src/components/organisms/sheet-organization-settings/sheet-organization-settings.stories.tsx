@@ -23,7 +23,10 @@ const LABELS = {
   cancel: "Cancel",
   confirm: "Delete",
   save: "Save changes",
-  saved: "Saved!"
+  saved: "Saved!",
+  deleteOrg: "Delete organization",
+  deleteOrgDesc: "Permanently delete this organization? This action cannot be undone.",
+  dangerZone: "Danger zone"
 };
 
 const RESTAURANTS = [

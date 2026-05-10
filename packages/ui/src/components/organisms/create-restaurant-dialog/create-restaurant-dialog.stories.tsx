@@ -2,11 +2,12 @@ import { useState } from "react";
 
 import { RESTAURANT_MODELS } from "@workspace/client";
 
-import { Button } from "@/components/ui/button";
 
 import { CreateRestaurantDialog } from "./create-restaurant-dialog.organism";
 
 import type { Meta, StoryObj } from "@storybook/react";
+
+import { Button } from "@/components/ui/button";
 
 const meta: Meta<typeof CreateRestaurantDialog> = {
   title: "Components/Organisms/CreateRestaurantDialog",

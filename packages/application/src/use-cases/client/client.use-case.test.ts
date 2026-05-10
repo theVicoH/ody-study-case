@@ -8,7 +8,7 @@ import {
   GetClientUseCase,
   ListClientsUseCase,
   UpdateClientUseCase
-} from "@/use-cases/client/client.use-cases";
+} from "@/use-cases/client/client.use-case";
 
 const restaurantId = "11111111-1111-1111-1111-111111111111";
 
@@ -68,8 +68,6 @@ describe("Client use-cases", () => {
 
     await new DeleteClientUseCase(repo).execute({ id: created.id });
 
-    await expect(new GetClientUseCase(repo).execute({ id: created.id })).rejects.toBeInstanceOf(
-      ClientNotFoundError
-    );
+    await expect(new GetClientUseCase(repo).execute({ id: created.id })).rejects.toBeInstanceOf(ClientNotFoundError);
   });
 });

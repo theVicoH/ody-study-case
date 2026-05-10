@@ -49,11 +49,9 @@ const RestaurantPickerDialog = ({
 
     if (!q) return restaurants;
 
-    return restaurants.filter(
-      (r) =>
-        r.name.toLowerCase().includes(q) ||
-        (r.address ?? "").toLowerCase().includes(q)
-    );
+    return restaurants.filter((r) =>
+      r.name.toLowerCase().includes(q) ||
+        (r.address ?? "").toLowerCase().includes(q));
   }, [restaurants, search]);
 
   const handleConfirm = (): void => {

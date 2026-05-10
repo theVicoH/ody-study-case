@@ -1,8 +1,8 @@
 import React from "react";
+import type { ComponentProps } from "react";
 
 import { useGroupStats, useRestaurantStats } from "@workspace/client";
 
-import type { ComponentProps } from "react";
 
 import { SheetStats } from "@/components/organisms/sheet-stats/sheet-stats.organism";
 import { Skeleton } from "@/components/ui/skeleton";

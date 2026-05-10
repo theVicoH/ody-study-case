@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from "react";
+import type { ComponentProps } from "react";
 
 import {
   useClients,
@@ -12,7 +13,6 @@ import { Skeleton } from "@workspace/ui/components/ui/skeleton";
 
 import type { ApiClient, ApiOrder, RestaurantCustomer } from "@workspace/client";
 import type { NewCustomerFormValues } from "@workspace/ui/components/organisms/new-customer-dialog/new-customer-dialog.organism";
-import type { ComponentProps } from "react";
 
 const CENTS_PER_EURO = 100;
 const PAGE_SIZE = 20;

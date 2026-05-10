@@ -161,8 +161,7 @@ const ConnectedNewOrderDialog = ({
     if (!q) return clients;
 
     return clients.filter((c) =>
-      `${c.firstName} ${c.lastName} ${c.email ?? ""} ${c.phone ?? ""}`.toLowerCase().includes(q)
-    );
+      `${c.firstName} ${c.lastName} ${c.email ?? ""} ${c.phone ?? ""}`.toLowerCase().includes(q));
   }, [clients, clientQuery]);
 
   type CatalogEntry = { kind: "menu" | "dish"; id: string; name: string; priceCents: number };
@@ -236,8 +235,7 @@ const ConnectedNewOrderDialog = ({
 
       if (existing) {
         return prev.map((it) =>
-          it.uid === existing.uid ? { ...it, quantity: it.quantity + 1 } : it
-        );
+          it.uid === existing.uid ? { ...it, quantity: it.quantity + 1 } : it);
       }
 
       return [
@@ -334,7 +332,7 @@ const ConnectedNewOrderDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="gap-md flex max-h-[90vh] w-[34rem] flex-col overflow-hidden">
+      <DialogContent className="gap-md flex max-h-[90vh] w-[34rem] flex-col overflow-hidden md:w-[44rem] lg:w-[52rem]">
         <DialogHeader>
           <div className="flex items-center justify-between gap-2">
             <DialogTitle>{labels.title}</DialogTitle>
@@ -352,7 +350,7 @@ const ConnectedNewOrderDialog = ({
         <form
           id="connected-new-order-form"
           onSubmit={handleSubmit}
-          className="gap-sm flex min-h-0 flex-1 flex-col overflow-auto"
+          className="gap-sm scrollbar-hidden flex min-h-0 flex-1 flex-col overflow-auto"
         >
           {step === 1 && (
             <Tabs
@@ -375,7 +373,7 @@ const ConnectedNewOrderDialog = ({
                   onChange={(e) => setClientQuery(e.target.value)}
                   placeholder={labels.clientSearchPlaceholder}
                 />
-                <div className="border-border max-h-72 overflow-y-auto rounded-md border">
+                <div className="border-border scrollbar-hidden max-h-72 overflow-y-auto rounded-md border">
                   <Table>
                     <TableBody>
                       <ClientRow
@@ -464,7 +462,7 @@ const ConnectedNewOrderDialog = ({
                 onChange={(e) => setCatalogQuery(e.target.value)}
                 placeholder={labels.itemSearchPlaceholder}
               />
-              <div className="border-border max-h-64 overflow-y-auto rounded-md border">
+              <div className="border-border scrollbar-hidden max-h-64 overflow-y-auto rounded-md border">
                 <Table>
                   <TableHeader>
                     <TableRow>
@@ -498,7 +496,7 @@ const ConnectedNewOrderDialog = ({
                                 </span>
                               </div>
                             </TableCell>
-                            <TableCell className="tabular-nums text-end">
+                            <TableCell className="text-end tabular-nums">
                               {(entry.priceCents / CENTS_PER_EURO).toFixed(2)} €
                             </TableCell>
                             <TableCell className="text-end">

@@ -60,9 +60,7 @@ const CreateSplitDialog = ({
   labels,
   onSubmit
 }: CreateSplitDialogProps): React.JSX.Element => {
-  const [restaurantId, setRestaurantId] = useState<string>(
-    defaultRestaurantId ?? restaurants[0]?.id ?? ""
-  );
+  const [restaurantId, setRestaurantId] = useState<string>(defaultRestaurantId ?? restaurants[0]?.id ?? "");
   const [pageId, setPageId] = useState<string>(defaultPageId ?? pages[0]?.id ?? "");
   const prevOpenRef = useRef(open);
 

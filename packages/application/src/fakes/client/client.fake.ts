@@ -15,9 +15,7 @@ export class FakeClientRepository implements IClientRepository {
   }
 
   async findByRestaurant(restaurantId: RestaurantId, params: PaginationParams): Promise<PaginatedResult<Client>> {
-    const all = Array.from(this.clients.values()).filter(
-      (c) => c.restaurantId.toString() === restaurantId.toString()
-    );
+    const all = Array.from(this.clients.values()).filter((c) => c.restaurantId.toString() === restaurantId.toString());
 
     return this.paginate(all, params);
   }

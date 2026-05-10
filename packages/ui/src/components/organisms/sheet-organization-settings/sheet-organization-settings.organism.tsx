@@ -149,7 +149,7 @@ const SheetOrganizationSettings = ({
               onClick={() => { void handleSave(); }}
               disabled={!isDirty && !saved}
               className={cn(
-                "px-sm py-2xs typo-caption rounded-md transition-all disabled:opacity-40 disabled:cursor-not-allowed",
+                "px-sm py-2xs typo-caption rounded-md transition-all disabled:cursor-not-allowed disabled:opacity-40",
                 saved
                   ? "bg-status-good/20 text-status-good"
                   : "bg-primary text-primary-foreground hover:opacity-90"
@@ -190,7 +190,7 @@ const SheetOrganizationSettings = ({
               {restaurants.map((r) => (
                 <li
                   key={r.id}
-                  className="border-border flex items-center justify-between border-b px-md py-sm last:border-0"
+                  className="border-border px-md py-sm flex items-center justify-between border-b last:border-0"
                 >
                   <div className="gap-2xs flex min-w-0 flex-col">
                     <p className="text-foreground typo-button truncate">{r.name}</p>
@@ -208,7 +208,7 @@ const SheetOrganizationSettings = ({
                         <button
                           type="button"
                           aria-label={labels.deleteRestaurant}
-                          className="text-muted-foreground hover:text-destructive ml-sm size-xl shrink-0 inline-flex items-center justify-center rounded-sm transition-colors"
+                          className="text-muted-foreground hover:text-destructive ml-sm size-xl inline-flex shrink-0 items-center justify-center rounded-sm transition-colors"
                         >
                           <TrashIcon size={TRASH_ICON_SIZE} />
                         </button>

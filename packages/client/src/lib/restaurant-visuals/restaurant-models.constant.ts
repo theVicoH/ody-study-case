@@ -23,12 +23,6 @@ export const RESTAURANT_MODELS: ReadonlyArray<RestaurantModelDef> = [
     label: "Japanese Tea Shop",
     url: "/models/japanese-tea-shop/scene.gltf",
     thumbnail: "/models/japanese-tea-shop/screenshot/screenshot.png"
-  },
-  {
-    id: "sushi-shop",
-    label: "Sushi Shop",
-    url: "/models/sushi-shop/scene-optimized.glb",
-    thumbnail: "/models/sushi-shop/screenshot/screenshot.png"
   }
 ];
 

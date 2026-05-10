@@ -1,4 +1,4 @@
-import type { ClientResponseDTO } from "@/dtos/client/client.dtos";
+import type { ClientResponseDTO } from "@/dtos/client/client.dto";
 import type { Client } from "@workspace/domain";
 
 export class ClientMapper {

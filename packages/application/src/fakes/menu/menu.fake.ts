@@ -15,9 +15,7 @@ export class FakeMenuRepository implements IMenuRepository {
   }
 
   async findByRestaurant(restaurantId: RestaurantId, params: PaginationParams): Promise<PaginatedResult<Menu>> {
-    const all = Array.from(this.menus.values()).filter(
-      (m) => m.restaurantId.toString() === restaurantId.toString()
-    );
+    const all = Array.from(this.menus.values()).filter((m) => m.restaurantId.toString() === restaurantId.toString());
 
     return this.paginate(all, params);
   }

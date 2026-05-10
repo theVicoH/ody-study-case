@@ -59,8 +59,10 @@ const RegisterForm = ({
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const file = event.target.files?.[0];
+
     if (!file) return;
     const reader = new FileReader();
+
     reader.onload = (e) => {
       setImage(e.target?.result as string);
     };
@@ -249,10 +251,10 @@ const RegisterForm = ({
                         disabled={isLoading}
                         aria-invalid={stepError === "birthdayRequired"}
                         className={cn(
-                          `glass-input text-foreground hover:bg-input/50 group inline-flex h-9
-                          w-full items-center justify-between gap-2 rounded-4xl px-3 text-sm
-                          outline-none transition-colors disabled:pointer-events-none disabled:opacity-50
-                          aria-invalid:border-destructive`,
+                          `glass-input text-foreground hover:bg-input/50 group aria-invalid:border-destructive inline-flex
+                          h-9 w-full items-center justify-between gap-2 rounded-4xl px-3
+                          text-sm transition-colors outline-none disabled:pointer-events-none
+                          disabled:opacity-50`,
                           !birthday && "text-muted-foreground"
                         )}
                       >

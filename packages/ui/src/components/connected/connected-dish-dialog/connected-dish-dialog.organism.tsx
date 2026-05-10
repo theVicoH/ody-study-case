@@ -101,7 +101,6 @@ const ConnectedDishDialog = ({
     setUploadError(null);
     createDish.reset();
     updateDish.reset();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, dish?.id]);
 
   const handleOpenChange = (next: boolean): void => {
@@ -343,4 +342,5 @@ const ConnectedDishDialog = ({
 };
 
 export { ConnectedDishDialog };
+
 export type { ConnectedDishDialogProps };

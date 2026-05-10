@@ -50,10 +50,10 @@ const serialize = <T extends { createdAt: Date; updatedAt: Date }>(d: T): Omit<T
   createdAt: string;
   updatedAt: string;
 } => ({
-  ...d,
-  createdAt: d.createdAt.toISOString(),
-  updatedAt: d.updatedAt.toISOString()
-});
+    ...d,
+    createdAt: d.createdAt.toISOString(),
+    updatedAt: d.updatedAt.toISOString()
+  });
 
 export const dishesRouter = new OpenAPIHono<AppEnv>()
   .openapi(

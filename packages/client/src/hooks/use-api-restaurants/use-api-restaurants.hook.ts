@@ -4,13 +4,27 @@ import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 import type { ApiOrganization, ApiRestaurant, ApiUser, CreateRestaurantInput } from "@/types/api/api.types";
-import type { Restaurant, RestaurantSettings } from "@/types/restaurant/restaurant.types";
+import type { Restaurant, RestaurantPerformance, RestaurantSettings } from "@/types/restaurant/restaurant.types";
 
+import { useRestaurantStatsMulti } from "@/hooks/use-restaurant-stats/use-restaurant-stats.hook";
 import { restaurantModelsStorage } from "@/lib/restaurant-visuals/restaurant-models-storage.util";
 import { toVisualRestaurant } from "@/lib/restaurant-visuals/restaurant-visuals.util";
 import { authApi } from "@/services/api/auth-api/auth-api.service";
 import { organizationsApi } from "@/services/api/organizations-api/organizations-api.service";
 import { restaurantsApi } from "@/services/api/restaurants-api/restaurants-api.service";
+
+const PERF_GOOD_THRESHOLD = 5;
+const PERF_BAD_THRESHOLD = -PERF_GOOD_THRESHOLD;
+
+const performanceFromTrend = (trend: string): RestaurantPerformance => {
+  const numeric = Number.parseFloat(trend.replace(/[^\d.\-−]/g, "").replace("−", "-"));
+
+  if (Number.isNaN(numeric)) return "warn";
+  if (numeric >= PERF_GOOD_THRESHOLD) return "good";
+  if (numeric <= PERF_BAD_THRESHOLD) return "bad";
+
+  return "warn";
+};
 
 
 export interface UseApiRestaurantsReturn {
@@ -92,11 +106,19 @@ export function useApiRestaurants(): UseApiRestaurantsReturn {
     void load();
   }, [load]);
 
+  const restaurantIds = useMemo(() => apiRestaurants.map((r) => r.id), [apiRestaurants]);
+  const { byRestaurant: statsById } = useRestaurantStatsMulti(restaurantIds);
+
   const restaurants = useMemo<ReadonlyArray<Restaurant>>(() => {
     const total = apiRestaurants.length;
 
-    return apiRestaurants.map((r, index) => toVisualRestaurant(r, index, total, { modelId: modelMap[r.id] }));
-  }, [apiRestaurants, modelMap]);
+    return apiRestaurants.map((r, index) => {
+      const visual = toVisualRestaurant(r, index, total, { modelId: modelMap[r.id] });
+      const stats = statsById.get(r.id);
+
+      return stats ? { ...visual, performance: performanceFromTrend(stats.trend) } : visual;
+    });
+  }, [apiRestaurants, modelMap, statsById]);
 
   const settingsForId = useCallback((id: string): RestaurantSettings | null => {
     const found = apiRestaurants.find((r) => r.id === id);

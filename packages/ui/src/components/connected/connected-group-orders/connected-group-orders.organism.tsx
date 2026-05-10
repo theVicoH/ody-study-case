@@ -1,10 +1,10 @@
 import React, { useMemo, useState } from "react";
+import type { ComponentProps } from "react";
 
 import { useOrdersMulti, useUpdateOrderStatusForAny } from "@workspace/client";
 
 import type { ApiOrder, ApiOrderStatus, OrderStatus, RestaurantOrder } from "@workspace/client";
 import type { RestaurantPickerDialogLabels, RestaurantPickerOption } from "@workspace/ui/components/organisms/restaurant-picker-dialog/restaurant-picker-dialog.organism";
-import type { ComponentProps } from "react";
 
 import { ConnectedNewOrderDialog } from "@/components/connected/connected-new-order-dialog/connected-new-order-dialog.organism";
 import { RestaurantPickerDialog } from "@/components/organisms/restaurant-picker-dialog/restaurant-picker-dialog.organism";

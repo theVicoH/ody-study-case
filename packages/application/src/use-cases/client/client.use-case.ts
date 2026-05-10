@@ -1,7 +1,5 @@
 import { Client, ClientId, ClientNotFoundError, RestaurantId } from "@workspace/domain";
 
-import type { ClientTag, IClientRepository, IOrderRepository } from "@workspace/domain";
-
 import type {
   ClientResponseDTO,
   CreateClientDTO,
@@ -10,7 +8,9 @@ import type {
   ListClientsDTO,
   PaginatedClientsResponseDTO,
   UpdateClientDTO
-} from "@/dtos/client/client.dtos";
+} from "@/dtos/client/client.dto";
+import type { ClientTag, IClientRepository, IOrderRepository } from "@workspace/domain";
+
 
 import { ClientMapper } from "@/mappers/client/client.mapper";
 
