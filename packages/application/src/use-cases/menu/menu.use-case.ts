@@ -1,7 +1,5 @@
 import { DishId, Menu, MenuId, MenuNotFoundError, Money, RestaurantId } from "@workspace/domain";
 
-import type { IMenuRepository } from "@workspace/domain";
-
 import type {
   CreateMenuDTO,
   DeleteMenuDTO,
@@ -10,7 +8,9 @@ import type {
   MenuResponseDTO,
   PaginatedMenusResponseDTO,
   UpdateMenuDTO
-} from "@/dtos/menu/menu.dtos";
+} from "@/dtos/menu/menu.dto";
+import type { IMenuRepository } from "@workspace/domain";
+
 
 import { MenuMapper } from "@/mappers/menu/menu.mapper";
 

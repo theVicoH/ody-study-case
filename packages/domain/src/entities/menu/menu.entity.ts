@@ -1,9 +1,10 @@
-import { MenuInvalidDataError } from "@/errors/menu/menu-invalid-data/menu-invalid-data.error";
+import type { DishId } from "@/value-objects/dish/dish-id/dish-id.value-object";
+import type { RestaurantId } from "@/value-objects/restaurant/restaurant-id/restaurant-id.value-object";
+import type { Money } from "@/value-objects/shared/money/money.value-object";
 
-import { DishId } from "@/value-objects/dish/dish-id/dish-id.value-object";
+import { MenuInvalidDataError } from "@/errors/menu/menu-invalid-data/menu-invalid-data.error";
 import { MenuId } from "@/value-objects/menu/menu-id/menu-id.value-object";
-import { Money } from "@/value-objects/shared/money/money.value-object";
-import { RestaurantId } from "@/value-objects/restaurant/restaurant-id/restaurant-id.value-object";
+
 
 export interface MenuProps {
   name: string;

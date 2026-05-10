@@ -2,8 +2,8 @@ import { describe, expect, test } from "vitest";
 
 import { Dish } from "@/entities/dish/dish.entity";
 import { DishInvalidDataError } from "@/errors/dish/dish-invalid-data/dish-invalid-data.error";
-import { Money } from "@/value-objects/shared/money/money.value-object";
 import { RestaurantId } from "@/value-objects/restaurant/restaurant-id/restaurant-id.value-object";
+import { Money } from "@/value-objects/shared/money/money.value-object";
 
 const restaurantId = RestaurantId.generate();
 const baseProps = {

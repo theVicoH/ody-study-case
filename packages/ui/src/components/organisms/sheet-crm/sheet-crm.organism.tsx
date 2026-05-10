@@ -206,13 +206,13 @@ const SheetCrm = ({
       {renderCreateDialog
         ? renderCreateDialog({ open: createOpen, onOpenChange: setCreateOpen })
         : onCreateCustomer ? (
-            <NewCustomerDialog
-              open={createOpen}
-              onOpenChange={setCreateOpen}
-              labels={labels.newCustomerDialog}
-              onSubmit={handleCreate}
-            />
-          ) : null}
+          <NewCustomerDialog
+            open={createOpen}
+            onOpenChange={setCreateOpen}
+            labels={labels.newCustomerDialog}
+            onSubmit={handleCreate}
+          />
+        ) : null}
 
       {onUpdateCustomer ? (
         <NewCustomerDialog

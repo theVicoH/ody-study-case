@@ -1,10 +1,11 @@
 import { useState } from "react";
 
-import { Button } from "@/components/ui/button";
 
 import { CreateOrganizationDialog } from "./create-organization-dialog.organism";
 
 import type { Meta, StoryObj } from "@storybook/react";
+
+import { Button } from "@/components/ui/button";
 
 const meta: Meta<typeof CreateOrganizationDialog> = {
   title: "Components/Organisms/CreateOrganizationDialog",

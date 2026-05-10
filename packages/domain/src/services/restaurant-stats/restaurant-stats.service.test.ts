@@ -1,10 +1,13 @@
 import { describe, expect, test } from "vitest";
 
-import { restaurantStatsCalculator } from "@/services/restaurant-stats/restaurant-stats.calculator";
+import type { StatsOrderInput } from "@/services/restaurant-stats/restaurant-stats.service";
 
-import type { StatsOrderInput } from "@/services/restaurant-stats/restaurant-stats.calculator";
+import { restaurantStatsCalculator } from "@/services/restaurant-stats/restaurant-stats.service";
+
 
 const NOW = new Date("2026-05-10T15:00:00Z");
+const FIVE_DAYS = 5;
+const TEN_DAYS = 10;
 
 const order = (overrides: Partial<StatsOrderInput> = {}): StatsOrderInput => ({
   placedAt: NOW,
@@ -106,9 +109,7 @@ describe("restaurantStatsCalculator", () => {
           ]
         }),
         order({
-          items: [
-            { refKind: "dish", refId: "d1", nameSnapshot: "A", category: "x", unitPriceCents: 100, quantity: 2 }
-          ]
+          items: [{ refKind: "dish", refId: "d1", nameSnapshot: "A", category: "x", unitPriceCents: 100, quantity: 2 }]
         })
       ],
       totalTables: 0,
@@ -134,8 +135,12 @@ describe("restaurantStatsCalculator", () => {
   });
 
   test("trend computes pct change between last 7d and prior 7d", () => {
-    const fiveDaysAgo = new Date(NOW); fiveDaysAgo.setDate(fiveDaysAgo.getDate() - 5);
-    const tenDaysAgo = new Date(NOW); tenDaysAgo.setDate(tenDaysAgo.getDate() - 10);
+    const fiveDaysAgo = new Date(NOW);
+
+    fiveDaysAgo.setDate(fiveDaysAgo.getDate() - FIVE_DAYS);
+    const tenDaysAgo = new Date(NOW);
+
+    tenDaysAgo.setDate(tenDaysAgo.getDate() - TEN_DAYS);
 
     const snap = restaurantStatsCalculator.calculate({
       orders: [

@@ -12,8 +12,6 @@ import {
   RestaurantId
 } from "@workspace/domain";
 
-import type { IDishRepository, IMenuRepository, IOrderRepository, OrderItemRef } from "@workspace/domain";
-
 import type {
   CreateOrderDTO,
   CreateOrderItemDTO,
@@ -23,7 +21,9 @@ import type {
   OrderResponseDTO,
   PaginatedOrdersResponseDTO,
   UpdateOrderStatusDTO
-} from "@/dtos/order/order.dtos";
+} from "@/dtos/order/order.dto";
+import type { IDishRepository, IMenuRepository, IOrderRepository, OrderItemRef } from "@workspace/domain";
+
 
 import { OrderMapper } from "@/mappers/order/order.mapper";
 

@@ -91,17 +91,15 @@ export class DrizzleOrderRepository implements IOrderRepository {
       await tx.delete(orderItemsTable).where(eq(orderItemsTable.orderId, id));
 
       if (order.props.items.length > 0) {
-        await tx.insert(orderItemsTable).values(
-          order.props.items.map((item) => ({
-            id: item.id.toString(),
-            orderId: id,
-            menuId: item.props.ref.kind === "menu" ? item.props.ref.menuId.toString() : null,
-            dishId: item.props.ref.kind === "dish" ? item.props.ref.dishId.toString() : null,
-            nameSnapshot: item.props.nameSnapshot,
-            unitPriceCents: item.props.unitPrice.toCents(),
-            quantity: item.props.quantity
-          }))
-        );
+        await tx.insert(orderItemsTable).values(order.props.items.map((item) => ({
+          id: item.id.toString(),
+          orderId: id,
+          menuId: item.props.ref.kind === "menu" ? item.props.ref.menuId.toString() : null,
+          dishId: item.props.ref.kind === "dish" ? item.props.ref.dishId.toString() : null,
+          nameSnapshot: item.props.nameSnapshot,
+          unitPriceCents: item.props.unitPrice.toCents(),
+          quantity: item.props.quantity
+        })));
       }
     });
   }

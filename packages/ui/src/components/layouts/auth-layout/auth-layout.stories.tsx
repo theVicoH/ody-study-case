@@ -1,8 +1,9 @@
 import React from "react";
 
+import type { Meta, StoryObj } from "@storybook/react";
+
 import { AuthLayout } from "@/components/layouts/auth-layout/auth-layout.layout";
 
-import type { Meta, StoryObj } from "@storybook/react";
 
 const meta: Meta<typeof AuthLayout> = {
   title: "Components/Layouts/AuthLayout",

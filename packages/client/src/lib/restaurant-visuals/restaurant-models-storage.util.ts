@@ -20,7 +20,7 @@ function write(map: ModelMap): void {
   try {
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(map));
   } catch {
-    /* ignore quota / private mode */
+    // FIXME: ignore quota / private mode
   }
 }
 

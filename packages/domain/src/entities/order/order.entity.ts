@@ -1,10 +1,11 @@
-import { OrderInvalidDataError } from "@/errors/order/order-invalid-data/order-invalid-data.error";
 
-import { OrderItem } from "@/entities/order/order-item.entity";
-import { ClientId } from "@/value-objects/client/client-id/client-id.value-object";
-import { Money } from "@/value-objects/shared/money/money.value-object";
+import type { OrderItem } from "@/entities/order/order-item.entity";
+import type { ClientId } from "@/value-objects/client/client-id/client-id.value-object";
+import type { RestaurantId } from "@/value-objects/restaurant/restaurant-id/restaurant-id.value-object";
+
+import { OrderInvalidDataError } from "@/errors/order/order-invalid-data/order-invalid-data.error";
 import { OrderId } from "@/value-objects/order/order-id/order-id.value-object";
-import { RestaurantId } from "@/value-objects/restaurant/restaurant-id/restaurant-id.value-object";
+import { Money } from "@/value-objects/shared/money/money.value-object";
 
 export const ORDER_STATUS = {
   PENDING: "pending",

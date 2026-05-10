@@ -1,4 +1,4 @@
-import type { OrderItemResponseDTO, OrderResponseDTO } from "@/dtos/order/order.dtos";
+import type { OrderItemResponseDTO, OrderResponseDTO } from "@/dtos/order/order.dto";
 import type { Order, OrderItem } from "@workspace/domain";
 
 export class OrderMapper {

@@ -79,7 +79,7 @@ bun --filter api dev      # http://localhost:3001
 
 - **Frontend** : http://localhost:3000
 - **API** : http://localhost:3001
-- **API docs (Scalar)** : http://localhost:3001/reference
+- **API docs (Scalar)** : http://localhost:3001/docs
 - **Storybook** : http://localhost:6006 (`bun run storybook`)
 - **Drizzle Studio** : `bun --filter @workspace/database db:studio`
 
@@ -104,6 +104,16 @@ bun --filter @workspace/database db:generate   # Générer une migration
 bun --filter @workspace/database db:migrate    # Appliquer les migrations
 bun --filter @workspace/database db:studio     # GUI Drizzle Studio
 ```
+
+### Seed de démonstration
+
+Peuple la base avec un utilisateur demo + 3 restaurants (tables, plats, menus, clients, commandes) :
+
+```bash
+bun run apps/api/scripts/seed-demo.ts
+```
+
+> Identifiants créés : `demo@gmail.com` / `Demo1234!`
 
 ## Variables d'environnement
 

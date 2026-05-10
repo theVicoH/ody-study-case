@@ -9,7 +9,7 @@ import {
   GetOrderUseCase,
   ListOrdersUseCase,
   UpdateOrderStatusUseCase
-} from "@/use-cases/order/order.use-cases";
+} from "@/use-cases/order/order.use-case";
 
 const restaurantIdRaw = "22222222-2222-2222-2222-222222222222";
 const restaurantId = RestaurantId.create(restaurantIdRaw);
@@ -71,12 +71,10 @@ describe("Order use-cases", () => {
   test("create rejects unknown dish", async () => {
     const { dishRepo, menuRepo, orderRepo } = await seed();
 
-    await expect(
-      new CreateOrderUseCase(orderRepo, dishRepo, menuRepo).execute({
-        restaurantId: restaurantIdRaw,
-        items: [{ kind: "dish", refId: "33333333-3333-3333-3333-333333333333", quantity: 1 }]
-      })
-    ).rejects.toBeInstanceOf(DishNotFoundError);
+    await expect(new CreateOrderUseCase(orderRepo, dishRepo, menuRepo).execute({
+      restaurantId: restaurantIdRaw,
+      items: [{ kind: "dish", refId: "33333333-3333-3333-3333-333333333333", quantity: 1 }]
+    })).rejects.toBeInstanceOf(DishNotFoundError);
   });
 
   test("update status", async () => {

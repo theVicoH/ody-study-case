@@ -1,5 +1,7 @@
 import React, { useRef } from "react";
 
+import type { PlusIconHandle } from "@/components/icons/plus/plus.icon";
+
 import { Muted } from "@/components/atoms/typography/typography.atom";
 import { PlusIcon } from "@/components/icons/plus/plus.icon";
 import { KpiCard } from "@/components/molecules/kpi-card/kpi-card.molecule";
@@ -14,7 +16,6 @@ import {
   CardTitle
 } from "@/components/ui/card";
 
-import type { PlusIconHandle } from "@/components/icons/plus/plus.icon";
 
 const ADD_RESTAURANT_ICON_SIZE = 16;
 
@@ -75,85 +76,85 @@ const SheetGroupOverview = ({
   const plusIconRef = useRef<PlusIconHandle>(null);
 
   return (
-  <>
-    <div className="gap-sm grid grid-cols-2">
-      <KpiCard variant="subtle" label={labels.restaurants} value={total} />
-      <KpiCard
-        variant="subtle"
-        label={labels.performing}
-        value={good}
-        trend={labels.performingTrend}
-        trendDirection="up"
-      />
-      {totalRevenue !== undefined && (
+    <>
+      <div className="gap-sm grid grid-cols-2">
+        <KpiCard variant="subtle" label={labels.restaurants} value={total} />
         <KpiCard
           variant="subtle"
-          label={labels.groupRevenue}
-          value={`€${totalRevenue.toLocaleString("fr-FR")}`}
-          className="col-span-2"
+          label={labels.performing}
+          value={good}
+          trend={labels.performingTrend}
+          trendDirection="up"
         />
-      )}
-    </div>
-
-    <Card>
-      <CardHeader className="border-b py-sm">
-        <CardTitle>{labels.perfBreakdown}</CardTitle>
-        <CardAction>
-          <Muted>{labels.today}</Muted>
-        </CardAction>
-      </CardHeader>
-      <CardContent className="py-sm">
-        <div className="gap-sm grid grid-cols-3">
-          <PerfSummaryCell value={good} label={labels.good} tone="good" className="p-sm" />
-          <PerfSummaryCell value={warn} label={labels.warn} tone="warn" className="p-sm" />
-          <PerfSummaryCell value={bad} label={labels.bad} tone="bad" className="p-sm" />
-        </div>
-      </CardContent>
-    </Card>
-
-    {restaurants && restaurants.length > 0 && (
-      <div className="gap-xs flex flex-col">
-        <div className="flex items-center justify-between px-2xs">
-          <p className="text-muted-foreground typo-overline">{labels.allRestaurants}</p>
-          {onAddRestaurant && labels.addRestaurant ? (
-            <Button
-              size="sm"
-              onClick={onAddRestaurant}
-              onMouseEnter={() => plusIconRef.current?.startAnimation()}
-              onMouseLeave={() => plusIconRef.current?.stopAnimation()}
-            >
-              <PlusIcon
-                ref={plusIconRef}
-                size={ADD_RESTAURANT_ICON_SIZE}
-                isAnimated={false}
-                data-icon="inline-start"
-              />
-              <span className="typo-body-sm">{labels.addRestaurant}</span>
-            </Button>
-          ) : null}
-        </div>
-        <div className="h-full">
-          <RestaurantsPerfTable
-            restaurants={restaurants}
-            pageSize={PERF_TABLE_PAGE_SIZE}
-            labels={{
-              colStatus: labels.colStatus,
-              colRestaurant: labels.colRestaurant,
-              colTrend: labels.colTrend,
-              colRevenue: labels.colRevenue,
-              empty: labels.empty,
-              previous: labels.paginationPrev,
-              next: labels.paginationNext,
-              filterAll: labels.filterAll,
-              perfGood: labels.good,
-              perfWarn: labels.warn,
-              perfBad: labels.bad
-            }}
+        {totalRevenue !== undefined && (
+          <KpiCard
+            variant="subtle"
+            label={labels.groupRevenue}
+            value={`€${totalRevenue.toLocaleString("fr-FR")}`}
+            className="col-span-2"
           />
-        </div>
+        )}
       </div>
-    )}
-  </>
+
+      <Card>
+        <CardHeader className="py-sm border-b">
+          <CardTitle>{labels.perfBreakdown}</CardTitle>
+          <CardAction>
+            <Muted>{labels.today}</Muted>
+          </CardAction>
+        </CardHeader>
+        <CardContent className="py-sm">
+          <div className="gap-sm grid grid-cols-3">
+            <PerfSummaryCell value={good} label={labels.good} tone="good" className="p-sm" />
+            <PerfSummaryCell value={warn} label={labels.warn} tone="warn" className="p-sm" />
+            <PerfSummaryCell value={bad} label={labels.bad} tone="bad" className="p-sm" />
+          </div>
+        </CardContent>
+      </Card>
+
+      {restaurants && restaurants.length > 0 && (
+        <div className="gap-xs flex flex-col">
+          <div className="px-2xs flex items-center justify-between">
+            <p className="text-muted-foreground typo-overline">{labels.allRestaurants}</p>
+            {onAddRestaurant && labels.addRestaurant ? (
+              <Button
+                size="sm"
+                onClick={onAddRestaurant}
+                onMouseEnter={() => plusIconRef.current?.startAnimation()}
+                onMouseLeave={() => plusIconRef.current?.stopAnimation()}
+              >
+                <PlusIcon
+                  ref={plusIconRef}
+                  size={ADD_RESTAURANT_ICON_SIZE}
+                  isAnimated={false}
+                  data-icon="inline-start"
+                />
+                <span className="typo-body-sm">{labels.addRestaurant}</span>
+              </Button>
+            ) : null}
+          </div>
+          <div className="h-full">
+            <RestaurantsPerfTable
+              restaurants={restaurants}
+              pageSize={PERF_TABLE_PAGE_SIZE}
+              labels={{
+                colStatus: labels.colStatus,
+                colRestaurant: labels.colRestaurant,
+                colTrend: labels.colTrend,
+                colRevenue: labels.colRevenue,
+                empty: labels.empty,
+                previous: labels.paginationPrev,
+                next: labels.paginationNext,
+                filterAll: labels.filterAll,
+                perfGood: labels.good,
+                perfWarn: labels.warn,
+                perfBad: labels.bad
+              }}
+            />
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 

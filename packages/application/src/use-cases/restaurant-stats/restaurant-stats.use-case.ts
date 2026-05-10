@@ -1,12 +1,12 @@
 import { RestaurantId, restaurantStatsCalculator } from "@workspace/domain";
 
-import type { IRestaurantStatsRepository } from "@workspace/domain";
-
 import type {
   GetGroupStatsDTO,
   GetRestaurantStatsDTO,
   RestaurantStatsResponseDTO
-} from "@/dtos/restaurant-stats/restaurant-stats.dtos";
+} from "@/dtos/restaurant-stats/restaurant-stats.dto";
+import type { IRestaurantStatsRepository } from "@workspace/domain";
+
 
 import { RestaurantStatsMapper } from "@/mappers/restaurant-stats/restaurant-stats.mapper";
 

@@ -46,10 +46,10 @@ const serialize = <T extends { createdAt: Date; updatedAt: Date }>(c: T): Omit<T
   createdAt: string;
   updatedAt: string;
 } => ({
-  ...c,
-  createdAt: c.createdAt.toISOString(),
-  updatedAt: c.updatedAt.toISOString()
-});
+    ...c,
+    createdAt: c.createdAt.toISOString(),
+    updatedAt: c.updatedAt.toISOString()
+  });
 
 export const clientsRouter = new OpenAPIHono<AppEnv>()
   .openapi(

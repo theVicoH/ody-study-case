@@ -1,4 +1,4 @@
-import type { RestaurantStatsResponseDTO } from "@/dtos/restaurant-stats/restaurant-stats.dtos";
+import type { RestaurantStatsResponseDTO } from "@/dtos/restaurant-stats/restaurant-stats.dto";
 import type { RestaurantStatsSnapshot } from "@workspace/domain";
 
 export const RestaurantStatsMapper = {

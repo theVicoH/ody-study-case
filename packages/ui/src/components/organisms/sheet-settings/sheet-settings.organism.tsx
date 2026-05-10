@@ -137,13 +137,13 @@ const TableDialog = ({
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState<TableFormState>(initial
     ? {
-        number: String(initial.number),
-        name: initial.name ?? "",
-        capacity: String(initial.capacity),
-        zone: initial.zone,
-        status: initial.status,
-        isActive: initial.isActive
-      }
+      number: String(initial.number),
+      name: initial.name ?? "",
+      capacity: String(initial.capacity),
+      zone: initial.zone,
+      status: initial.status,
+      isActive: initial.isActive
+    }
     : DEFAULT_FORM);
 
   const handleOpen = (v: boolean): void => {
@@ -552,9 +552,7 @@ const SheetSettings = ({
     setTestMode(settings.testMode);
   }, [settings]);
 
-  const [localTables, setLocalTables] = useState<ReadonlyArray<SettingsTableValue>>(
-    fallbackTablesToValues(legacyTables)
-  );
+  const [localTables, setLocalTables] = useState<ReadonlyArray<SettingsTableValue>>(fallbackTablesToValues(legacyTables));
   const tablesSource: ReadonlyArray<SettingsTableValue> = tablesPaged ?? localTables;
 
   const handleSave = async (): Promise<void> => {
@@ -630,7 +628,6 @@ const SheetSettings = ({
     confirm: labels.confirm,
     zoneLabels,
     statusLabels
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }), [labels]);
 
   const currentPage = tablesPage ?? 1;
@@ -648,7 +645,7 @@ const SheetSettings = ({
               onClick={() => { void handleSave(); }}
               disabled={!isGeneralDirty && !saved}
               className={cn(
-                "px-sm py-2xs typo-caption rounded-md transition-all disabled:opacity-40 disabled:cursor-not-allowed",
+                "px-sm py-2xs typo-caption rounded-md transition-all disabled:cursor-not-allowed disabled:opacity-40",
                 saved
                   ? "bg-status-good/20 text-status-good"
                   : "bg-primary text-primary-foreground hover:opacity-90"
@@ -696,7 +693,7 @@ const SheetSettings = ({
                 onClick={() => { void handleSaveHours(); }}
                 disabled={!isHoursDirty && !hoursSaved}
                 className={cn(
-                  "px-sm py-2xs typo-caption rounded-md transition-all disabled:opacity-40 disabled:cursor-not-allowed",
+                  "px-sm py-2xs typo-caption rounded-md transition-all disabled:cursor-not-allowed disabled:opacity-40",
                   hoursSaved
                     ? "bg-status-good/20 text-status-good"
                     : "border-border text-foreground hover:bg-muted/50 border bg-transparent"
