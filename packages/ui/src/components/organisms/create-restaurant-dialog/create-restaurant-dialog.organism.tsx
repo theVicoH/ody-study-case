@@ -146,6 +146,14 @@ const CreateRestaurantDialog = ({
 
   const dayLabels = labels.dayLabels ?? DEFAULT_DAY_LABELS;
 
+  const covers = parseInt(maxCovers, 10);
+  const isFormValid =
+    name.trim().length >= MIN_NAME_LENGTH &&
+    address.trim().length >= MIN_ADDRESS_LENGTH &&
+    phone.trim().length > 0 &&
+    !Number.isNaN(covers) &&
+    covers > 0;
+
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="w-[36rem] max-w-[calc(100vw_-_2rem)] max-h-[calc(100vh_-_2rem)] overflow-y-auto">
@@ -276,7 +284,7 @@ const CreateRestaurantDialog = ({
           <DialogClose render={<Button type="button" variant="outline" disabled={loading} />}>
             {labels.cancel}
           </DialogClose>
-          <Button type="submit" form="create-restaurant-form" disabled={loading}>
+          <Button type="submit" form="create-restaurant-form" disabled={loading || !isFormValid}>
             {labels.submit}
           </Button>
         </div>
