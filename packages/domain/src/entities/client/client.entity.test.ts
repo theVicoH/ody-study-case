@@ -10,7 +10,8 @@ const validProps = {
   lastName: "Dupont",
   email: "a@b.cd",
   phone: "+33 6 00 00 00 00",
-  notes: null
+  notes: null,
+  tag: "New" as const
 };
 
 describe("Client", () => {

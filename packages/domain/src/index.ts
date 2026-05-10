@@ -60,7 +60,9 @@ export { InvalidMoneyError } from "@/errors/shared/invalid-money/invalid-money.e
 
 export { Client } from "@/entities/client/client.entity";
 
-export type { ClientProps } from "@/entities/client/client.entity";
+export type { ClientProps, ClientTag } from "@/entities/client/client.entity";
+
+export { VALID_TAGS as VALID_CLIENT_TAGS } from "@/entities/client/client.entity";
 
 export { ClientId } from "@/value-objects/client/client-id/client-id.value-object";
 
@@ -119,3 +121,23 @@ export { OrderInvalidIdError } from "@/errors/order/order-invalid-id/order-inval
 export { OrderInvalidDataError } from "@/errors/order/order-invalid-data/order-invalid-data.error";
 
 export { OrderNotFoundError } from "@/errors/order/order-not-found/order-not-found.error";
+
+export { RestaurantStatsSnapshot } from "@/value-objects/restaurant-stats/restaurant-stats/restaurant-stats.value-object";
+
+export type {
+  RestaurantStatsSnapshotProps,
+  TopItemSnapshot
+} from "@/value-objects/restaurant-stats/restaurant-stats/restaurant-stats.value-object";
+
+export { restaurantStatsCalculator } from "@/services/restaurant-stats/restaurant-stats.calculator";
+
+export type {
+  RestaurantStatsCalculatorInput,
+  StatsOrderInput,
+  StatsOrderItemInput
+} from "@/services/restaurant-stats/restaurant-stats.calculator";
+
+export type {
+  IRestaurantStatsRepository,
+  RestaurantStatsRawData
+} from "@/repositories/restaurant-stats/restaurant-stats.repository";
