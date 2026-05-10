@@ -31,7 +31,7 @@ export const Default: Story = {
       {
         id: "1",
         name: "Salade niçoise",
-        category: "Entrées",
+        category: "starter",
         price: 12.5,
         available: true,
         image: STORY_IMAGES[0]
@@ -39,7 +39,7 @@ export const Default: Story = {
       {
         id: "2",
         name: "Soupe à l'oignon",
-        category: "Entrées",
+        category: "starter",
         price: 9.0,
         available: true,
         image: STORY_IMAGES[1]
@@ -47,7 +47,7 @@ export const Default: Story = {
       {
         id: "3",
         name: "Entrecôte grillée",
-        category: "Plats",
+        category: "main",
         price: 28.0,
         available: true,
         image: STORY_IMAGES[2]
@@ -55,7 +55,7 @@ export const Default: Story = {
       {
         id: "4",
         name: "Saumon en croûte",
-        category: "Plats",
+        category: "main",
         price: 24.5,
         available: false,
         image: STORY_IMAGES[3]
@@ -63,7 +63,7 @@ export const Default: Story = {
       {
         id: "5",
         name: "Crème brûlée",
-        category: "Desserts",
+        category: "dessert",
         price: 8.0,
         available: true,
         image: STORY_IMAGES[4]
@@ -71,7 +71,7 @@ export const Default: Story = {
       {
         id: "6",
         name: "Moelleux chocolat",
-        category: "Desserts",
+        category: "dessert",
         price: 9.5,
         available: true,
         image: STORY_IMAGES[5]
@@ -79,7 +79,7 @@ export const Default: Story = {
       {
         id: "7",
         name: "Eau minérale",
-        category: "Boissons",
+        category: "drink",
         price: 4.0,
         available: true,
         image: STORY_IMAGES[6]
@@ -87,7 +87,7 @@ export const Default: Story = {
       {
         id: "8",
         name: "Plat du jour",
-        category: "Carte du jour",
+        category: "menu",
         price: 16.0,
         available: true,
         image: STORY_IMAGES[7]

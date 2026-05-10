@@ -24,7 +24,7 @@ const RootComponent = (): React.JSX.Element => {
       </head>
       <body>
         <Outlet />
-        <GridOverlay visible={visible} />
+        <GridOverlay visible={visible} leftOffset={264} />
         <Toaster position="top-center" />
         <Scripts />
       </body>
@@ -45,7 +45,10 @@ export const Route = createRootRouteWithContext<RouterContext>()({
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "Ody" }
     ],
-    links: [{ rel: "stylesheet", href: appCss }]
+    links: [
+      { rel: "stylesheet", href: appCss },
+      { rel: "icon", type: "image/png", href: "/images/logo.png" }
+    ]
   }),
   notFoundComponent: NotFound,
   component: RootComponent

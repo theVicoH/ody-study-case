@@ -66,6 +66,17 @@ const updateRoute = createRoute({
   }
 });
 
+const deleteRoute = createRoute({
+  method: "delete",
+  path: "/{id}",
+  tags,
+  request: { params: organizationParamsSchema },
+  responses: {
+    [HttpStatus.NO_CONTENT]: { description: "Deleted" },
+    [HttpStatus.NOT_FOUND]: { content: { "application/json": { schema: errorSchema } }, description: "Not found" }
+  }
+});
+
 export const organizationsRouter = new OpenAPIHono<AppEnv>()
   .openapi(listRoute, async (c) => {
     const q = c.req.valid("query");
@@ -93,4 +104,11 @@ export const organizationsRouter = new OpenAPIHono<AppEnv>()
     const result = await container.organization.update.execute({ id, ...body });
 
     return c.json(result, HttpStatus.OK);
+  })
+  .openapi(deleteRoute, async (c) => {
+    const { id } = c.req.valid("param");
+
+    await container.organization.delete.execute({ id });
+
+    return c.body(null, HttpStatus.NO_CONTENT);
   });

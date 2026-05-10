@@ -458,14 +458,14 @@ const OpeningHoursEditor = ({ labels, hours, onChange }: OpeningHoursEditorProps
             disabled={!h.isOpen}
             value={h.openTime}
             onChange={(e) => updateDay(h.dayOfWeek, { openTime: e.target.value })}
-            className="w-28"
+            className="w-28 [color-scheme:dark]"
           />
           <Input
             type="time"
             disabled={!h.isOpen}
             value={h.closeTime}
             onChange={(e) => updateDay(h.dayOfWeek, { closeTime: e.target.value })}
-            className="w-28"
+            className="w-28 [color-scheme:dark]"
           />
         </div>
       ))}

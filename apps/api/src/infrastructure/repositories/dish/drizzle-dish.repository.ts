@@ -58,6 +58,7 @@ export class DrizzleDishRepository implements IDishRepository {
       description: dish.props.description,
       priceCents: dish.props.price.toCents(),
       category: dish.props.category,
+      imageUrl: dish.props.imageUrl,
       isActive: dish.props.isActive,
       createdAt: dish.createdAt,
       updatedAt: dish.updatedAt
@@ -73,6 +74,7 @@ export class DrizzleDishRepository implements IDishRepository {
           description: values.description,
           priceCents: values.priceCents,
           category: values.category,
+          imageUrl: values.imageUrl,
           isActive: values.isActive,
           updatedAt: values.updatedAt
         }
@@ -92,6 +94,7 @@ export class DrizzleDishRepository implements IDishRepository {
         description: row.description,
         price: Money.fromCents(row.priceCents),
         category: row.category,
+        imageUrl: row.imageUrl,
         isActive: row.isActive
       },
       row.createdAt,

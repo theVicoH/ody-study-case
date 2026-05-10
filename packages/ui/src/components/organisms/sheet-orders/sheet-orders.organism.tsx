@@ -47,9 +47,17 @@ interface SheetOrdersProps {
   labels: SheetOrdersLabels;
   orders: ReadonlyArray<RestaurantOrder>;
   onCreateOrder?: (values: NewOrderFormValues) => void;
+  onStatusChange?: (orderId: string, status: RestaurantOrder["status"]) => void;
+  renderCreateDialog?: (props: { open: boolean; onOpenChange: (open: boolean) => void }) => React.ReactNode;
 }
 
-const SheetOrders = ({ labels, orders, onCreateOrder }: SheetOrdersProps): React.JSX.Element => {
+const SheetOrders = ({
+  labels,
+  orders,
+  onCreateOrder,
+  onStatusChange,
+  renderCreateDialog
+}: SheetOrdersProps): React.JSX.Element => {
   const [search, setSearch] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [localOrders, setLocalOrders] = useState<ReadonlyArray<RestaurantOrder>>([]);
@@ -150,15 +158,19 @@ const SheetOrders = ({ labels, orders, onCreateOrder }: SheetOrdersProps): React
       </div>
 
       <div className="min-h-0 flex-1">
-        <OrdersTable orders={searchedOrders} labels={tableLabels} />
+        <OrdersTable orders={searchedOrders} labels={tableLabels} onStatusChange={onStatusChange} />
       </div>
 
-      <NewOrderDialog
-        open={dialogOpen}
-        onOpenChange={setDialogOpen}
-        labels={labels.newOrderDialog}
-        onSubmit={handleSubmit}
-      />
+      {renderCreateDialog ? (
+        renderCreateDialog({ open: dialogOpen, onOpenChange: setDialogOpen })
+      ) : (
+        <NewOrderDialog
+          open={dialogOpen}
+          onOpenChange={setDialogOpen}
+          labels={labels.newOrderDialog}
+          onSubmit={handleSubmit}
+        />
+      )}
     </>
   );
 };

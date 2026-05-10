@@ -11,6 +11,7 @@ const baseProps = {
   description: null,
   price: Money.fromCents(1800),
   category: "main",
+  imageUrl: null,
   isActive: true
 };
 

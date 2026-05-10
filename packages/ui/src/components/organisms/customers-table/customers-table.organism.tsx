@@ -3,8 +3,11 @@ import React from "react";
 import type { DataTableColumn } from "@/components/molecules/data-table/data-table.molecule";
 import type { RestaurantCustomer } from "@workspace/client";
 
+import { PencilIcon } from "@/components/icons/pencil/pencil.icon";
+import { TrashIcon } from "@/components/icons/trash/trash.icon";
 import { DataTable } from "@/components/molecules/data-table/data-table.molecule";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 
@@ -50,6 +53,9 @@ interface CustomersTableLabels {
   colVisits: string;
   colSpent: string;
   colTag: string;
+  colActions?: string;
+  edit?: string;
+  delete?: string;
   tagVip: string;
   tagRegular: string;
   tagNew: string;
@@ -60,18 +66,32 @@ interface CustomersTableLabels {
   visitsWord: string;
 }
 
+interface CustomersTableServerPagination {
+  page: number;
+  totalPages: number;
+  onPageChange: (page: number) => void;
+}
+
 interface CustomersTableProps {
   customers: ReadonlyArray<RestaurantCustomer>;
   labels: CustomersTableLabels;
   pageSize?: number;
   className?: string;
+  onEdit?: (customer: RestaurantCustomer) => void;
+  onDelete?: (customer: RestaurantCustomer) => void;
+  serverPagination?: CustomersTableServerPagination;
 }
+
+const ACTION_ICON_SIZE = 14;
 
 const CustomersTable = ({
   customers,
   labels,
   pageSize,
-  className
+  className,
+  onEdit,
+  onDelete,
+  serverPagination
 }: CustomersTableProps): React.JSX.Element => {
   const tagLabels: Record<CustomerTag, string> = {
     VIP: labels.tagVip,
@@ -148,7 +168,40 @@ const CustomersTable = ({
         ],
         allLabel: labels.filterAll
       }
-    }
+    },
+    ...(onEdit ?? onDelete
+      ? [{
+        id: "actions",
+        header: labels.colActions ?? "",
+        align: "end" as const,
+        cell: (c: RestaurantCustomer) => (
+          <div className="gap-xs flex items-center justify-end">
+            {onEdit ? (
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                aria-label={labels.edit ?? ""}
+                onClick={() => onEdit(c)}
+              >
+                <PencilIcon size={ACTION_ICON_SIZE} />
+              </Button>
+            ) : null}
+            {onDelete ? (
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                aria-label={labels.delete ?? ""}
+                onClick={() => onDelete(c)}
+              >
+                <TrashIcon size={ACTION_ICON_SIZE} />
+              </Button>
+            ) : null}
+          </div>
+        )
+      }]
+      : [])
   ];
 
   return (
@@ -158,6 +211,7 @@ const CustomersTable = ({
       rowKey={(c) => c.id}
       pageSize={pageSize}
       className={className}
+      serverPagination={serverPagination}
       labels={{
         empty: labels.empty,
         previous: labels.previous,

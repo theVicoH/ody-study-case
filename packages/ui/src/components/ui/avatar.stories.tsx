@@ -3,7 +3,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "./avatar";
 import type { Meta, StoryObj } from "@storybook/react";
 
 const meta: Meta<typeof Avatar> = {
-  title: "UI/Avatar",
+  title: "Components/Primitives/Avatar",
   component: Avatar
 };
 

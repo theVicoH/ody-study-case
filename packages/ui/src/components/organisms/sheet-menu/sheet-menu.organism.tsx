@@ -42,14 +42,27 @@ const CATEGORY_GRADIENTS = [
 
 const CATEGORIES = [
   "all",
-  "Entrées",
-  "Plats",
-  "Desserts",
-  "Boissons",
-  "Carte du jour"
+  "menu",
+  "starter",
+  "main",
+  "dessert",
+  "drink",
+  "side",
+  "other"
 ] as const;
 
 type CategoryFilter = (typeof CATEGORIES)[number];
+
+const CATEGORY_LABEL_KEYS: Record<CategoryFilter, string> = {
+  all: "restaurants.menu.filterAll",
+  menu: "restaurants.menu.filterMenu",
+  starter: "restaurants.menu.filterStarter",
+  main: "restaurants.menu.filterMain",
+  dessert: "restaurants.menu.filterDessert",
+  drink: "restaurants.menu.filterDrink",
+  side: "restaurants.menu.filterSide",
+  other: "restaurants.menu.filterOther"
+};
 
 const getCategoryGradient = (category: string): string => {
   const index = CATEGORIES.indexOf(category as CategoryFilter);
@@ -60,16 +73,33 @@ const getCategoryGradient = (category: string): string => {
 
 interface SheetMenuProps {
   items: ReadonlyArray<RestaurantMenuItem>;
+  renderCreateDialog?: (props: { open: boolean; onOpenChange: (open: boolean) => void }) => React.ReactNode;
+  renderCreateMenuDialog?: (props: { open: boolean; onOpenChange: (open: boolean) => void }) => React.ReactNode;
+  renderEditDialog?: (props: {
+    item: RestaurantMenuItem;
+    open: boolean;
+    onOpenChange: (open: boolean) => void;
+  }) => React.ReactNode;
+  addMenuLabel?: string;
 }
 
 function buildAvailabilityMap(items: ReadonlyArray<RestaurantMenuItem>): Record<string, boolean> {
   return Object.fromEntries(items.map((item) => [item.id, item.available]));
 }
 
-const SheetMenu = ({ items }: SheetMenuProps): React.JSX.Element => {
+const SheetMenu = ({
+  items,
+  renderCreateDialog,
+  renderCreateMenuDialog,
+  renderEditDialog,
+  addMenuLabel
+}: SheetMenuProps): React.JSX.Element => {
   const { t } = useTranslation("common");
   const [activeCategory, setActiveCategory] = useState<CategoryFilter>("all");
   const [search, setSearch] = useState("");
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [menuDialogOpen, setMenuDialogOpen] = useState(false);
+  const [editingItem, setEditingItem] = useState<RestaurantMenuItem | null>(null);
   const [availability, setAvailability] = useState(() => buildAvailabilityMap(items));
 
   const toggleAvailability = (id: string): void => {
@@ -82,10 +112,15 @@ const SheetMenu = ({ items }: SheetMenuProps): React.JSX.Element => {
   );
 
   const filteredItems = useMemo(() => {
-    let result =
-      activeCategory === "all"
-        ? items
-        : items.filter((item) => item.category === activeCategory);
+    let result: ReadonlyArray<RestaurantMenuItem>;
+
+    if (activeCategory === "all") {
+      result = items;
+    } else if (activeCategory === "menu") {
+      result = items.filter((item) => item.kind === "menu" || item.category === "menu");
+    } else {
+      result = items.filter((item) => item.category === activeCategory);
+    }
 
     const q = search.trim().toLowerCase();
 
@@ -119,7 +154,7 @@ const SheetMenu = ({ items }: SheetMenuProps): React.JSX.Element => {
           variant="subtle"
           label={t("restaurants.menu.availableItems")}
           value={availableCount}
-          trend={`${Math.round((availableCount / items.length) * AVAILABILITY_PERCENT_MULTIPLIER)}%`}
+          trend={`${items.length === 0 ? 0 : Math.round((availableCount / items.length) * AVAILABILITY_PERCENT_MULTIPLIER)}%`}
           trendDirection="up"
         />
       </div>
@@ -131,19 +166,34 @@ const SheetMenu = ({ items }: SheetMenuProps): React.JSX.Element => {
           value={search}
           onChange={setSearch}
         />
-        <Button size="sm">
+        {renderCreateMenuDialog ? (
+          <Button size="sm" variant="outline" onClick={() => setMenuDialogOpen(true)}>
+            <PlusIcon size={ICON_SIZE} data-icon="inline-start" />
+            {addMenuLabel ?? t("restaurants.menu.addMenu")}
+          </Button>
+        ) : null}
+        <Button size="sm" onClick={() => setDialogOpen(true)}>
           <PlusIcon size={ICON_SIZE} data-icon="inline-start" />
           {t("restaurants.menu.addDish")}
         </Button>
       </div>
 
+      {renderCreateDialog?.({ open: dialogOpen, onOpenChange: setDialogOpen })}
+      {renderCreateMenuDialog?.({ open: menuDialogOpen, onOpenChange: setMenuDialogOpen })}
+      {editingItem
+        ? renderEditDialog?.({
+          item: editingItem,
+          open: true,
+          onOpenChange: (next) => {
+            if (!next) setEditingItem(null);
+          }
+        })
+        : null}
+
       <div className="gap-xs flex flex-wrap">
         {CATEGORIES.map((category) => {
           const isActive = activeCategory === category;
-          const label =
-            category === "all"
-              ? t("restaurants.menu.filterAll")
-              : category;
+          const label = t(CATEGORY_LABEL_KEYS[category]);
 
           return (
             <button
@@ -173,6 +223,8 @@ const SheetMenu = ({ items }: SheetMenuProps): React.JSX.Element => {
             <div className="gap-sm grid grid-cols-2 @md:grid-cols-3 @4xl:grid-cols-6">
               {pagedItems.map((item) => {
                 const isAvailable = availability[item.id] ?? item.available;
+                const categoryKey = CATEGORY_LABEL_KEYS[item.category as CategoryFilter];
+                const categoryLabel = categoryKey ? t(categoryKey) : item.category;
 
                 return (
                   <div
@@ -195,7 +247,7 @@ const SheetMenu = ({ items }: SheetMenuProps): React.JSX.Element => {
                       <div className="from-background/70 absolute inset-0 bg-gradient-to-t via-transparent to-transparent" />
                       <div className="p-xs absolute inset-x-0 top-0 flex justify-between">
                         <span className="bg-background/40 typo-overline px-xs py-3xs text-foreground/90 truncate rounded-full backdrop-blur-sm">
-                          {item.category}
+                          {categoryLabel}
                         </span>
                       </div>
                       <div className="top-xs right-xs pointer-events-none absolute opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100 focus-within:pointer-events-auto focus-within:opacity-100">
@@ -207,7 +259,10 @@ const SheetMenu = ({ items }: SheetMenuProps): React.JSX.Element => {
                                 variant="secondary"
                                 size="icon-sm"
                                 aria-label={t("restaurants.menu.edit")}
-                                onClick={() => undefined}
+                                onClick={() => {
+                                  if (renderEditDialog) setEditingItem(item);
+                                }}
+                                disabled={!renderEditDialog}
                                 className="bg-background/85 hover:bg-background backdrop-blur-md"
                               >
                                 <PencilIcon size={EDIT_ICON_SIZE} />

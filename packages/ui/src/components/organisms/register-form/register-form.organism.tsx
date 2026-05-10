@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 
 import { format } from "date-fns";
 import { AnimatePresence, motion } from "motion/react";
@@ -20,6 +20,7 @@ interface RegisterPayload {
   birthday: string;
   email: string;
   password: string;
+  image?: string;
 }
 
 interface RegisterFormProps {
@@ -43,8 +44,10 @@ const RegisterForm = ({
 }: RegisterFormProps): React.JSX.Element => {
   const { t } = useTranslation("auth");
   const [step, setStep] = useState<0 | 1 | 2>(0);
+  const [image, setImage] = useState<string | undefined>(undefined);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [birthday, setBirthday] = useState<Date | undefined>(undefined);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -52,6 +55,16 @@ const RegisterForm = ({
   const [stepError, setStepError] = useState<string | null>(null);
 
   const today = new Date();
+
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      setImage(e.target?.result as string);
+    };
+    reader.readAsDataURL(file);
+  };
 
   const goNext = (): void => {
     setStepError(null);
@@ -89,7 +102,8 @@ const RegisterForm = ({
       lastName,
       birthday: format(birthday, "yyyy-MM-dd"),
       email,
-      password
+      password,
+      image
     });
   };
 
@@ -143,6 +157,49 @@ const RegisterForm = ({
                     {t("register.step1.title")}
                   </h1>
                   <p className="text-muted-foreground text-sm">{t("register.step1.description")}</p>
+                </div>
+                <div className="flex flex-col items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={isLoading}
+                    aria-label={t("register.step1.photoLabel")}
+                    className={`
+                      border-border bg-muted hover:bg-accent relative size-20 overflow-hidden rounded-full
+                      border-2 border-dashed transition-colors disabled:pointer-events-none disabled:opacity-50
+                    `}
+                  >
+                    {image ? (
+                      <img
+                        src={image}
+                        alt={t("register.step1.photoLabel")}
+                        className="size-full object-cover"
+                      />
+                    ) : (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="text-muted-foreground absolute inset-0 m-auto size-8"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth={1.5}
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <circle cx="12" cy="8" r="4" />
+                        <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
+                      </svg>
+                    )}
+                  </button>
+                  <span className="text-muted-foreground text-xs">{t("register.step1.photoHint")}</span>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    className="sr-only"
+                    onChange={handleImageChange}
+                    disabled={isLoading}
+                  />
                 </div>
                 <FieldGroup>
                   <Field orientation="vertical">

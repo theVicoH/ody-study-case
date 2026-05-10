@@ -45,6 +45,12 @@ export class DrizzleOrganizationRepository implements IOrganizationRepository {
     };
   }
 
+  async delete(id: OrganizationId): Promise<void> {
+    await this.db
+      .delete(organizationsTable)
+      .where(eq(organizationsTable.id, id.toString()));
+  }
+
   async save(org: Organization): Promise<void> {
     await this.db
       .insert(organizationsTable)

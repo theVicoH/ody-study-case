@@ -17,5 +17,8 @@ export const organizationsApi = {
   },
   update(id: string, input: { name: string }): Promise<ApiOrganization> {
     return api.patch<ApiOrganization>(`/organizations/${id}`, input);
+  },
+  delete(id: string): Promise<void> {
+    return api.delete<void>(`/organizations/${id}`);
   }
 };

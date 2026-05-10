@@ -5,6 +5,7 @@ export interface DishResponseDTO {
   description: string | null;
   priceCents: number;
   category: string;
+  imageUrl: string | null;
   isActive: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -16,6 +17,7 @@ export interface CreateDishDTO {
   description?: string | null;
   priceCents: number;
   category: string;
+  imageUrl?: string | null;
   isActive?: boolean;
 }
 
@@ -25,6 +27,7 @@ export interface UpdateDishDTO {
   description?: string | null;
   priceCents: number;
   category: string;
+  imageUrl?: string | null;
   isActive: boolean;
 }
 

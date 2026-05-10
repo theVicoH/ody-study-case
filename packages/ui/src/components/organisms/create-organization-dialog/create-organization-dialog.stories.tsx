@@ -7,7 +7,7 @@ import { CreateOrganizationDialog } from "./create-organization-dialog.organism"
 import type { Meta, StoryObj } from "@storybook/react";
 
 const meta: Meta<typeof CreateOrganizationDialog> = {
-  title: "Organisms/CreateOrganizationDialog",
+  title: "Components/Organisms/CreateOrganizationDialog",
   component: CreateOrganizationDialog,
   parameters: { layout: "centered" }
 };

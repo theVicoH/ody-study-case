@@ -339,6 +339,8 @@ export function listRestaurantCustomers(restaurant: Restaurant): ReadonlyArray<R
   return CUSTOMER_NAMES.map(([first, last], i) => ({
     id: `${restaurant.id}_c${i}`,
     name: `${first} ${last}`,
+    firstName: first,
+    lastName: last,
     email: `${first.toLowerCase()}.${last.toLowerCase().replace(/\W/g, "")}@mail.com`,
     visits: 1 + Math.floor(rng() * CUSTOMER_VISITS_RANGE),
     spent: Math.round(CUSTOMER_SPENT_BASE + rng() * CUSTOMER_SPENT_RANGE),

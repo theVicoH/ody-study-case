@@ -66,6 +66,12 @@ interface DataTableLabels {
   filterAll: string;
 }
 
+interface DataTableServerPagination {
+  page: number;
+  totalPages: number;
+  onPageChange: (page: number) => void;
+}
+
 interface DataTableProps<T> {
   data: ReadonlyArray<T>;
   columns: ReadonlyArray<DataTableColumn<T>>;
@@ -74,6 +80,9 @@ interface DataTableProps<T> {
   pageSize?: number;
   className?: string;
   rowClassName?: string | ((row: T) => string);
+  searchQuery?: string;
+  getSearchableText?: (row: T) => string;
+  serverPagination?: DataTableServerPagination;
 }
 
 const alignClass = (_align?: "start" | "end" | "center"): string => {
@@ -115,20 +124,42 @@ const DataTable = <T,>({
   labels,
   pageSize = DEFAULT_PAGE_SIZE,
   className,
-  rowClassName
+  rowClassName,
+  searchQuery,
+  getSearchableText,
+  serverPagination
 }: DataTableProps<T>): React.JSX.Element => {
   const [columnFilters, setColumnFilters] = useState<Record<string, string>>({});
   const [sortState, setSortState] = useState<{ columnId: string; direction: SortDirection } | null>(null);
-  const [page, setPage] = useState(1);
+  const [internalPage, setInternalPage] = useState(1);
+  const isServer = serverPagination !== undefined;
+  const page = isServer ? serverPagination.page : internalPage;
+  const setPage = (p: number | ((prev: number) => number)): void => {
+    if (isServer) {
+      const next = typeof p === "function" ? p(serverPagination.page) : p;
+
+      serverPagination.onPageChange(next);
+    } else {
+      setInternalPage(p);
+    }
+  };
+
+  const searchedData = useMemo(() => {
+    const trimmed = searchQuery?.trim().toLowerCase();
+
+    if (!trimmed || !getSearchableText) return data;
+
+    return data.filter((row) => getSearchableText(row).toLowerCase().includes(trimmed));
+  }, [data, searchQuery, getSearchableText]);
 
   const filteredData = useMemo(() => {
     const activeColumnIds = Object.keys(columnFilters).filter((id) => columnFilters[id] !== undefined);
 
-    if (activeColumnIds.length === 0) return data;
+    if (activeColumnIds.length === 0) return searchedData;
 
     const filterColumns = columns.filter((col) => col.filter !== undefined && activeColumnIds.includes(col.id));
 
-    return data.filter((row) =>
+    return searchedData.filter((row) =>
       filterColumns.every((col) => {
         if (!col.filter) return true;
         const expected = columnFilters[col.id];
@@ -137,7 +168,7 @@ const DataTable = <T,>({
 
         return col.filter.getValue(row) === expected;
       }));
-  }, [data, columns, columnFilters]);
+  }, [searchedData, columns, columnFilters]);
 
   const sortedData = useMemo(() => {
     if (!sortState) return filteredData;
@@ -161,21 +192,24 @@ const DataTable = <T,>({
     });
   }, [filteredData, columns, sortState]);
 
-  const totalPages = Math.max(1, Math.ceil(sortedData.length / pageSize));
+  const totalPages = isServer
+    ? Math.max(1, serverPagination.totalPages)
+    : Math.max(1, Math.ceil(sortedData.length / pageSize));
 
   useEffect(() => {
-    if (page > totalPages) {
-      setPage(totalPages);
+    if (!isServer && internalPage > totalPages) {
+      setInternalPage(totalPages);
     }
-  }, [page, totalPages]);
+  }, [internalPage, totalPages, isServer]);
 
   const safePage = Math.min(page, totalPages);
 
   const paginatedData = useMemo(() => {
+    if (isServer) return sortedData;
     const start = (safePage - 1) * pageSize;
 
     return sortedData.slice(start, start + pageSize);
-  }, [sortedData, safePage, pageSize]);
+  }, [sortedData, safePage, pageSize, isServer]);
 
   const handleSortClick = (columnId: string): void => {
     setSortState((prev) => {

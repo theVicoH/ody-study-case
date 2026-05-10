@@ -262,14 +262,14 @@ const CreateRestaurantDialog = ({
                       disabled={!h.isOpen}
                       value={h.openTime}
                       onChange={(e) => updateHour(h.dayOfWeek, { openTime: e.target.value })}
-                      className="w-28"
+                      className="w-28 [color-scheme:dark]"
                     />
                     <Input
                       type="time"
                       disabled={!h.isOpen}
                       value={h.closeTime}
                       onChange={(e) => updateHour(h.dayOfWeek, { closeTime: e.target.value })}
-                      className="w-28"
+                      className="w-28 [color-scheme:dark]"
                     />
                   </div>
                 ))}

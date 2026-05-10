@@ -29,6 +29,13 @@
       "when": 1778440000000,
       "tag": "0003_crm_menu_orders",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1778450000000,
+      "tag": "0004_dish_image",
+      "breakpoints": true
     }
   ]
 }

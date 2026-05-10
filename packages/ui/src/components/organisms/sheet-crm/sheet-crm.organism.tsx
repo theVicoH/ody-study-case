@@ -10,6 +10,14 @@ import { SearchInput } from "@/components/molecules/search-input/search-input.mo
 import { CustomersTable } from "@/components/organisms/customers-table/customers-table.organism";
 import { NewCustomerDialog } from "@/components/organisms/new-customer-dialog/new-customer-dialog.organism";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle
+} from "@/components/ui/dialog";
 
 
 
@@ -31,11 +39,26 @@ interface SheetCrmLabels {
   colVisits: string;
   colSpent: string;
   colTag: string;
+  colActions?: string;
+  edit?: string;
+  delete?: string;
   filterAll: string;
   paginationPrev: string;
   paginationNext: string;
   visitsWord: string;
   newCustomerDialog: NewCustomerDialogLabels;
+  deleteDialog?: {
+    title: string;
+    description: string;
+    cancel: string;
+    confirm: string;
+  };
+}
+
+interface SheetCrmServerPagination {
+  page: number;
+  totalPages: number;
+  onPageChange: (page: number) => void;
 }
 
 interface SheetCrmProps {
@@ -44,6 +67,10 @@ interface SheetCrmProps {
   totalCustomers: number;
   vipCount: number;
   onCreateCustomer?: (values: NewCustomerFormValues) => void;
+  onUpdateCustomer?: (id: string, values: NewCustomerFormValues) => void;
+  onDeleteCustomer?: (id: string) => void;
+  serverPagination?: SheetCrmServerPagination;
+  pageSize?: number;
 }
 
 const SheetCrm = ({
@@ -51,42 +78,42 @@ const SheetCrm = ({
   customers,
   totalCustomers,
   vipCount,
-  onCreateCustomer
+  onCreateCustomer,
+  onUpdateCustomer,
+  onDeleteCustomer,
+  serverPagination,
+  pageSize
 }: SheetCrmProps): React.JSX.Element => {
   const [search, setSearch] = useState("");
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [localCustomers, setLocalCustomers] = useState<ReadonlyArray<RestaurantCustomer>>([]);
-
-  const allCustomers = useMemo(
-    () => [...localCustomers, ...customers],
-    [localCustomers, customers]
-  );
-
-  const effectiveTotal = totalCustomers + localCustomers.length;
-  const effectiveVip = vipCount + localCustomers.filter((c) => c.tag === "VIP").length;
+  const [createOpen, setCreateOpen] = useState(false);
+  const [editing, setEditing] = useState<RestaurantCustomer | null>(null);
+  const [deleting, setDeleting] = useState<RestaurantCustomer | null>(null);
 
   const avgSpend = useMemo(() => {
-    if (allCustomers.length === 0) return 0;
-    const total = allCustomers.reduce((sum, c) => sum + c.spent, 0);
+    if (customers.length === 0) return 0;
+    const total = customers.reduce((sum, c) => sum + c.spent, 0);
 
-    return Math.round(total / allCustomers.length);
-  }, [allCustomers]);
+    return Math.round(total / customers.length);
+  }, [customers]);
 
   const filteredCustomers = useMemo(() => {
     const q = search.trim().toLowerCase();
 
-    if (!q) return allCustomers;
+    if (!q) return customers;
 
-    return allCustomers.filter((c) =>
+    return customers.filter((c) =>
       c.name.toLowerCase().includes(q) ||
         c.email.toLowerCase().includes(q));
-  }, [allCustomers, search]);
+  }, [customers, search]);
 
   const tableLabels = {
     colCustomer: labels.colCustomer,
     colVisits: labels.colVisits,
     colSpent: labels.colSpent,
     colTag: labels.colTag,
+    colActions: labels.colActions,
+    edit: labels.edit,
+    delete: labels.delete,
     tagVip: labels.tagVip,
     tagRegular: labels.tagRegular,
     tagNew: labels.tagNew,
@@ -97,19 +124,29 @@ const SheetCrm = ({
     visitsWord: labels.visitsWord
   };
 
-  const handleSubmit = (values: NewCustomerFormValues): void => {
-    const newCustomer: RestaurantCustomer = {
-      id: `local-${Date.now()}`,
-      name: values.name,
-      email: values.email,
-      visits: 0,
-      spent: 0,
-      tag: values.tag
-    };
-
-    setLocalCustomers((prev) => [newCustomer, ...prev]);
+  const handleCreate = (values: NewCustomerFormValues): void => {
     onCreateCustomer?.(values);
   };
+
+  const handleEditSubmit = (values: NewCustomerFormValues): void => {
+    if (editing) onUpdateCustomer?.(editing.id, values);
+    setEditing(null);
+  };
+
+  const handleConfirmDelete = (): void => {
+    if (deleting) onDeleteCustomer?.(deleting.id);
+    setDeleting(null);
+  };
+
+  const editInitial: NewCustomerFormValues | undefined = editing
+    ? {
+      name: editing.name,
+      firstName: editing.firstName,
+      lastName: editing.lastName,
+      email: editing.email,
+      tag: editing.tag
+    }
+    : undefined;
 
   return (
     <>
@@ -117,15 +154,15 @@ const SheetCrm = ({
         <KpiCard
           variant="subtle"
           label={labels.registeredCustomers}
-          value={effectiveTotal}
+          value={totalCustomers}
           trend={labels.thisMonth}
           trendDirection="up"
         />
         <KpiCard
           variant="subtle"
           label={labels.vip}
-          value={effectiveVip}
-          trend={effectiveTotal === 0 ? "0%" : `${Math.round((effectiveVip / effectiveTotal) * VIP_PERCENT_MULTIPLIER)}%`}
+          value={vipCount}
+          trend={totalCustomers === 0 ? "0%" : `${Math.round((vipCount / totalCustomers) * VIP_PERCENT_MULTIPLIER)}%`}
           trendDirection="up"
         />
         <KpiCard
@@ -142,22 +179,64 @@ const SheetCrm = ({
           value={search}
           onChange={setSearch}
         />
-        <Button size="sm" onClick={() => setDialogOpen(true)}>
-          <PlusIcon size={ICON_SIZE} data-icon="inline-start" />
-          {labels.newCustomer}
-        </Button>
+        {onCreateCustomer ? (
+          <Button size="sm" onClick={() => setCreateOpen(true)}>
+            <PlusIcon size={ICON_SIZE} data-icon="inline-start" />
+            {labels.newCustomer}
+          </Button>
+        ) : null}
       </div>
 
       <div className="min-h-0 flex-1">
-        <CustomersTable customers={filteredCustomers} labels={tableLabels} />
+        <CustomersTable
+          customers={filteredCustomers}
+          labels={tableLabels}
+          pageSize={pageSize}
+          serverPagination={serverPagination}
+          onEdit={onUpdateCustomer ? (c) => setEditing(c) : undefined}
+          onDelete={onDeleteCustomer ? (c) => setDeleting(c) : undefined}
+          className="h-full"
+        />
       </div>
 
-      <NewCustomerDialog
-        open={dialogOpen}
-        onOpenChange={setDialogOpen}
-        labels={labels.newCustomerDialog}
-        onSubmit={handleSubmit}
-      />
+      {onCreateCustomer ? (
+        <NewCustomerDialog
+          open={createOpen}
+          onOpenChange={setCreateOpen}
+          labels={labels.newCustomerDialog}
+          onSubmit={handleCreate}
+        />
+      ) : null}
+
+      {onUpdateCustomer ? (
+        <NewCustomerDialog
+          open={editing !== null}
+          onOpenChange={(next) => { if (!next) setEditing(null); }}
+          labels={labels.newCustomerDialog}
+          onSubmit={handleEditSubmit}
+          mode="edit"
+          initialValues={editInitial}
+        />
+      ) : null}
+
+      {onDeleteCustomer && labels.deleteDialog ? (
+        <Dialog open={deleting !== null} onOpenChange={(next) => { if (!next) setDeleting(null); }}>
+          <DialogContent className="gap-md flex flex-col">
+            <DialogHeader>
+              <DialogTitle>{labels.deleteDialog.title}</DialogTitle>
+              <DialogDescription>{labels.deleteDialog.description}</DialogDescription>
+            </DialogHeader>
+            <div className="gap-xs flex justify-end">
+              <DialogClose render={<Button type="button" variant="outline" />}>
+                {labels.deleteDialog.cancel}
+              </DialogClose>
+              <Button type="button" variant="destructive" onClick={handleConfirmDelete}>
+                {labels.deleteDialog.confirm}
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+      ) : null}
     </>
   );
 };

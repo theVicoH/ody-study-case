@@ -4,7 +4,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 
 
 const meta: Meta<typeof ArrowLeftIcon> = {
-  title: "Icons/ArrowLeft",
+  title: "Foundations/Icons/ArrowLeftIcon",
   component: ArrowLeftIcon,
   tags: ["autodocs"]
 };

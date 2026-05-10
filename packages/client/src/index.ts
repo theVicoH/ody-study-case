@@ -26,6 +26,7 @@ export { ordersApi } from "@/services/api/orders-api/orders-api.service";
 
 export {
   useClients,
+  useClientsMulti,
   useCreateClient,
   useUpdateClient,
   useDeleteClient
@@ -33,6 +34,7 @@ export {
 
 export {
   useDishes,
+  useDishesMulti,
   useCreateDish,
   useUpdateDish,
   useDeleteDish
@@ -40,6 +42,7 @@ export {
 
 export {
   useMenus,
+  useMenusMulti,
   useCreateMenu,
   useUpdateMenu,
   useDeleteMenu
@@ -47,8 +50,10 @@ export {
 
 export {
   useOrders,
+  useOrdersMulti,
   useCreateOrder,
   useUpdateOrderStatus,
+  useUpdateOrderStatusForAny,
   useDeleteOrder
 } from "@/hooks/use-orders/use-orders.hook";
 

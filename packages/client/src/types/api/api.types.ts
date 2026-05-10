@@ -153,6 +153,7 @@ export interface ApiDish {
   description: string | null;
   priceCents: number;
   category: string;
+  imageUrl: string | null;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
@@ -163,6 +164,7 @@ export interface CreateDishInput {
   description?: string | null;
   priceCents: number;
   category: string;
+  imageUrl?: string | null;
   isActive?: boolean;
 }
 
@@ -171,6 +173,7 @@ export interface UpdateDishInput {
   description?: string | null;
   priceCents: number;
   category: string;
+  imageUrl?: string | null;
   isActive: boolean;
 }
 

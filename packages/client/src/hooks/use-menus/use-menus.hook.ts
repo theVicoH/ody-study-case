@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueries, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { menusApi } from "@/services/api/menus-api/menus-api.service";
 
@@ -46,4 +46,35 @@ export const useDeleteMenu = (restaurantId: string): UseMutationResult<void, Err
     mutationFn: (id: string) => menusApi.delete(restaurantId, id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: KEYS.all(restaurantId) })
   });
+};
+
+export interface MultiMenusResult {
+  byRestaurant: Map<string, ApiMenu[]>;
+  flat: ApiMenu[];
+  isLoading: boolean;
+}
+
+export const useMenusMulti = (restaurantIds: ReadonlyArray<string>): MultiMenusResult => {
+  const results = useQueries({
+    queries: restaurantIds.map((id) => ({
+      queryKey: KEYS.all(id),
+      queryFn: () => menusApi.list(id),
+      enabled: Boolean(id)
+    }))
+  });
+
+  const byRestaurant = new Map<string, ApiMenu[]>();
+  const flat: ApiMenu[] = [];
+
+  results.forEach((res, idx) => {
+    const id = restaurantIds[idx];
+
+    if (!id) return;
+    const data = res.data?.data ?? [];
+
+    byRestaurant.set(id, data);
+    flat.push(...data);
+  });
+
+  return { byRestaurant, flat, isLoading: results.some((r) => r.isLoading) };
 };

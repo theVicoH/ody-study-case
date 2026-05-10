@@ -58,6 +58,8 @@ export const Default: Story = {
       {
         id: "1",
         name: "Sophie Martin",
+        firstName: "Sophie",
+        lastName: "Martin",
         email: "sophie.martin@email.com",
         visits: 12,
         spent: 480,
@@ -66,6 +68,8 @@ export const Default: Story = {
       {
         id: "2",
         name: "Julien Bernard",
+        firstName: "Julien",
+        lastName: "Bernard",
         email: "julien.bernard@email.com",
         visits: 5,
         spent: 180,
@@ -74,6 +78,8 @@ export const Default: Story = {
       {
         id: "3",
         name: "Camille Durand",
+        firstName: "Camille",
+        lastName: "Durand",
         email: "camille.durand@email.com",
         visits: 1,
         spent: 35,
@@ -82,6 +88,8 @@ export const Default: Story = {
       {
         id: "4",
         name: "Marc Lefevre",
+        firstName: "Marc",
+        lastName: "Lefevre",
         email: "marc.lefevre@email.com",
         visits: 8,
         spent: 320,

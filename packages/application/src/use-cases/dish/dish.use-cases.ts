@@ -23,6 +23,7 @@ export class CreateDishUseCase {
       description: dto.description ?? null,
       price: Money.fromCents(dto.priceCents),
       category: dto.category,
+      imageUrl: dto.imageUrl ?? null,
       isActive: dto.isActive ?? true
     });
 
@@ -81,6 +82,7 @@ export class UpdateDishUseCase {
       description: dto.description ?? null,
       price: Money.fromCents(dto.priceCents),
       category: dto.category,
+      imageUrl: dto.imageUrl ?? null,
       isActive: dto.isActive
     });
 

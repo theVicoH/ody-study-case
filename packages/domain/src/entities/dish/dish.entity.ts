@@ -9,6 +9,7 @@ export interface DishProps {
   description: string | null;
   price: Money;
   category: string;
+  imageUrl: string | null;
   isActive: boolean;
 }
 
@@ -30,8 +31,9 @@ const validate = (props: DishProps): DishProps => {
   }
 
   const description = props.description?.trim() || null;
+  const imageUrl = props.imageUrl?.trim() || null;
 
-  return { name, description, price: props.price, category, isActive: props.isActive };
+  return { name, description, price: props.price, category, imageUrl, isActive: props.isActive };
 };
 
 export class Dish {

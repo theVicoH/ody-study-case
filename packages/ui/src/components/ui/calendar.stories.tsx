@@ -5,7 +5,7 @@ import { Calendar } from "./calendar";
 import type { Meta, StoryObj } from "@storybook/react";
 
 const meta: Meta<typeof Calendar> = {
-  title: "Components/UI/Calendar",
+  title: "Components/Primitives/Calendar",
   component: Calendar,
   tags: ["autodocs"],
   parameters: {

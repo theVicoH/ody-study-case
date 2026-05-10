@@ -5,7 +5,7 @@ import { LoginForm } from "@/components/organisms/login-form/login-form.organism
 import type { Meta, StoryObj } from "@storybook/react";
 
 const meta: Meta<typeof LoginForm> = {
-  title: "Organisms/LoginForm",
+  title: "Components/Organisms/LoginForm",
   component: LoginForm,
   parameters: { layout: "centered" }
 };

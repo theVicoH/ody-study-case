@@ -5,7 +5,7 @@ import { AuthLayout } from "@/components/layouts/auth-layout/auth-layout.layout"
 import type { Meta, StoryObj } from "@storybook/react";
 
 const meta: Meta<typeof AuthLayout> = {
-  title: "Layouts/AuthLayout",
+  title: "Components/Layouts/AuthLayout",
   component: AuthLayout,
   parameters: { layout: "fullscreen" }
 };

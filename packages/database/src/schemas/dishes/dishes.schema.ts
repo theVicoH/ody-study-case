@@ -13,6 +13,7 @@ export const dishesTable = pgTable(
     description: text("description"),
     priceCents: integer("price_cents").notNull(),
     category: text("category").notNull().default("main"),
+    imageUrl: text("image_url"),
     isActive: boolean("is_active").notNull().default(true),
     createdAt: timestamp("created_at", { withTimezone: true, mode: "date" }).notNull().defaultNow(),
     updatedAt: timestamp("updated_at", { withTimezone: true, mode: "date" }).notNull().defaultNow()

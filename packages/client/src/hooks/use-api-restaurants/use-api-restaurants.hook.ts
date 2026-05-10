@@ -20,6 +20,7 @@ export interface UseApiRestaurantsReturn {
   error: string | null;
   createOrganization: (name: string) => Promise<ApiOrganization>;
   updateOrganization: (name: string) => Promise<ApiOrganization>;
+  deleteOrganization: () => Promise<void>;
   createRestaurant: (input: Omit<CreateRestaurantInput, "organizationId">, modelId: string) => Promise<Restaurant>;
   deleteRestaurant: (id: string) => Promise<void>;
   reload: () => Promise<void>;
@@ -116,6 +117,20 @@ export function useApiRestaurants(): UseApiRestaurantsReturn {
     }
   }, [organization, t]);
 
+  const deleteOrganization = useCallback(async (): Promise<void> => {
+    if (!organization) throw new Error("Organization not loaded");
+    try {
+      await organizationsApi.delete(organization.id);
+      setOrganization(null);
+      setApiRestaurants([]);
+    } catch (e) {
+      const message = e instanceof Error ? e.message : t("errors.deleteOrganizationFailed");
+
+      toast.error(t("errors.deleteOrganizationFailed"), { description: message });
+      throw e;
+    }
+  }, [organization, t]);
+
   const deleteRestaurant = useCallback(async (id: string): Promise<void> => {
     try {
       await restaurantsApi.delete(id);
@@ -162,6 +177,7 @@ export function useApiRestaurants(): UseApiRestaurantsReturn {
     error,
     createOrganization,
     updateOrganization,
+    deleteOrganization,
     createRestaurant,
     deleteRestaurant,
     reload: load

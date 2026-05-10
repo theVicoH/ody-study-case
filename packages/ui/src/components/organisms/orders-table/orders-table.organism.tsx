@@ -5,6 +5,12 @@ import type { RestaurantOrder } from "@workspace/client";
 
 import { DataTable } from "@/components/molecules/data-table/data-table.molecule";
 import { Badge } from "@/components/ui/badge";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger
+} from "@/components/ui/select";
 
 
 
@@ -65,9 +71,10 @@ interface OrdersTableProps {
   labels: OrdersTableLabels;
   pageSize?: number;
   className?: string;
+  onStatusChange?: (orderId: string, status: OrderStatus) => void;
 }
 
-const OrdersTable = ({ orders, labels, pageSize, className }: OrdersTableProps): React.JSX.Element => {
+const OrdersTable = ({ orders, labels, pageSize, className, onStatusChange }: OrdersTableProps): React.JSX.Element => {
   const statusLabels: Record<OrderStatus, string> = {
     new: labels.statusNew,
     preparing: labels.statusPreparing,
@@ -141,11 +148,28 @@ const OrdersTable = ({ orders, labels, pageSize, className }: OrdersTableProps):
       id: "status",
       header: labels.colStatus,
       align: "end",
-      cell: (o) => (
-        <Badge variant={STATUS_BADGE_VARIANTS[o.status]}>
-          {statusLabels[o.status]}
-        </Badge>
-      ),
+      cell: (o) =>
+        onStatusChange ? (
+          <Select
+            value={o.status}
+            onValueChange={(v) => { if (v !== null) onStatusChange(o.id, v as OrderStatus); }}
+          >
+            <SelectTrigger className="border-0 bg-transparent p-0 shadow-none [&>svg]:hidden">
+              <Badge variant={STATUS_BADGE_VARIANTS[o.status]}>{statusLabels[o.status]}</Badge>
+            </SelectTrigger>
+            <SelectContent align="end">
+              <SelectItem value="new">{labels.statusNew}</SelectItem>
+              <SelectItem value="preparing">{labels.statusPreparing}</SelectItem>
+              <SelectItem value="ready">{labels.statusReady}</SelectItem>
+              <SelectItem value="served">{labels.statusServed}</SelectItem>
+              <SelectItem value="paid">{labels.statusPaid}</SelectItem>
+            </SelectContent>
+          </Select>
+        ) : (
+          <Badge variant={STATUS_BADGE_VARIANTS[o.status]}>
+            {statusLabels[o.status]}
+          </Badge>
+        ),
       filter: {
         getValue: (o) => o.status,
         options: [

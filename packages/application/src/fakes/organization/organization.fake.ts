@@ -27,6 +27,10 @@ export class FakeOrganizationRepository implements IOrganizationRepository {
     this.organizations.set(organization.id.toString(), organization);
   }
 
+  async delete(id: OrganizationId): Promise<void> {
+    this.organizations.delete(id.toString());
+  }
+
   getAll(): Organization[] {
     return Array.from(this.organizations.values());
   }

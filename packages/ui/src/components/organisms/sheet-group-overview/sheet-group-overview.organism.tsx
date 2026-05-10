@@ -77,7 +77,7 @@ const SheetGroupOverview = ({
   return (
   <>
     {onAddRestaurant && labels.addRestaurant ? (
-      <div className="flex justify-end">
+      <div className="flex justify-start">
         <Button
           size="sm"
           onClick={onAddRestaurant}

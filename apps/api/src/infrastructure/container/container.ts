@@ -10,6 +10,7 @@ import {
   DeleteDishUseCase,
   DeleteMenuUseCase,
   DeleteOrderUseCase,
+  DeleteOrganizationUseCase,
   DeleteRestaurantUseCase,
   GetClientUseCase,
   GetDishUseCase,
@@ -67,7 +68,8 @@ export const container = {
     create: new CreateOrganizationUseCase(organizationRepository),
     get: new GetOrganizationUseCase(organizationRepository),
     list: new ListOrganizationsUseCase(organizationRepository),
-    update: new UpdateOrganizationUseCase(organizationRepository)
+    update: new UpdateOrganizationUseCase(organizationRepository),
+    delete: new DeleteOrganizationUseCase(organizationRepository)
   },
   restaurant: {
     create: new CreateRestaurantUseCase(restaurantRepository),

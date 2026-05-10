@@ -27,7 +27,8 @@ const RegisterRoute = (): React.JSX.Element => {
         name: `${payload.firstName} ${payload.lastName}`.trim(),
         firstName: payload.firstName,
         lastName: payload.lastName,
-        birthday: new Date(payload.birthday)
+        birthday: new Date(payload.birthday),
+        image: payload.image
       });
 
       if (result.error) {

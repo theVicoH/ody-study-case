@@ -24,6 +24,7 @@ const seed = async () => {
     description: null,
     price: Money.fromCents(1200),
     category: "main",
+    imageUrl: null,
     isActive: true
   });
 

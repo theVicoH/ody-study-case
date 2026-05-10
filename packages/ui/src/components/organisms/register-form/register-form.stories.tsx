@@ -5,7 +5,7 @@ import { RegisterForm } from "@/components/organisms/register-form/register-form
 import type { Meta, StoryObj } from "@storybook/react";
 
 const meta: Meta<typeof RegisterForm> = {
-  title: "Organisms/RegisterForm",
+  title: "Components/Organisms/RegisterForm",
   component: RegisterForm,
   parameters: { layout: "centered" }
 };

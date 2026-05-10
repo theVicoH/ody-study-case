@@ -73,11 +73,20 @@ export const DashboardLayout = ({
         </div>
       ) : null}
 
-      {footer && footerVisible ? (
-        <div className="bottom-md absolute left-1/2 z-20 -translate-x-1/2">
-          {footer}
-        </div>
-      ) : null}
+      <AnimatePresence>
+        {footer && footerVisible ? (
+          <motion.div
+            key="footer"
+            className="bottom-md absolute left-1/2 z-20 -translate-x-1/2"
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 6 }}
+            transition={{ duration: 0.2, ease: [0.2, 0, 0, 1] }}
+          >
+            {footer}
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
 
       {children}
     </div>

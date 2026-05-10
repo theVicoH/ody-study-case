@@ -10,6 +10,7 @@ export class DishMapper {
       description: d.props.description,
       priceCents: d.props.price.toCents(),
       category: d.props.category,
+      imageUrl: d.props.imageUrl,
       isActive: d.props.isActive,
       createdAt: d.createdAt,
       updatedAt: d.updatedAt

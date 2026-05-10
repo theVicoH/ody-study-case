@@ -9,5 +9,6 @@ export interface IOrganizationRepository {
   findByName(name: string): Promise<Organization | null>;
   findByOwner(ownerId: UserId, params: PaginationParams): Promise<PaginatedResult<Organization>>;
   save(organization: Organization): Promise<void>;
+  delete(id: OrganizationId): Promise<void>;
   findAll(params: PaginationParams): Promise<PaginatedResult<Organization>>;
 }

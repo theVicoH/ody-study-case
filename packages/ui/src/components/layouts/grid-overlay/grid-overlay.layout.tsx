@@ -6,15 +6,16 @@ import type { GridOverlayProps } from "./grid-overlay.types";
 
 const COLS = Array.from({ length: GRID_CONFIG.TOTAL_COLUMNS });
 
-export const GridOverlay = ({ visible }: GridOverlayProps): React.JSX.Element | null => {
+export const GridOverlay = ({ visible, leftOffset = 0 }: GridOverlayProps): React.JSX.Element | null => {
   if (!visible) return null;
 
   return (
     <div
       aria-hidden
-      className="px-3xl md:px-4xl lg:px-4xl pointer-events-none fixed inset-0 z-[9999]"
+      className="pr-md pointer-events-none fixed inset-0 z-[9999]"
+      style={{ paddingLeft: leftOffset > 0 ? `${leftOffset}px` : undefined }}
     >
-      <div className="gap-3xl md:gap-4xl mx-auto grid h-full max-w-screen-2xl grid-cols-4 md:grid-cols-8 lg:grid-cols-12">
+      <div className="gap-[20px] grid h-full grid-cols-4 md:grid-cols-8 lg:grid-cols-12">
         {COLS.map((_, i) => (
           <div
             key={i}

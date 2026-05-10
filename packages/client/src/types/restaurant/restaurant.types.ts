@@ -44,6 +44,8 @@ export type CustomerTag = "VIP" | "Regular" | "New";
 export interface RestaurantCustomer {
   id: string;
   name: string;
+  firstName: string;
+  lastName: string;
   email: string;
   visits: number;
   spent: number;
@@ -68,6 +70,7 @@ export interface RestaurantMenuItem {
   price: number;
   available: boolean;
   image: string;
+  kind?: "dish" | "menu";
 }
 
 export interface RestaurantTopItem {

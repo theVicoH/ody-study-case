@@ -16,11 +16,11 @@ export default meta;
 type Story = StoryObj<typeof CustomersTable>;
 
 const CUSTOMERS: ReadonlyArray<RestaurantCustomer> = [
-  { id: "c1", name: "Alice Martin", email: "alice@example.com", visits: 12, spent: 480.5, tag: "VIP" },
-  { id: "c2", name: "Bob Durand", email: "bob@example.com", visits: 5, spent: 120, tag: "Regular" },
-  { id: "c3", name: "Carla Petit", email: "carla@example.com", visits: 1, spent: 35, tag: "New" },
-  { id: "c4", name: "Daniel Roux", email: "daniel@example.com", visits: 18, spent: 920, tag: "VIP" },
-  { id: "c5", name: "Emma Bernard", email: "emma@example.com", visits: 4, spent: 88, tag: "Regular" }
+  { id: "c1", name: "Alice Martin", firstName: "Alice", lastName: "Martin", email: "alice@example.com", visits: 12, spent: 480.5, tag: "VIP" },
+  { id: "c2", name: "Bob Durand", firstName: "Bob", lastName: "Durand", email: "bob@example.com", visits: 5, spent: 120, tag: "Regular" },
+  { id: "c3", name: "Carla Petit", firstName: "Carla", lastName: "Petit", email: "carla@example.com", visits: 1, spent: 35, tag: "New" },
+  { id: "c4", name: "Daniel Roux", firstName: "Daniel", lastName: "Roux", email: "daniel@example.com", visits: 18, spent: 920, tag: "VIP" },
+  { id: "c5", name: "Emma Bernard", firstName: "Emma", lastName: "Bernard", email: "emma@example.com", visits: 4, spent: 88, tag: "Regular" }
 ];
 
 const labels = {

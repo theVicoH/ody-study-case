@@ -9,7 +9,7 @@ import { CreateRestaurantDialog } from "./create-restaurant-dialog.organism";
 import type { Meta, StoryObj } from "@storybook/react";
 
 const meta: Meta<typeof CreateRestaurantDialog> = {
-  title: "Organisms/CreateRestaurantDialog",
+  title: "Components/Organisms/CreateRestaurantDialog",
   component: CreateRestaurantDialog,
   parameters: { layout: "centered" }
 };

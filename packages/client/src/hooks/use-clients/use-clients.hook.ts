@@ -11,13 +11,21 @@ import type {
 import type { UseMutationResult, UseQueryResult } from "@tanstack/react-query";
 
 const KEYS = {
-  all: (restaurantId: string) => ["clients", restaurantId] as const
+  all: (restaurantId: string) => ["clients", restaurantId] as const,
+  page: (restaurantId: string, page: number, limit: number) =>
+    ["clients", restaurantId, page, limit] as const
 };
 
-export const useClients = (restaurantId: string): UseQueryResult<ApiPaginated<ApiClient>> =>
+export const useClients = (
+  restaurantId: string,
+  page?: number,
+  limit?: number
+): UseQueryResult<ApiPaginated<ApiClient>> =>
   useQuery({
-    queryKey: KEYS.all(restaurantId),
-    queryFn: () => clientsApi.list(restaurantId),
+    queryKey: page !== undefined && limit !== undefined
+      ? KEYS.page(restaurantId, page, limit)
+      : KEYS.all(restaurantId),
+    queryFn: () => clientsApi.list(restaurantId, page, limit),
     enabled: Boolean(restaurantId)
   });
 

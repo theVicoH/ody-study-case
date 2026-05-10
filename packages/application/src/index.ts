@@ -36,7 +36,11 @@ export { ListOrganizationsUseCase } from "@/use-cases/organization/list-organiza
 
 export { UpdateOrganizationUseCase } from "@/use-cases/organization/update-organization/update-organization.use-case";
 
+export { DeleteOrganizationUseCase } from "@/use-cases/organization/delete-organization/delete-organization.use-case";
+
 export type { CreateOrganizationDTO } from "@/dtos/organization/create-organization.dto";
+
+export type { DeleteOrganizationDTO } from "@/dtos/organization/delete-organization.dto";
 
 export type { GetOrganizationDTO } from "@/dtos/organization/get-organization.dto";
 

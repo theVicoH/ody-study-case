@@ -57,6 +57,20 @@ export const useDeleteOrder = (restaurantId: string): UseMutationResult<void, Er
   });
 };
 
+export const useUpdateOrderStatusForAny = (): UseMutationResult<
+  ApiOrder,
+  Error,
+  { restaurantId: string; id: string; status: ApiOrderStatus }
+> => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ restaurantId, id, status }) => ordersApi.updateStatus(restaurantId, id, status),
+    onSuccess: (_data, { restaurantId }) =>
+      queryClient.invalidateQueries({ queryKey: ["orders", restaurantId] })
+  });
+};
+
 export interface MultiOrdersResult {
   byRestaurant: Map<string, ApiOrder[]>;
   flat: ApiOrder[];

@@ -17,6 +17,7 @@ const dishSchema = z.object({
   description: z.string().nullable(),
   priceCents: z.number().int().nonnegative(),
   category: z.string(),
+  imageUrl: z.string().nullable(),
   isActive: z.boolean(),
   createdAt: z.string(),
   updatedAt: z.string()
@@ -29,6 +30,7 @@ const createBody = z.object({
   description: z.string().nullable().optional(),
   priceCents: z.number().int().nonnegative(),
   category: z.string().min(1),
+  imageUrl: z.string().url().nullable().optional(),
   isActive: z.boolean().optional()
 });
 
@@ -37,6 +39,7 @@ const updateBody = z.object({
   description: z.string().nullable().optional(),
   priceCents: z.number().int().nonnegative(),
   category: z.string().min(1),
+  imageUrl: z.string().url().nullable().optional(),
   isActive: z.boolean()
 });
 

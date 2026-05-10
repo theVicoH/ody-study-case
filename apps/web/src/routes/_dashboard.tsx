@@ -38,10 +38,8 @@ import { CreateSplitDialog } from "@workspace/ui/components/organisms/create-spl
 import { ProfileDialog } from "@workspace/ui/components/organisms/profile-dialog/profile-dialog.organism";
 import { RestaurantSheet } from "@workspace/ui/components/organisms/restaurant-sheet/restaurant-sheet.organism";
 import { RestaurantSidebar } from "@workspace/ui/components/organisms/restaurant-sidebar/restaurant-sidebar.organism";
-import { SheetCrm } from "@workspace/ui/components/organisms/sheet-crm/sheet-crm.organism";
 import { SheetGroupOverview } from "@workspace/ui/components/organisms/sheet-group-overview/sheet-group-overview.organism";
-import { SheetMenu } from "@workspace/ui/components/organisms/sheet-menu/sheet-menu.organism";
-import { SheetOrders } from "@workspace/ui/components/organisms/sheet-orders/sheet-orders.organism";
+import { SheetOrganizationSettings } from "@workspace/ui/components/organisms/sheet-organization-settings/sheet-organization-settings.organism";
 import { SheetRestaurantOverview } from "@workspace/ui/components/organisms/sheet-restaurant-overview/sheet-restaurant-overview.organism";
 import { SheetStats } from "@workspace/ui/components/organisms/sheet-stats/sheet-stats.organism";
 import { Avatar, AvatarFallback } from "@workspace/ui/components/ui/avatar";
@@ -56,6 +54,12 @@ import { Input } from "@workspace/ui/components/ui/input";
 import { animate, AnimatePresence, motion } from "motion/react";
 import { useTranslation } from "react-i18next";
 
+import { ConnectedCrm } from "@workspace/ui/components/connected/connected-crm/connected-crm.organism";
+import { ConnectedGroupCrm } from "@workspace/ui/components/connected/connected-group-crm/connected-group-crm.organism";
+import { ConnectedGroupMenu } from "@workspace/ui/components/connected/connected-group-menu/connected-group-menu.organism";
+import { ConnectedGroupOrders } from "@workspace/ui/components/connected/connected-group-orders/connected-group-orders.organism";
+import { ConnectedMenu } from "@workspace/ui/components/connected/connected-menu/connected-menu.organism";
+import { ConnectedOrders } from "@workspace/ui/components/connected/connected-orders/connected-orders.organism";
 import { RestaurantSettingsPanel } from "@/components/restaurant-settings-panel/restaurant-settings-panel.organism";
 import { signOut, updateUser, useSession } from "@/lib/auth/auth.client";
 
@@ -89,6 +93,7 @@ const TAB_FADE_DURATION = 0.22;
 const TAB_FADE_EASE: [number, number, number, number] = [0.2, 0, 0, 1];
 const TAB_FADE_OFFSET = 8;
 const DEFAULT_VIEWPORT_WIDTH = 1280;
+const SHEET_CLOSE_DELAY_MS = 280;
 const SPLIT_RATIO_HALF = 1.5;
 
 type DragMode = "left" | "right" | "move";
@@ -133,14 +138,7 @@ const Layout = (): React.JSX.Element => {
   const { t } = useTranslation("common");
   const navigate = useNavigate();
   const { data: session, isPending: sessionPending } = useSession();
-  const {
-    statsFor,
-    detailedStatsFor,
-    customersFor,
-    ordersFor,
-    menuItemsFor,
-    settingsFor
-  } = useRestaurants();
+  const { statsFor, detailedStatsFor, settingsFor } = useRestaurants();
   const {
     user: demoUser,
     organization,
@@ -148,7 +146,10 @@ const Layout = (): React.JSX.Element => {
     loading: apiLoading,
     error: apiError,
     createOrganization,
-    createRestaurant: createRestaurantViaApi
+    updateOrganization,
+    createRestaurant: createRestaurantViaApi,
+    deleteRestaurant: deleteRestaurantViaApi,
+    deleteOrganization
   } = useApiRestaurants();
   const summary = useMemo(() => {
     const good = restaurants.filter((r) => r.performance === "good").length;
@@ -530,7 +531,7 @@ const Layout = (): React.JSX.Element => {
   );
 
   const groupNavItems = useMemo<ReadonlyArray<SidebarNavItem>>(
-    () => navItems.filter((item) => item.id !== "settings"),
+    () => navItems,
     [navItems]
   );
 
@@ -603,23 +604,7 @@ const Layout = (): React.JSX.Element => {
     [restaurants, statsFor]
   );
 
-  const groupAggregatedCustomers = useMemo(
-    () => restaurants.flatMap((r) => customersFor(r)),
-    [restaurants, customersFor]
-  );
-
-  const groupAggregatedOrders = useMemo(
-    () => restaurants.flatMap((r) => ordersFor(r)),
-    [restaurants, ordersFor]
-  );
-
-  const groupAggregatedMenuItems = useMemo(
-    () =>
-      restaurants.flatMap((r) =>
-        menuItemsFor(r).map((item) => ({ ...item, id: `${r.id}_${item.id}` }))
-      ),
-    [restaurants, menuItemsFor]
-  );
+  const groupRestaurantIds = useMemo(() => restaurants.map((r) => r.id), [restaurants]);
 
   const groupAggregatedDetailedStats = useMemo<RestaurantDetailedStats>(() => {
     const list = restaurants.map((r) => detailedStatsFor(r));
@@ -715,11 +700,6 @@ const Layout = (): React.JSX.Element => {
       openOrders: sumNumbers("openOrders")
     };
   }, [restaurants, detailedStatsFor]);
-
-  const groupAggregatedVip = useMemo(
-    () => groupAggregatedCustomers.filter((c) => c.tag === "VIP").length,
-    [groupAggregatedCustomers]
-  );
 
   const groupOverviewLabels = useMemo(() => ({
     restaurants: t("restaurants.stats.restaurants"),
@@ -844,6 +824,9 @@ const Layout = (): React.JSX.Element => {
     colVisits: t("restaurants.crm.colVisits"),
     colSpent: t("restaurants.crm.colSpent"),
     colTag: t("restaurants.crm.colTag"),
+    colActions: t("restaurants.crm.colActions"),
+    edit: t("restaurants.crm.edit"),
+    delete: t("restaurants.crm.delete"),
     filterAll: t("restaurants.orders.filterAll"),
     paginationPrev: t("restaurants.orders.paginationPrev"),
     paginationNext: t("restaurants.orders.paginationNext"),
@@ -853,6 +836,10 @@ const Layout = (): React.JSX.Element => {
       description: t("restaurants.crm.newCustomerDialog.description"),
       nameLabel: t("restaurants.crm.newCustomerDialog.nameLabel"),
       namePlaceholder: t("restaurants.crm.newCustomerDialog.namePlaceholder"),
+      firstNameLabel: t("restaurants.crm.newCustomerDialog.firstNameLabel"),
+      firstNamePlaceholder: t("restaurants.crm.newCustomerDialog.firstNamePlaceholder"),
+      lastNameLabel: t("restaurants.crm.newCustomerDialog.lastNameLabel"),
+      lastNamePlaceholder: t("restaurants.crm.newCustomerDialog.lastNamePlaceholder"),
       emailLabel: t("restaurants.crm.newCustomerDialog.emailLabel"),
       emailPlaceholder: t("restaurants.crm.newCustomerDialog.emailPlaceholder"),
       tagLabel: t("restaurants.crm.newCustomerDialog.tagLabel"),
@@ -860,7 +847,16 @@ const Layout = (): React.JSX.Element => {
       tagRegular: t("restaurants.crm.tagRegular"),
       tagNew: t("restaurants.crm.tagNew"),
       cancel: t("restaurants.crm.newCustomerDialog.cancel"),
-      submit: t("restaurants.crm.newCustomerDialog.submit")
+      submit: t("restaurants.crm.newCustomerDialog.submit"),
+      editTitle: t("restaurants.crm.newCustomerDialog.editTitle"),
+      editDescription: t("restaurants.crm.newCustomerDialog.editDescription"),
+      editSubmit: t("restaurants.crm.newCustomerDialog.editSubmit")
+    },
+    deleteDialog: {
+      title: t("restaurants.crm.deleteDialog.title"),
+      description: t("restaurants.crm.deleteDialog.description"),
+      cancel: t("restaurants.crm.deleteDialog.cancel"),
+      confirm: t("restaurants.crm.deleteDialog.confirm")
     }
   }), [t]);
 
@@ -982,6 +978,27 @@ const Layout = (): React.JSX.Element => {
     confirm: t("restaurants.settings.confirm")
   }), [t]);
 
+  const orgSettingsLabels = useMemo(() => ({
+    generalInfo: t("restaurants.orgSettings.generalInfo"),
+    orgName: t("restaurants.orgSettings.orgName"),
+    owner: t("restaurants.orgSettings.owner"),
+    restaurants: t("restaurants.orgSettings.restaurants"),
+    restaurantsEmpty: t("restaurants.orgSettings.restaurantsEmpty"),
+    deleteRestaurant: t("restaurants.orgSettings.deleteRestaurant"),
+    deleteRestaurantDesc: t("restaurants.orgSettings.deleteRestaurantDesc"),
+    deleteOrg: t("restaurants.orgSettings.deleteOrg"),
+    deleteOrgDesc: t("restaurants.orgSettings.deleteOrgDesc"),
+    dangerZone: t("restaurants.orgSettings.dangerZone"),
+    cancel: t("restaurants.orgSettings.cancel"),
+    confirm: t("restaurants.orgSettings.confirm"),
+    save: t("restaurants.orgSettings.save"),
+    saved: t("restaurants.orgSettings.saved")
+  }), [t]);
+
+  const handleUpdateOrganization = useCallback(async (name: string): Promise<void> => {
+    await updateOrganization(name);
+  }, [updateOrganization]);
+
   const stats = selected ? statsFor(selected) : null;
 
   const miniName = isCompareActive
@@ -1021,11 +1038,7 @@ const Layout = (): React.JSX.Element => {
   ): React.ReactNode => {
     const rStats = statsFor(restaurant);
     const rDetailed = detailedStatsFor(restaurant);
-    const rCustomers = customersFor(restaurant);
-    const rOrders = ordersFor(restaurant);
-    const rMenu = menuItemsFor(restaurant);
     const rSettings = settingsFor(restaurant);
-    const rVip = rCustomers.filter((c) => c.tag === "VIP").length;
 
     if (tabId === "home") {
       return (
@@ -1055,26 +1068,26 @@ const Layout = (): React.JSX.Element => {
     }
 
     if (tabId === "crm") {
-      return (
-        <SheetCrm
-          labels={crmLabels}
-          customers={rCustomers}
-          totalCustomers={rDetailed.customers}
-          vipCount={rVip}
-        />
-      );
+      return <ConnectedCrm restaurantId={restaurant.id} labels={crmLabels} />;
     }
 
     if (tabId === "orders") {
-      return <SheetOrders labels={ordersLabels} orders={rOrders} />;
+      return <ConnectedOrders restaurantId={restaurant.id} labels={ordersLabels} />;
     }
 
     if (tabId === "menu") {
-      return <SheetMenu items={rMenu} />;
+      return <ConnectedMenu restaurantId={restaurant.id} />;
     }
 
     if (tabId === "settings") {
-      return <RestaurantSettingsPanel restaurantId={restaurant.id} labels={settingsLabels} settings={rSettings} />;
+      return (
+        <RestaurantSettingsPanel
+          restaurantId={restaurant.id}
+          labels={settingsLabels}
+          settings={rSettings}
+          onDelete={() => { handleDeleteRestaurant(restaurant.id); }}
+        />
+      );
     }
 
     return null;
@@ -1093,22 +1106,34 @@ const Layout = (): React.JSX.Element => {
       }
 
       if (tab === "crm") {
-        return (
-          <SheetCrm
-            labels={crmLabels}
-            customers={groupAggregatedCustomers}
-            totalCustomers={groupAggregatedCustomers.length}
-            vipCount={groupAggregatedVip}
-          />
-        );
+        return <ConnectedGroupCrm restaurantIds={groupRestaurantIds} labels={crmLabels} />;
       }
 
       if (tab === "orders") {
-        return <SheetOrders labels={ordersLabels} orders={groupAggregatedOrders} />;
+        return <ConnectedGroupOrders restaurantIds={groupRestaurantIds} labels={ordersLabels} />;
       }
 
       if (tab === "menu") {
-        return <SheetMenu items={groupAggregatedMenuItems} />;
+        return <ConnectedGroupMenu restaurantIds={groupRestaurantIds} />;
+      }
+
+      if (tab === "settings") {
+        return (
+          <SheetOrganizationSettings
+            labels={orgSettingsLabels}
+            orgName={organization?.name ?? ""}
+            ownerEmail={demoUser?.email ?? ""}
+            restaurants={restaurants.map((r) => ({ id: r.id, name: r.name, address: r.address }))}
+            onSave={handleUpdateOrganization}
+            onDeleteRestaurant={(id) => { void deleteRestaurantViaApi(id); }}
+            onDeleteOrganization={() => {
+              void deleteOrganization().then(() => {
+                clearSelection();
+                void navigate({ to: "/" });
+              });
+            }}
+          />
+        );
       }
 
       return (
@@ -1222,6 +1247,11 @@ const Layout = (): React.JSX.Element => {
     }
   }, [createRestaurantViaApi]);
 
+  const handleDeleteRestaurant = useCallback((id: string): void => {
+    handleClose();
+    setTimeout(() => { void deleteRestaurantViaApi(id); }, SHEET_CLOSE_DELAY_MS);
+  }, [deleteRestaurantViaApi, handleClose]);
+
   const handleSunClick = useCallback((): void => {
     if (!organization && demoUser) {
       setCreateError(null);
@@ -1333,10 +1363,10 @@ const Layout = (): React.JSX.Element => {
           <motion.div
             key="flat-list"
             className="absolute inset-0 z-20"
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 8 }}
-            transition={{ duration: 0.2, ease: "easeOut" }}
+            initial={{ opacity: 0, scale: 0.97 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.97 }}
+            transition={{ duration: 0.22, ease: [0.2, 0, 0, 1] }}
           >
             <div
               className="glass-strong absolute overflow-hidden rounded-xl"

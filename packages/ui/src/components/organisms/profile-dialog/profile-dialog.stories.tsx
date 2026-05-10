@@ -7,7 +7,7 @@ import { ProfileDialog } from "./profile-dialog.organism";
 import type { Meta, StoryObj } from "@storybook/react";
 
 const meta: Meta<typeof ProfileDialog> = {
-  title: "Organisms/ProfileDialog",
+  title: "Components/Organisms/ProfileDialog",
   component: ProfileDialog,
   parameters: { layout: "centered" }
 };
