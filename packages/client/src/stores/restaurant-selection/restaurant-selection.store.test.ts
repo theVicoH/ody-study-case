@@ -38,4 +38,36 @@ describe("restaurant selection store", () => {
 
     expect(useRestaurantSelectionStore.getState().activeTab).toBe("crm");
   });
+
+  it("opens a tab in split view from a single sheet", () => {
+    act(() => useRestaurantSelectionStore.getState().selectRestaurant("r1"));
+    act(() => useRestaurantSelectionStore.getState().openTabInSplit("orders"));
+
+    const s = useRestaurantSelectionStore.getState();
+
+    expect(s.compareMode).toBe(true);
+    expect(s.secondaryId).toBe("r1");
+    expect(s.secondaryTab).toBe("orders");
+  });
+
+  it("updates only secondary tab when already in split", () => {
+    act(() => useRestaurantSelectionStore.getState().selectRestaurant("r1"));
+    act(() => useRestaurantSelectionStore.getState().openTabInSplit("orders"));
+    act(() => useRestaurantSelectionStore.getState().selectSecondaryRestaurant("r2"));
+    act(() => useRestaurantSelectionStore.getState().openTabInSplit("crm"));
+
+    const s = useRestaurantSelectionStore.getState();
+
+    expect(s.compareMode).toBe(true);
+    expect(s.secondaryId).toBe("r2");
+    expect(s.secondaryTab).toBe("crm");
+  });
+
+  it("clears secondary tab when leaving compare mode", () => {
+    act(() => useRestaurantSelectionStore.getState().selectRestaurant("r1"));
+    act(() => useRestaurantSelectionStore.getState().openTabInSplit("orders"));
+    act(() => useRestaurantSelectionStore.getState().setCompareMode(false));
+
+    expect(useRestaurantSelectionStore.getState().secondaryTab).toBeNull();
+  });
 });

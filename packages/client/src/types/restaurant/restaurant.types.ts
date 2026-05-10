@@ -67,6 +67,7 @@ export interface RestaurantMenuItem {
   category: string;
   price: number;
   available: boolean;
+  image: string;
 }
 
 export interface RestaurantTopItem {
@@ -82,6 +83,8 @@ export interface RestaurantDetailedStats extends RestaurantStats {
   avgTicket: number;
   fillRate: number;
   weeklyRevenue: ReadonlyArray<number>;
+  monthlyRevenue: ReadonlyArray<number>;
+  yearlyRevenue: ReadonlyArray<number>;
   heatmap: ReadonlyArray<ReadonlyArray<number>>;
   topItems: ReadonlyArray<RestaurantTopItem>;
   sparklineData: ReadonlyArray<number>;
@@ -98,4 +101,16 @@ export interface RestaurantSettings {
   clickAndCollect: boolean;
   kitchenNotifications: boolean;
   testMode: boolean;
+}
+
+export type TableZone = "salle" | "terrasse" | "bar" | "vip";
+
+export type TableStatus = "available" | "occupied" | "reserved";
+
+export interface RestaurantTable {
+  id: string;
+  number: number;
+  capacity: number;
+  zone: TableZone;
+  status: TableStatus;
 }
