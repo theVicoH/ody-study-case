@@ -68,15 +68,31 @@ html.dark .docblock-argstable textarea {
 
 /* Story canvas — dark */
 html.dark .docs-story {
-  background: rgba(26, 27, 44, 0.6) !important;
+  background:
+    radial-gradient(ellipse 100% 60% at 60% 0%, rgba(120, 60, 220, 0.22) 0%, transparent 65%),
+    radial-gradient(ellipse 80% 50% at 20% 100%, rgba(236, 72, 153, 0.12) 0%, transparent 60%),
+    #14151f !important;
   border: 1px solid rgba(168, 85, 247, 0.2) !important;
   border-radius: 10px !important;
   overflow: hidden !important;
 }
 
 html.dark .docs-story > div:first-child {
-  background: #111220 !important;
+  background:
+    radial-gradient(ellipse 100% 60% at 60% 0%, rgba(120, 60, 220, 0.18) 0%, transparent 60%),
+    #111220 !important;
   border-bottom: 1px solid rgba(168, 85, 247, 0.12) !important;
+}
+
+/* Canvas iframe wrappers — ensure gradient fills full area */
+html.dark #storybook-root,
+html.dark .sb-show-main,
+html.dark .sb-main-padded,
+html.dark .sb-main-centered {
+  background:
+    radial-gradient(ellipse 100% 50% at 60% 0%, rgba(120, 60, 220, 0.18) 0%, transparent 60%),
+    #14151f !important;
+  min-height: 100vh !important;
 }
 
 /* Show code button — dark */
