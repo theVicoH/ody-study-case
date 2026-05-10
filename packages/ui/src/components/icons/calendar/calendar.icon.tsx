@@ -24,6 +24,8 @@ import { cn } from "@/lib/utils";
 const ICON_DEFAULT_SIZE = 24;
 const ICON_DEFAULT_DURATION = 0.6;
 const SVG_VIEWBOX_SIZE = 24;
+const ROTATE_SWING_DEG = 6;
+const ROTATE_SETTLE_DEG = 3;
 
 export interface CalendarIconHandle {
   startAnimation: () => void;
@@ -93,7 +95,7 @@ const CalendarIcon = forwardRef<CalendarIconHandle, CalendarIconProps>((
   const bodyVariants: Variants = {
     normal: { rotate: 0, y: 0 },
     animate: {
-      rotate: [0, -6, 6, -3, 0],
+      rotate: [0, -ROTATE_SWING_DEG, ROTATE_SWING_DEG, -ROTATE_SETTLE_DEG, 0],
       y: [0, -1, 0],
       transition: { duration, ease: "easeInOut" }
     }

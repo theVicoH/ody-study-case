@@ -144,7 +144,7 @@ const RestaurantSheet = React.forwardRef<HTMLElement, RestaurantSheetProps>(({
   const showSplitButtons = open && Boolean(onRequestSplit) && !isMobileOrTablet;
   const splitButtonClassName = cn(
     "fixed top-1/2 z-40 flex -translate-y-1/2 items-center justify-center rounded-md",
-    "border-foreground/30 bg-background/80 text-foreground/80 border outline outline-2 outline-transparent backdrop-blur-sm",
+    "border-foreground/30 bg-background/80 text-foreground/80 border outline-2 outline-transparent backdrop-blur-sm",
     "hover:border-primary hover:text-primary hover:outline-primary/20",
     "duration-fast transition-[opacity,color,border-color,outline-color,background-color]",
     "focus-visible:ring-ring focus-visible:ring-2 focus-visible:outline-none"
@@ -270,7 +270,7 @@ const RestaurantSheet = React.forwardRef<HTMLElement, RestaurantSheetProps>(({
                         <Select value={selectedPageId} onValueChange={(v) => v && onSelectPage(v)}>
                           <SelectTrigger
                             size="sm"
-                            className="text-muted-foreground hover:text-foreground bg-foreground/5 hover:bg-foreground/10 typo-caption gap-2xs h-7 rounded-md border-0 px-2"
+                            className="text-muted-foreground hover:text-foreground bg-foreground/5 hover:bg-foreground/10 typo-caption gap-2xs h-4xl px-xl rounded-md border-0"
                           >
                             <SelectValue>
                               {(id: string) => pageOptions.find((p) => p.id === id)?.label ?? id}

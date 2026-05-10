@@ -122,13 +122,13 @@ const ConnectedGroupCrm = ({
       <>
         <div className="gap-sm grid shrink-0 grid-cols-3">
           {Array.from({ length: 3 }).map((_, i) => (
-            <Skeleton key={i} className="h-20 rounded-lg" />
+            <Skeleton key={i} className="h-4xl rounded-lg" />
           ))}
         </div>
-        <Skeleton className="h-9 w-full shrink-0" />
-        <div className="min-h-0 flex-1 space-y-2">
+        <Skeleton className="h-4xl w-full shrink-0" />
+        <div className="space-y-xl min-h-0 flex-1">
           {Array.from({ length: 6 }).map((_, i) => (
-            <Skeleton key={i} className="h-12 w-full rounded-md" />
+            <Skeleton key={i} className="h-4xl w-full rounded-md" />
           ))}
         </div>
       </>

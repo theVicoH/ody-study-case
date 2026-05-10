@@ -84,9 +84,9 @@ const RestaurantPickerDialog = ({
           onChange={(e) => setSearch(e.target.value)}
         />
 
-        <div className="border-border max-h-72 overflow-y-auto rounded-md border">
+        <div className="border-border max-h-4xl overflow-y-auto rounded-md border">
           {filtered.length === 0 ? (
-            <div className="text-muted-foreground p-md text-center text-sm">
+            <div className="text-muted-foreground typo-body-sm p-md text-center">
               {labels.empty}
             </div>
           ) : (
@@ -104,21 +104,21 @@ const RestaurantPickerDialog = ({
                       }`}
                     >
                       <span className="flex flex-col">
-                        <span className="text-sm font-medium">{r.name}</span>
+                        <span className="typo-h5">{r.name}</span>
                         {r.address ? (
-                          <span className="text-muted-foreground text-xs">
+                          <span className="text-muted-foreground typo-caption">
                             {r.address}
                           </span>
                         ) : null}
                       </span>
                       <span
                         aria-hidden
-                        className={`flex size-4 items-center justify-center rounded-full border transition-colors ${
+                        className={`size-md flex items-center justify-center rounded-full border transition-colors ${
                           isSelected ? "border-primary bg-primary" : "border-border"
                         }`}
                       >
                         {isSelected ? (
-                          <span className="bg-primary-foreground size-1.5 rounded-full" />
+                          <span className="bg-primary-foreground size-2xs rounded-full" />
                         ) : null}
                       </span>
                     </button>

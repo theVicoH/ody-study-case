@@ -44,6 +44,7 @@ import { cn } from "@/lib/utils";
 
 const SAVE_FEEDBACK_DURATION_MS = 2000;
 const ICON_SIZE = 14;
+const ADD_ICON_SIZE = 12;
 const DAYS_IN_WEEK = 7;
 
 const ZONES: ReadonlyArray<TableZone> = ["salle", "terrasse", "bar", "vip"];
@@ -458,14 +459,14 @@ const OpeningHoursEditor = ({ labels, hours, onChange }: OpeningHoursEditorProps
             disabled={!h.isOpen}
             value={h.openTime}
             onChange={(e) => updateDay(h.dayOfWeek, { openTime: e.target.value })}
-            className="w-28 [color-scheme:dark]"
+            className="w-4xl [color-scheme:dark]"
           />
           <Input
             type="time"
             disabled={!h.isOpen}
             value={h.closeTime}
             onChange={(e) => updateDay(h.dayOfWeek, { closeTime: e.target.value })}
-            className="w-28 [color-scheme:dark]"
+            className="w-4xl [color-scheme:dark]"
           />
         </div>
       ))}
@@ -682,7 +683,7 @@ const SheetSettings = ({
             </div>
           </div>
 
-          <div className="gap-sm border-border flex flex-col border-t pt-4">
+          <div className="gap-sm border-border pt-3xl flex flex-col border-t">
             <div className="flex items-center justify-between">
               <div className="gap-xs flex flex-col">
                 <p className="text-foreground typo-button">{labels.openingHours}</p>
@@ -734,7 +735,7 @@ const SheetSettings = ({
                   type="button"
                   className="bg-primary text-primary-foreground gap-2xs px-sm py-2xs typo-caption inline-flex items-center rounded-md transition-all hover:opacity-90"
                 >
-                  <PlusIcon size={12} />
+                  <PlusIcon size={ADD_ICON_SIZE} />
                   {labels.addTable}
                 </button>
               }

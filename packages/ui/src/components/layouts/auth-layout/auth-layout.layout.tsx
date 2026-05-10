@@ -12,26 +12,26 @@ const AuthLayout = ({ children }: AuthLayoutProps): React.JSX.Element => {
       <div
         aria-hidden="true"
         className={`
-          bg-primary/25 pointer-events-none absolute top-1/2 left-1/2 size-[40rem]
+          bg-primary/25 size-screen pointer-events-none absolute top-1/2 left-1/2
           -translate-x-1/2 -translate-y-1/2 rounded-full opacity-50 blur-3xl
         `}
       />
       <div
         aria-hidden="true"
         className={`
-          bg-accent/15 pointer-events-none absolute -top-32 -right-32 size-[28rem]
+          bg-accent/15 size-screen pointer-events-none absolute -top-32 -right-32
           rounded-full blur-3xl
         `}
       />
       <div
         aria-hidden="true"
         className={`
-          bg-secondary/15 pointer-events-none absolute -bottom-32 -left-32 size-[28rem]
+          bg-secondary/15 size-screen pointer-events-none absolute -bottom-32 -left-32
           rounded-full blur-3xl
         `}
       />
 
-      <div className="relative z-10 mx-auto flex min-h-svh w-[24rem] max-w-[calc(100%-3rem)] flex-col items-stretch justify-center gap-10 py-12">
+      <div className="gap-4xl py-4xl relative z-10 mx-auto flex min-h-svh w-full max-w-full flex-col items-stretch justify-center">
         <div className="flex justify-center">
           <BrandMark />
         </div>

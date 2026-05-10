@@ -5,9 +5,10 @@ import { RegisterForm } from "@workspace/ui/components/organisms/register-form/r
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
+import type { RegisterPayload } from "@workspace/ui/components/organisms/register-form/register-form.organism";
+
 import { signUp } from "@/lib/auth/auth.client";
 
-import type { RegisterPayload } from "@workspace/ui/components/organisms/register-form/register-form.organism";
 
 const RegisterRoute = (): React.JSX.Element => {
   const { t } = useTranslation("auth");

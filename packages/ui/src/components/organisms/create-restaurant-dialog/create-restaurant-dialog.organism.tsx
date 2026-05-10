@@ -156,7 +156,7 @@ const CreateRestaurantDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="scrollbar-hidden max-h-[calc(100vh_-_2rem)] w-[36rem] max-w-[calc(100vw_-_2rem)] overflow-y-auto md:w-[44rem] lg:w-[52rem]">
+      <DialogContent className="scrollbar-hidden max-h-screen w-full max-w-full overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{labels.title}</DialogTitle>
           <DialogDescription>{labels.description}</DialogDescription>
@@ -262,14 +262,14 @@ const CreateRestaurantDialog = ({
                       disabled={!h.isOpen}
                       value={h.openTime}
                       onChange={(e) => updateHour(h.dayOfWeek, { openTime: e.target.value })}
-                      className="w-28 [color-scheme:dark]"
+                      className="w-4xl [color-scheme:dark]"
                     />
                     <Input
                       type="time"
                       disabled={!h.isOpen}
                       value={h.closeTime}
                       onChange={(e) => updateHour(h.dayOfWeek, { closeTime: e.target.value })}
-                      className="w-28 [color-scheme:dark]"
+                      className="w-4xl [color-scheme:dark]"
                     />
                   </div>
                 ))}

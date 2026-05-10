@@ -32,7 +32,9 @@ interface OrdersPageProps {
   searchQuery?: string;
 }
 
-const formatPrice = (cents: number): string => `${(cents / 100).toFixed(2)} €`;
+const CENTS_PER_EURO = 100;
+
+const formatPrice = (cents: number): string => `${(cents / CENTS_PER_EURO).toFixed(2)} €`;
 
 const formatDate = (iso: string): string => new Date(iso).toLocaleString();
 
