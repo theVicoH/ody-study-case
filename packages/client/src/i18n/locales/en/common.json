@@ -343,6 +343,14 @@
       "modelLabel": "3D model",
       "cancel": "Cancel",
       "submit": "Create"
+    },
+    "orgSettings": {
+      "generalInfo": "Organization settings",
+      "orgName": "Organization name",
+      "owner": "Owner",
+      "restaurantsCount": "Restaurants",
+      "save": "Save changes",
+      "saved": "Saved!"
     }
   },
   "common": {
@@ -371,6 +379,7 @@
   "errors": {
     "loadFailed": "Failed to load data",
     "createOrganizationFailed": "Could not create organization",
-    "createRestaurantFailed": "Could not create restaurant"
+    "createRestaurantFailed": "Could not create restaurant",
+    "deleteRestaurantFailed": "Could not delete restaurant"
   }
 }

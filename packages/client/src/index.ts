@@ -16,6 +16,42 @@ export { restaurantHoursApi } from "@/services/api/restaurant-hours-api/restaura
 
 export { restaurantTablesApi } from "@/services/api/restaurant-tables-api/restaurant-tables-api.service";
 
+export { clientsApi } from "@/services/api/clients-api/clients-api.service";
+
+export { dishesApi } from "@/services/api/dishes-api/dishes-api.service";
+
+export { menusApi } from "@/services/api/menus-api/menus-api.service";
+
+export { ordersApi } from "@/services/api/orders-api/orders-api.service";
+
+export {
+  useClients,
+  useCreateClient,
+  useUpdateClient,
+  useDeleteClient
+} from "@/hooks/use-clients/use-clients.hook";
+
+export {
+  useDishes,
+  useCreateDish,
+  useUpdateDish,
+  useDeleteDish
+} from "@/hooks/use-dishes/use-dishes.hook";
+
+export {
+  useMenus,
+  useCreateMenu,
+  useUpdateMenu,
+  useDeleteMenu
+} from "@/hooks/use-menus/use-menus.hook";
+
+export {
+  useOrders,
+  useCreateOrder,
+  useUpdateOrderStatus,
+  useDeleteOrder
+} from "@/hooks/use-orders/use-orders.hook";
+
 export { useRestaurantSelectionStore } from "@/stores/restaurant-selection/restaurant-selection.store";
 
 export { RESTAURANT_MODELS, DEFAULT_MODEL_ID, findModelById } from "@/lib/restaurant-visuals/restaurant-models.constant";
@@ -23,7 +59,13 @@ export { RESTAURANT_MODELS, DEFAULT_MODEL_ID, findModelById } from "@/lib/restau
 export type { RestaurantModelDef } from "@/lib/restaurant-visuals/restaurant-models.constant";
 
 export type {
+  ApiClient,
+  ApiDish,
+  ApiMenu,
   ApiOpeningHour,
+  ApiOrder,
+  ApiOrderItem,
+  ApiOrderStatus,
   ApiOrganization,
   ApiPaginated,
   ApiRestaurant,
@@ -32,9 +74,17 @@ export type {
   ApiTableZone,
   ApiUser,
   BulkGenerateTablesInput,
+  CreateClientInput,
+  CreateDishInput,
+  CreateMenuInput,
+  CreateOrderInput,
   CreateRestaurantInput,
   CreateTableInput,
+  ListOrdersQuery,
   ListTablesQuery,
+  UpdateClientInput,
+  UpdateDishInput,
+  UpdateMenuInput,
   UpdateRestaurantSettingsInput,
   UpdateTableInput
 } from "@/types/api/api.types";

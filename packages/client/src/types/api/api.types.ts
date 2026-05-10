@@ -123,3 +123,122 @@ export interface ListTablesQuery {
   zone?: ApiTableZone;
   status?: ApiTableStatus;
 }
+
+export interface ApiClient {
+  id: string;
+  restaurantId: string;
+  firstName: string;
+  lastName: string;
+  email: string | null;
+  phone: string | null;
+  notes: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateClientInput {
+  firstName: string;
+  lastName: string;
+  email?: string | null;
+  phone?: string | null;
+  notes?: string | null;
+}
+
+export type UpdateClientInput = CreateClientInput;
+
+export interface ApiDish {
+  id: string;
+  restaurantId: string;
+  name: string;
+  description: string | null;
+  priceCents: number;
+  category: string;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateDishInput {
+  name: string;
+  description?: string | null;
+  priceCents: number;
+  category: string;
+  isActive?: boolean;
+}
+
+export interface UpdateDishInput {
+  name: string;
+  description?: string | null;
+  priceCents: number;
+  category: string;
+  isActive: boolean;
+}
+
+export interface ApiMenu {
+  id: string;
+  restaurantId: string;
+  name: string;
+  description: string | null;
+  priceCents: number;
+  isActive: boolean;
+  dishIds: string[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateMenuInput {
+  name: string;
+  description?: string | null;
+  priceCents: number;
+  isActive?: boolean;
+  dishIds: string[];
+}
+
+export interface UpdateMenuInput {
+  name: string;
+  description?: string | null;
+  priceCents: number;
+  isActive: boolean;
+  dishIds: string[];
+}
+
+export type ApiOrderStatus = "pending" | "preparing" | "ready" | "served" | "paid" | "cancelled";
+
+export interface ApiOrderItem {
+  id: string;
+  kind: "menu" | "dish";
+  refId: string;
+  nameSnapshot: string;
+  unitPriceCents: number;
+  quantity: number;
+  lineTotalCents: number;
+}
+
+export interface ApiOrder {
+  id: string;
+  restaurantId: string;
+  clientId: string | null;
+  tableId: string | null;
+  status: ApiOrderStatus;
+  notes: string | null;
+  placedAt: string;
+  totalCents: number;
+  items: ApiOrderItem[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateOrderInput {
+  clientId?: string | null;
+  tableId?: string | null;
+  status?: ApiOrderStatus;
+  notes?: string | null;
+  placedAt?: string;
+  items: Array<{ kind: "menu" | "dish"; refId: string; quantity: number }>;
+}
+
+export interface ListOrdersQuery {
+  page?: number;
+  limit?: number;
+  clientId?: string;
+}

@@ -343,6 +343,14 @@
       "modelLabel": "Modèle 3D",
       "cancel": "Annuler",
       "submit": "Créer"
+    },
+    "orgSettings": {
+      "generalInfo": "Paramètres de l'organisation",
+      "orgName": "Nom de l'organisation",
+      "owner": "Propriétaire",
+      "restaurantsCount": "Restaurants",
+      "save": "Enregistrer",
+      "saved": "Enregistré !"
     }
   },
   "common": {
@@ -371,6 +379,7 @@
   "errors": {
     "loadFailed": "Échec du chargement des données",
     "createOrganizationFailed": "Impossible de créer l'organisation",
-    "createRestaurantFailed": "Impossible de créer le restaurant"
+    "createRestaurantFailed": "Impossible de créer le restaurant",
+    "deleteRestaurantFailed": "Impossible de supprimer le restaurant"
   }
 }

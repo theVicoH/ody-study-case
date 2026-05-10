@@ -14,5 +14,8 @@ export const organizationsApi = {
   },
   create(input: CreateOrganizationInput): Promise<ApiOrganization> {
     return api.post<ApiOrganization>("/organizations", input);
+  },
+  update(id: string, input: { name: string }): Promise<ApiOrganization> {
+    return api.patch<ApiOrganization>(`/organizations/${id}`, input);
   }
 };
