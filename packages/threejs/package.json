@@ -1,0 +1,39 @@
+{
+  "name": "@workspace/threejs",
+  "version": "0.0.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "lint": "oxlint --config .oxlintrc.json src/ && eslint src/",
+    "lint:fix": "oxlint --fix --config .oxlintrc.json src/ && eslint --fix src/",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
+  },
+  "dependencies": {
+    "@workspace/client": "workspace:*",
+    "@workspace/ui": "workspace:*",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "three": "0.176.0"
+  },
+  "devDependencies": {
+    "@storybook/react": "8.6.18",
+    "@testing-library/jest-dom": "6.6.3",
+    "@testing-library/react": "16.3.0",
+    "@types/react": "19.2.10",
+    "@types/react-dom": "19.2.3",
+    "@types/three": "0.176.0",
+    "@vitejs/plugin-react": "5.1.1",
+    "@vitest/coverage-v8": "3.2.4",
+    "@workspace/lint-plugin-custom": "workspace:*",
+    "jsdom": "26.1.0",
+    "vite-tsconfig-paths": "6.1.1",
+    "vitest": "3.2.4"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./components/*": "./src/components/*.tsx"
+  }
+}
