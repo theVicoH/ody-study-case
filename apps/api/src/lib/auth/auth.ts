@@ -15,6 +15,8 @@ const TRUSTED_ORIGINS = [
   ...(process.env["ALLOWED_ORIGINS"] ?? "").split(",").map((o) => o.trim()).filter(Boolean)
 ].filter(Boolean);
 
+const IS_PRODUCTION = process.env["NODE_ENV"] === "production";
+
 export const auth = betterAuth({
   secret: process.env["BETTER_AUTH_SECRET"] ?? "dev-secret-change-me",
   baseURL: process.env["BETTER_AUTH_URL"] ?? "http://localhost:3001",
@@ -52,7 +54,19 @@ export const auth = betterAuth({
   advanced: {
     database: {
       generateId: (): string => crypto.randomUUID()
-    }
+    },
+    defaultCookieAttributes: IS_PRODUCTION
+      ? {
+        sameSite: "none",
+        secure: true,
+        httpOnly: true,
+        partitioned: true
+      }
+      : {
+        sameSite: "lax",
+        secure: false,
+        httpOnly: true
+      }
   }
 });
 
