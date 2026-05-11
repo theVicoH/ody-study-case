@@ -156,7 +156,13 @@ const CreateRestaurantDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="scrollbar-hidden max-h-screen w-full max-w-full overflow-y-auto">
+      <DialogContent
+        className="scrollbar-hidden w-full overflow-y-auto"
+        style={{
+          maxWidth: "min(56rem, calc(100vw - 2rem))",
+          maxHeight: "calc(100vh - 4rem)"
+        }}
+      >
         <DialogHeader>
           <DialogTitle>{labels.title}</DialogTitle>
           <DialogDescription>{labels.description}</DialogDescription>

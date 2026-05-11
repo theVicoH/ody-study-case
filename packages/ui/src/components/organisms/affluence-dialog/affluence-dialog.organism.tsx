@@ -137,7 +137,6 @@ const AffluenceDialog = ({
 
                 return false;
               }}
-              initialFocus
             />
           </div>
 

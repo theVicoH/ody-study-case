@@ -102,7 +102,6 @@ const WeeklyRevenueDialog = ({
 
                 return false;
               }}
-              initialFocus
             />
           </div>
 

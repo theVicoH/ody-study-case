@@ -334,7 +334,14 @@ const ConnectedNewOrderDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="gap-md flex max-h-screen w-full max-w-xl flex-col overflow-hidden md:max-w-2xl lg:max-w-3xl">
+      <DialogContent
+        className="gap-md flex w-full flex-col overflow-hidden"
+        style={{
+          maxWidth: "min(48rem, calc(100vw - 2rem))",
+          height: "calc(100vh - 4rem)",
+          maxHeight: "44rem"
+        }}
+      >
         <DialogHeader>
           <div className="gap-xl flex items-center justify-between">
             <DialogTitle>{labels.title}</DialogTitle>
@@ -375,7 +382,10 @@ const ConnectedNewOrderDialog = ({
                   onChange={(e) => setClientQuery(e.target.value)}
                   placeholder={labels.clientSearchPlaceholder}
                 />
-                <div className="border-border scrollbar-hidden max-h-4xl overflow-y-auto rounded-md border">
+                <div
+                  className="border-border scrollbar-hidden overflow-y-auto rounded-md border"
+                  style={{ maxHeight: "22rem" }}
+                >
                   <Table>
                     <TableBody>
                       <ClientRow

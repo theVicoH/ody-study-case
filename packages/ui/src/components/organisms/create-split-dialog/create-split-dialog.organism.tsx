@@ -94,7 +94,10 @@ const CreateSplitDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="gap-md w-full">
+      <DialogContent
+        className="gap-md w-full"
+        style={{ maxWidth: "min(28rem, calc(100vw - 2rem))" }}
+      >
         <DialogHeader>
           <DialogTitle>{labels.title}</DialogTitle>
           <DialogDescription>{labels.description}</DialogDescription>

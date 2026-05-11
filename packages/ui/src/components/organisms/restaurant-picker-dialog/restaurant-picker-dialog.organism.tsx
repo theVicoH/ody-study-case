@@ -72,7 +72,10 @@ const RestaurantPickerDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="gap-md flex max-w-md flex-col">
+      <DialogContent
+        className="gap-md flex flex-col"
+        style={{ maxWidth: "min(28rem, calc(100vw - 2rem))" }}
+      >
         <DialogHeader>
           <DialogTitle>{labels.title}</DialogTitle>
           <DialogDescription>{labels.description}</DialogDescription>

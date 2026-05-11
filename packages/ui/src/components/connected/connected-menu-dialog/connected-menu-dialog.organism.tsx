@@ -237,7 +237,13 @@ const ConnectedMenuDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="gap-md flex max-h-screen w-full flex-col">
+      <DialogContent
+        className="gap-md flex w-full flex-col"
+        style={{
+          maxWidth: "min(40rem, calc(100vw - 2rem))",
+          maxHeight: "calc(100vh - 4rem)"
+        }}
+      >
         <DialogHeader>
           <DialogTitle>
             {isEdit ? t("restaurants.menu.editMenuTitle") : t("restaurants.menu.createMenuTitle")}
