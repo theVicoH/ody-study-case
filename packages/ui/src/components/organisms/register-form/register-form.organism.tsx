@@ -129,11 +129,11 @@ const RegisterForm = ({
         <span className="text-muted-foreground typo-overline">
           {t("register.stepLabel", { current: step + 1, total: TOTAL_STEPS })}
         </span>
-        <div className="gap-lg flex w-full">
+        <div className="gap-xs flex w-full">
           {Array.from({ length: TOTAL_STEPS }).map((_, index) => (
             <motion.div
               key={index}
-              className="h-md flex-1 rounded-full"
+              className="h-2xs flex-1 rounded-full"
               initial={false}
               animate={{
                 backgroundColor:
@@ -277,8 +277,8 @@ const RegisterForm = ({
                           selected={birthday}
                           onSelect={setBirthday}
                           captionLayout="dropdown"
-                          fromYear={MIN_BIRTH_YEAR}
-                          toDate={today}
+                          startMonth={new Date(MIN_BIRTH_YEAR, 0)}
+                          endMonth={today}
                           defaultMonth={birthday ?? new Date(CALENDAR_DEFAULT_YEAR, 0, 1)}
                         />
                       </PopoverContent>

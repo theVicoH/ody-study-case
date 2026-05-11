@@ -23,11 +23,11 @@ const PopoverContent = ({
   ...props
 }: PopoverContentProps): React.JSX.Element => (
   <PopoverPrimitive.Portal>
-    <PopoverPrimitive.Positioner align={align} side={side} sideOffset={sideOffset}>
+    <PopoverPrimitive.Positioner align={align} side={side} sideOffset={sideOffset} className="z-50">
       <PopoverPrimitive.Popup
         className={cn(
           `bg-popover text-popover-foreground border-border z-50 rounded-2xl border p-2 shadow-xl
-          transition-all
+          backdrop-blur-xl transition-all
           duration-150 ease-out
           outline-none data-[ending-style]:scale-95
           data-[ending-style]:opacity-0 data-[starting-style]:scale-95 data-[starting-style]:opacity-0`,
