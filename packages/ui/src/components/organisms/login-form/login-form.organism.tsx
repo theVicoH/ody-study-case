@@ -37,8 +37,9 @@ const LoginForm = ({
   const isDisabled = !email || !password || isLoading;
 
   return (
-    <form onSubmit={handleSubmit} className="gap-4xl flex flex-col">
-      <div className="gap-lg flex flex-col">
+    <form onSubmit={handleSubmit} className="gap-xl flex flex-col">
+      <div className="gap-sm flex flex-col">
+
         <h1 className="text-foreground typo-h3">
           {t("login.title")}
         </h1>

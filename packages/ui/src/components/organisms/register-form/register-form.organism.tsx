@@ -123,8 +123,9 @@ const RegisterForm = ({
   const displayError = error ?? stepError;
 
   return (
-    <form onSubmit={handleSubmit} className="gap-4xl flex flex-col">
-      <div className="gap-lg flex flex-col">
+    <form onSubmit={handleSubmit} className="gap-xl flex flex-col">
+      <div className="gap-sm flex flex-col">
+
         <span className="text-muted-foreground typo-overline">
           {t("register.stepLabel", { current: step + 1, total: TOTAL_STEPS })}
         </span>
@@ -155,7 +156,8 @@ const RegisterForm = ({
             animate="center"
             exit="exit"
             transition={{ duration: 0.18, ease: "easeOut" }}
-            className="gap-4xl flex flex-col"
+            className="gap-xl flex flex-col"
+
           >
             {step === 0 && (
               <>
