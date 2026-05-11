@@ -33,7 +33,7 @@ const AuthLayout = ({ children }: AuthLayoutProps): React.JSX.Element => {
       />
 
       <div className={`
-        relative z-10 mx-auto flex min-h-svh w-[24rem] max-w-[calc(100%-3rem)]
+        relative z-10 mx-auto flex min-h-svh w-[20rem] max-w-[calc(100%-3rem)]
         flex-col items-stretch justify-center gap-10 py-12
       `}>
         <div className="flex justify-center">
