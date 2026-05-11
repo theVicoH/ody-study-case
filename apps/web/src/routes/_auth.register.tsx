@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, useRouter } from "@tanstack/react-router";
 import { RegisterForm } from "@workspace/ui/components/organisms/register-form/register-form.organism";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
@@ -13,6 +13,7 @@ import { signUp } from "@/lib/auth/auth.client";
 const RegisterRoute = (): React.JSX.Element => {
   const { t } = useTranslation("auth");
   const navigate = useNavigate();
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -44,7 +45,8 @@ const RegisterRoute = (): React.JSX.Element => {
       }
 
       toast.success(t("register.successToast"), { id: toastId });
-      await navigate({ to: "/" });
+      await router.invalidate();
+      await navigate({ to: "/", replace: true });
     } catch {
       setError("unknown");
       toast.error(t("register.errorToast"), { id: toastId, description: t("errors.unknown") });
