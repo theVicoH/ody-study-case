@@ -1,11 +1,9 @@
 import { inferAdditionalFields } from "better-auth/client/plugins";
 import { createAuthClient } from "better-auth/react";
 
-const API_BASE_URL = import.meta.env["VITE_API_URL"] ?? "http://localhost:3001";
-
-if (typeof window !== "undefined") {
-  console.error("[auth] VITE_API_URL =", import.meta.env["VITE_API_URL"]);
-}
+const viteUrl = import.meta.env.VITE_API_URL;
+const processUrl = typeof process !== "undefined" ? process.env?.["VITE_API_URL"] : undefined;
+const API_BASE_URL = viteUrl ?? processUrl ?? "http://localhost:3001";
 
 export const authClient = createAuthClient({
   baseURL: `${API_BASE_URL}/api/auth`,

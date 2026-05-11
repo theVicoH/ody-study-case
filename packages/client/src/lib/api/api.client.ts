@@ -1,15 +1,10 @@
 const DEFAULT_API_URL = "http://localhost:3001";
 const HTTP_NO_CONTENT = 204;
 
-interface ImportMetaWithEnv {
-  env?: Record<string, string | undefined>;
-}
-
 const getBaseUrl = (): string => {
-  const meta = import.meta as unknown as ImportMetaWithEnv;
-  const fromEnv = meta.env?.["VITE_API_URL"] ?? "";
+  const env = (import.meta as { env?: { VITE_API_URL?: string } }).env;
 
-  return fromEnv || DEFAULT_API_URL;
+  return env?.VITE_API_URL || DEFAULT_API_URL;
 };
 
 export interface ApiErrorPayload {
