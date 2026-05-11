@@ -1,2 +1,6 @@
 *.bin filter=lfs diff=lfs merge=lfs -text
 *.glb filter=lfs diff=lfs merge=lfs -text
+
+# Restaurant models used at runtime — keep in regular git so Railway can serve them
+apps/web/public/models/corner-shop/scene.bin -filter -diff -merge text=auto
+apps/web/public/models/japanese-tea-shop/scene.bin -filter -diff -merge text=auto
