@@ -87,7 +87,6 @@ const RevenueTrendDialog = ({
 
                 return false;
               }}
-              initialFocus
             />
           </div>
 
