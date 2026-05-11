@@ -37,15 +37,9 @@ const LoginForm = ({
   const isDisabled = !email || !password || isLoading;
 
   return (
-<<<<<<< Updated upstream
-    <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-      <div className="flex flex-col gap-1.5">
-        <h1 className="text-foreground text-xl font-semibold tracking-tight">
-=======
     <form onSubmit={handleSubmit} className="gap-xl flex flex-col">
       <div className="gap-sm flex flex-col">
         <h1 className="text-foreground typo-h3">
->>>>>>> Stashed changes
           {t("login.title")}
         </h1>
         <p className="text-muted-foreground text-sm">{t("login.description")}</p>

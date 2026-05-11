@@ -117,15 +117,9 @@ const RegisterForm = ({
   const displayError = error ?? stepError;
 
   return (
-<<<<<<< Updated upstream
-    <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-      <div className="flex flex-col gap-1.5">
-        <span className="text-muted-foreground text-xs tracking-wide uppercase">
-=======
     <form onSubmit={handleSubmit} className="gap-xl flex flex-col">
-      <div className="gap-lg flex flex-col">
+      <div className="gap-sm flex flex-col">
         <span className="text-muted-foreground typo-overline">
->>>>>>> Stashed changes
           {t("register.stepLabel", { current: step + 1, total: TOTAL_STEPS })}
         </span>
         <div className="flex w-full gap-1.5">
@@ -155,11 +149,7 @@ const RegisterForm = ({
             animate="center"
             exit="exit"
             transition={{ duration: 0.18, ease: "easeOut" }}
-<<<<<<< Updated upstream
-            className="flex flex-col gap-5"
-=======
             className="gap-xl flex flex-col"
->>>>>>> Stashed changes
           >
             {step === 0 && (
               <>
