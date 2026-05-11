@@ -2,10 +2,17 @@ import { accountsTable, db, sessionsTable, usersTable, verificationsTable } from
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 
+const SECONDS_PER_MINUTE = 60;
+const MINUTES_PER_HOUR = 60;
+const HOURS_PER_DAY = 24;
+const SESSION_DAYS = 30;
+const SESSION_TTL_SECONDS = SECONDS_PER_MINUTE * MINUTES_PER_HOUR * HOURS_PER_DAY * SESSION_DAYS;
+const SESSION_UPDATE_AGE_SECONDS = SECONDS_PER_MINUTE * MINUTES_PER_HOUR * HOURS_PER_DAY;
+
 const TRUSTED_ORIGINS = [
   "http://localhost:3000",
   "http://localhost:3001",
-  process.env["VITE_API_URL"] ?? ""
+  ...(process.env["ALLOWED_ORIGINS"] ?? "").split(",").map((o) => o.trim()).filter(Boolean)
 ].filter(Boolean);
 
 export const auth = betterAuth({
@@ -35,11 +42,11 @@ export const auth = betterAuth({
     }
   },
   session: {
-    expiresIn: 60 * 60 * 24 * 30,
-    updateAge: 60 * 60 * 24,
+    expiresIn: SESSION_TTL_SECONDS,
+    updateAge: SESSION_UPDATE_AGE_SECONDS,
     cookieCache: {
       enabled: true,
-      maxAge: 60 * 60 * 24 * 30
+      maxAge: SESSION_TTL_SECONDS
     }
   },
   advanced: {

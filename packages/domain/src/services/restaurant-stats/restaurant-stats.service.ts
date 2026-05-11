@@ -1,10 +1,11 @@
-import { RestaurantStatsSnapshot } from "@/value-objects/restaurant-stats/restaurant-stats/restaurant-stats.value-object";
-
+import type { OrderStatus } from "@/entities/order/order.entity";
 import type {
   RestaurantStatsSnapshotProps,
   TopItemSnapshot
 } from "@/value-objects/restaurant-stats/restaurant-stats/restaurant-stats.value-object";
-import type { OrderStatus } from "@/entities/order/order.entity";
+
+import { RestaurantStatsSnapshot } from "@/value-objects/restaurant-stats/restaurant-stats/restaurant-stats.value-object";
+
 
 export interface StatsOrderItemInput {
   readonly refKind: "menu" | "dish";
@@ -61,7 +62,9 @@ const addDays = (d: Date, n: number): Date => {
   return x;
 };
 
-const dowMonFirst = (d: Date): number => (d.getDay() + 6) % 7;
+const SUNDAY_OFFSET = 6;
+const DAYS_PER_WEEK = 7;
+const dowMonFirst = (d: Date): number => (d.getDay() + SUNDAY_OFFSET) % DAYS_PER_WEEK;
 
 const isSameDay = (a: Date, b: Date): boolean =>
   a.getFullYear() === b.getFullYear()

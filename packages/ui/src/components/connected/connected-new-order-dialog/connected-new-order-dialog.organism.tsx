@@ -26,6 +26,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 const CENTS_PER_EURO = 100;
 const DEFAULT_QTY = 1;
 const STEP_COUNT = 3;
+const TABLE_COLS = 3;
+const FULL_PERCENT = 100;
 
 interface ClientRowProps {
   selected: boolean;
@@ -40,14 +42,14 @@ const ClientRow = ({ selected, onSelect, primary, secondary }: ClientRowProps): 
     onClick={onSelect}
     className={`cursor-pointer transition-colors ${selected ? "bg-primary/15 hover:bg-primary/20" : ""}`}
   >
-    <TableCell className="w-8">
+    <TableCell className="w-xl">
       <span
         aria-hidden
-        className={`flex size-4 items-center justify-center rounded-full border transition-colors ${
+        className={`size-md flex items-center justify-center rounded-full border transition-colors ${
           selected ? "border-primary bg-primary" : "border-border"
         }`}
       >
-        {selected && <span className="bg-primary-foreground size-1.5 rounded-full" />}
+        {selected && <span className="bg-primary-foreground size-2xs rounded-full" />}
       </span>
     </TableCell>
     <TableCell>{primary}</TableCell>
@@ -161,8 +163,7 @@ const ConnectedNewOrderDialog = ({
     if (!q) return clients;
 
     return clients.filter((c) =>
-      `${c.firstName} ${c.lastName} ${c.email ?? ""} ${c.phone ?? ""}`.toLowerCase().includes(q)
-    );
+      `${c.firstName} ${c.lastName} ${c.email ?? ""} ${c.phone ?? ""}`.toLowerCase().includes(q));
   }, [clients, clientQuery]);
 
   type CatalogEntry = { kind: "menu" | "dish"; id: string; name: string; priceCents: number };
@@ -236,8 +237,7 @@ const ConnectedNewOrderDialog = ({
 
       if (existing) {
         return prev.map((it) =>
-          it.uid === existing.uid ? { ...it, quantity: it.quantity + 1 } : it
-        );
+          it.uid === existing.uid ? { ...it, quantity: it.quantity + 1 } : it);
       }
 
       return [
@@ -334,17 +334,17 @@ const ConnectedNewOrderDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="gap-md flex max-h-[90vh] w-[34rem] flex-col overflow-hidden">
+      <DialogContent className="gap-md flex max-h-screen w-full max-w-xl flex-col overflow-hidden md:max-w-2xl lg:max-w-3xl">
         <DialogHeader>
-          <div className="flex items-center justify-between gap-2">
+          <div className="gap-xl flex items-center justify-between">
             <DialogTitle>{labels.title}</DialogTitle>
             <span className="typo-caption text-muted-foreground">{stepProgress}</span>
           </div>
           <DialogDescription>{stepTitle}</DialogDescription>
-          <div className="bg-muted/40 mt-2 flex h-1 w-full overflow-hidden rounded-full">
+          <div className="bg-muted/40 mt-xl h-md flex w-full overflow-hidden rounded-full">
             <div
               className="bg-primary h-full transition-all"
-              style={{ width: `${(step / STEP_COUNT) * 100}%` }}
+              style={{ width: `${(step / STEP_COUNT) * FULL_PERCENT}%` }}
             />
           </div>
         </DialogHeader>
@@ -352,7 +352,7 @@ const ConnectedNewOrderDialog = ({
         <form
           id="connected-new-order-form"
           onSubmit={handleSubmit}
-          className="gap-sm flex min-h-0 flex-1 flex-col overflow-auto"
+          className="gap-sm scrollbar-hidden flex min-h-0 flex-1 flex-col overflow-auto"
         >
           {step === 1 && (
             <Tabs
@@ -375,7 +375,7 @@ const ConnectedNewOrderDialog = ({
                   onChange={(e) => setClientQuery(e.target.value)}
                   placeholder={labels.clientSearchPlaceholder}
                 />
-                <div className="border-border max-h-72 overflow-y-auto rounded-md border">
+                <div className="border-border scrollbar-hidden max-h-4xl overflow-y-auto rounded-md border">
                   <Table>
                     <TableBody>
                       <ClientRow
@@ -385,7 +385,7 @@ const ConnectedNewOrderDialog = ({
                       />
                       {filteredClients.length === 0 ? (
                         <TableRow>
-                          <TableCell colSpan={3} className="text-muted-foreground py-6 text-center">
+                          <TableCell colSpan={TABLE_COLS} className="text-muted-foreground py-4xl text-center">
                             {labels.clientEmpty}
                           </TableCell>
                         </TableRow>
@@ -395,7 +395,7 @@ const ConnectedNewOrderDialog = ({
                             key={c.id}
                             selected={clientId === c.id}
                             onSelect={() => setClientId(c.id)}
-                            primary={<span className="font-medium">{c.firstName} {c.lastName}</span>}
+                            primary={<span className="typo-h5">{c.firstName} {c.lastName}</span>}
                             secondary={c.email ?? c.phone ?? ""}
                           />
                         ))
@@ -408,7 +408,7 @@ const ConnectedNewOrderDialog = ({
               <TabsContent value="new" className="gap-xs flex flex-col">
                 <div className="gap-xs grid grid-cols-2">
                   <div className="gap-2xs flex flex-col">
-                    <Label htmlFor="new-client-first-name" className="text-xs">
+                    <Label htmlFor="new-client-first-name" className="typo-caption">
                       {labels.clientFirstNameLabel}
                     </Label>
                     <Input
@@ -419,7 +419,7 @@ const ConnectedNewOrderDialog = ({
                     />
                   </div>
                   <div className="gap-2xs flex flex-col">
-                    <Label htmlFor="new-client-last-name" className="text-xs">
+                    <Label htmlFor="new-client-last-name" className="typo-caption">
                       {labels.clientLastNameLabel}
                     </Label>
                     <Input
@@ -431,7 +431,7 @@ const ConnectedNewOrderDialog = ({
                   </div>
                 </div>
                 <div className="gap-2xs flex flex-col">
-                  <Label htmlFor="new-client-email" className="text-xs">
+                  <Label htmlFor="new-client-email" className="typo-caption">
                     {labels.clientEmailLabel}
                   </Label>
                   <Input
@@ -443,7 +443,7 @@ const ConnectedNewOrderDialog = ({
                   />
                 </div>
                 <div className="gap-2xs flex flex-col">
-                  <Label htmlFor="new-client-phone" className="text-xs">
+                  <Label htmlFor="new-client-phone" className="typo-caption">
                     {labels.clientPhoneLabel}
                   </Label>
                   <Input
@@ -464,19 +464,19 @@ const ConnectedNewOrderDialog = ({
                 onChange={(e) => setCatalogQuery(e.target.value)}
                 placeholder={labels.itemSearchPlaceholder}
               />
-              <div className="border-border max-h-64 overflow-y-auto rounded-md border">
+              <div className="border-border scrollbar-hidden max-h-4xl overflow-y-auto rounded-md border">
                 <Table>
                   <TableHeader>
                     <TableRow>
                       <TableHead>{labels.catalogColName}</TableHead>
                       <TableHead className="text-end">{labels.catalogColPrice}</TableHead>
-                      <TableHead className="w-12 text-end">{labels.catalogColAdd}</TableHead>
+                      <TableHead className="w-4xl text-end">{labels.catalogColAdd}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {filteredCatalog.length === 0 ? (
                       <TableRow>
-                        <TableCell colSpan={3} className="text-muted-foreground py-6 text-center">
+                        <TableCell colSpan={TABLE_COLS} className="text-muted-foreground py-4xl text-center">
                           {labels.itemEmpty}
                         </TableCell>
                       </TableRow>
@@ -492,13 +492,13 @@ const ConnectedNewOrderDialog = ({
                           >
                             <TableCell>
                               <div className="flex flex-col">
-                                <span className="font-medium">{entry.name}</span>
+                                <span className="typo-h5">{entry.name}</span>
                                 <span className="text-muted-foreground typo-caption">
                                   {entry.kind === "menu" ? labels.catalogTypeMenu : labels.catalogTypeDish}
                                 </span>
                               </div>
                             </TableCell>
-                            <TableCell className="tabular-nums text-end">
+                            <TableCell className="text-end tabular-nums">
                               {(entry.priceCents / CENTS_PER_EURO).toFixed(2)} €
                             </TableCell>
                             <TableCell className="text-end">
@@ -536,19 +536,19 @@ const ConnectedNewOrderDialog = ({
                       return (
                         <div
                           key={it.uid}
-                          className="bg-muted/30 gap-xs flex items-center rounded-md p-2"
+                          className="bg-muted/30 gap-xs p-xl flex items-center rounded-md"
                         >
-                          <span className="line-clamp-1 flex-1 text-sm">{name}</span>
+                          <span className="typo-body-sm line-clamp-1 flex-1">{name}</span>
                           <Input
                             type="number"
                             min={1}
-                            className="h-7 w-16"
+                            className="h-4xl w-4xl"
                             value={it.quantity}
                             onChange={(e) =>
                               updateItem(it.uid, { quantity: Math.max(1, Number(e.target.value)) })
                             }
                           />
-                          <span className="typo-caption text-muted-foreground w-16 text-end tabular-nums">
+                          <span className="typo-caption text-muted-foreground w-4xl text-end tabular-nums">
                             {(lineCents / CENTS_PER_EURO).toFixed(2)} €
                           </span>
                           <Button
@@ -569,11 +569,11 @@ const ConnectedNewOrderDialog = ({
             </div>
           )}
 
-          {step === 3 && (
+          {step === STEP_COUNT && (
             <div className="gap-sm flex flex-col">
               <div className="gap-2xs flex flex-col">
                 <span className="typo-caption text-muted-foreground">{labels.summaryClient}</span>
-                <span className="text-sm">
+                <span className="typo-body-sm">
                   {clientMode === "new"
                     ? `${newClientFirstName.trim()} ${newClientLastName.trim()}`
                     : selectedClient
@@ -595,10 +595,10 @@ const ConnectedNewOrderDialog = ({
                         return (
                           <TableRow key={it.uid}>
                             <TableCell>{name}</TableCell>
-                            <TableCell className="text-muted-foreground w-12 text-end tabular-nums">
+                            <TableCell className="text-muted-foreground w-4xl text-end tabular-nums">
                               × {it.quantity}
                             </TableCell>
-                            <TableCell className="w-20 text-end tabular-nums">
+                            <TableCell className="w-4xl text-end tabular-nums">
                               {(lineCents / CENTS_PER_EURO).toFixed(2)} €
                             </TableCell>
                           </TableRow>
@@ -619,7 +619,7 @@ const ConnectedNewOrderDialog = ({
                 />
               </div>
 
-              <div className="border-foreground/10 flex items-center justify-between border-t pt-2">
+              <div className="border-foreground/10 pt-xl flex items-center justify-between border-t">
                 <span className="typo-overline text-muted-foreground">{labels.totalLabel}</span>
                 <span className="typo-body-sm tabular-nums">
                   {(totalCents / CENTS_PER_EURO).toFixed(2)} €
@@ -629,7 +629,7 @@ const ConnectedNewOrderDialog = ({
           )}
         </form>
 
-        <div className="flex items-center justify-between gap-2">
+        <div className="gap-xl flex items-center justify-between">
           {step > 1 ? (
             <Button type="button" variant="ghost" onClick={goBack}>
               {labels.back}

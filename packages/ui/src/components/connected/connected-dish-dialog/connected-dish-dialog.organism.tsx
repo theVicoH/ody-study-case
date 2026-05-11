@@ -27,6 +27,7 @@ import {
 import { cn } from "@/lib/utils";
 
 const CENTS_PER_EURO = 100;
+const MAX_NAME_LENGTH = 120;
 const KB = 1024;
 const MAX_IMAGE_KB = 500;
 const MAX_IMAGE_BYTES = MAX_IMAGE_KB * KB;
@@ -101,7 +102,6 @@ const ConnectedDishDialog = ({
     setUploadError(null);
     createDish.reset();
     updateDish.reset();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, dish?.id]);
 
   const handleOpenChange = (next: boolean): void => {
@@ -192,7 +192,7 @@ const ConnectedDishDialog = ({
               value={name}
               onChange={(event) => setName(event.target.value)}
               minLength={2}
-              maxLength={120}
+              maxLength={MAX_NAME_LENGTH}
               required
             />
           </div>
@@ -246,7 +246,7 @@ const ConnectedDishDialog = ({
                   <img
                     src={imageUrl.trim()}
                     alt={t("restaurants.menu.dishImagePreview")}
-                    className="border-border aspect-square w-24 rounded-md border object-cover"
+                    className="border-border aspect-square w-4xl rounded-md border object-cover"
                     onError={(e) => { e.currentTarget.style.display = "none"; }}
                   />
                 </div>
@@ -254,7 +254,7 @@ const ConnectedDishDialog = ({
                 <div
                   className={cn(
                     "border-border bg-muted/30 text-muted-foreground typo-caption",
-                    "flex aspect-square w-24 shrink-0 items-center justify-center rounded-md border border-dashed text-center"
+                    "flex aspect-square w-4xl shrink-0 items-center justify-center rounded-md border border-dashed text-center"
                   )}
                 >
                   {t("restaurants.menu.dishImagePreview")}
@@ -323,7 +323,7 @@ const ConnectedDishDialog = ({
           ) : null}
 
           {errorMessage ? (
-            <p className="bg-destructive/10 text-destructive typo-caption rounded-md px-3 py-2">
+            <p className="bg-destructive/10 text-destructive typo-caption px-2xl py-xl rounded-md">
               {errorMessage}
             </p>
           ) : null}
@@ -343,4 +343,5 @@ const ConnectedDishDialog = ({
 };
 
 export { ConnectedDishDialog };
+
 export type { ConnectedDishDialogProps };

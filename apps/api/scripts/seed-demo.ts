@@ -38,14 +38,31 @@ interface MenuSeed {
   dishNames: string[];
 }
 
+type PerformanceProfile = "healthy" | "average" | "underperforming";
+
 interface RestaurantSeed {
   name: string;
   address: string;
   phone: string;
   maxCovers: number;
+  profile: PerformanceProfile;
   dishes: DishSeed[];
   menus: MenuSeed[];
 }
+
+interface ProfileConfig {
+  cancelRate: number;
+  paidRate: number;
+  perDayCurrent: number;
+  perDayPrior: number;
+  perDayOlder: number;
+}
+
+const PROFILE_CONFIGS: Record<PerformanceProfile, ProfileConfig> = {
+  healthy: { cancelRate: 0.03, paidRate: 0.6, perDayCurrent: 8, perDayPrior: 5, perDayOlder: 3 },
+  average: { cancelRate: 0.06, paidRate: 0.45, perDayCurrent: 3, perDayPrior: 3, perDayOlder: 3 },
+  underperforming: { cancelRate: 0.18, paidRate: 0.3, perDayCurrent: 1, perDayPrior: 3, perDayOlder: 1 }
+};
 
 const RESTAURANTS: RestaurantSeed[] = [
   {
@@ -53,6 +70,7 @@ const RESTAURANTS: RestaurantSeed[] = [
     address: "12 rue de Rivoli, 75004 Paris",
     phone: "+33142781234",
     maxCovers: 60,
+    profile: "healthy",
     dishes: [
       { name: "Soupe à l'oignon", description: "Soupe gratinée à l'ancienne", priceCents: 950, category: "starter" },
       { name: "Foie gras maison", description: "Foie gras mi-cuit, chutney de figues", priceCents: 1850, category: "starter" },
@@ -96,6 +114,7 @@ const RESTAURANTS: RestaurantSeed[] = [
     address: "45 avenue Montaigne, 75008 Paris",
     phone: "+33145623789",
     maxCovers: 40,
+    profile: "underperforming",
     dishes: [
       { name: "Edamame", description: "Fèves de soja au sel", priceCents: 550, category: "starter" },
       { name: "Soupe miso", description: "Tofu, wakamé, oignons verts", priceCents: 450, category: "starter" },
@@ -132,6 +151,7 @@ const RESTAURANTS: RestaurantSeed[] = [
     address: "8 rue des Lombards, 75004 Paris",
     phone: "+33142339876",
     maxCovers: 50,
+    profile: "average",
     dishes: [
       { name: "Bruschetta tomate", description: "Pain grillé, tomate, basilic", priceCents: 750, category: "starter" },
       { name: "Antipasti", description: "Charcuterie, fromages, légumes grillés", priceCents: 1450, category: "starter" },
@@ -176,38 +196,69 @@ function pick<T>(arr: readonly T[]): T {
   return arr[Math.floor(Math.random() * arr.length)]!;
 }
 
-function pickStatus(): OrderStatus {
+function pickStatus(config: ProfileConfig): OrderStatus {
   const r = Math.random();
-  if (r < 0.45) return ORDER_STATUS.PAID;
-  if (r < 0.6) return ORDER_STATUS.SERVED;
-  if (r < 0.75) return ORDER_STATUS.READY;
-  if (r < 0.88) return ORDER_STATUS.PREPARING;
-  if (r < 0.95) return ORDER_STATUS.PENDING;
+  if (r < config.cancelRate) return ORDER_STATUS.CANCELLED;
 
-  return ORDER_STATUS.CANCELLED;
+  const remaining = (r - config.cancelRate) / (1 - config.cancelRate);
+  if (remaining < config.paidRate) return ORDER_STATUS.PAID;
+  if (remaining < config.paidRate + 0.15) return ORDER_STATUS.SERVED;
+  if (remaining < config.paidRate + 0.3) return ORDER_STATUS.READY;
+  if (remaining < config.paidRate + 0.45) return ORDER_STATUS.PREPARING;
+
+  return ORDER_STATUS.PENDING;
 }
 
-function randomRecentDate(): Date {
-  const now = Date.now();
-  const r = Math.random();
-  let daysAgo: number;
+const WINDOW_DAYS = 60;
+const WEEK_DAYS = 7;
 
-  if (r < 0.35) {
-    daysAgo = Math.random();
-  } else if (r < 0.85) {
-    daysAgo = Math.random() * 7;
-  } else {
-    daysAgo = 7 + Math.random() * 23;
-  }
+function perDayForBucket(config: ProfileConfig, daysAgo: number): number {
+  if (daysAgo < WEEK_DAYS) return config.perDayCurrent;
+  if (daysAgo < WEEK_DAYS * 2) return config.perDayPrior;
 
-  const hourBias = Math.random();
-  const hour = hourBias < 0.45 ? 12 + Math.random() * 3 : 19 + Math.random() * 4;
-  const past = now - daysAgo * 24 * 60 * 60 * 1000;
+  return config.perDayOlder;
+}
+
+function randomDateInDayRange(minDaysAgo: number, maxDaysAgo: number): Date {
+  const daysAgo = minDaysAgo + Math.random() * (maxDaysAgo - minDaysAgo);
+  const hour = Math.random() < 0.45 ? 12 + Math.random() * 3 : 19 + Math.random() * 4;
+  const past = Date.now() - daysAgo * 24 * 60 * 60 * 1000;
   const date = new Date(past);
 
   date.setHours(Math.floor(hour), Math.floor(Math.random() * 60), 0, 0);
 
   return date;
+}
+
+function balanceFlatWeeks(orders: Array<{ placedAt: Date; totalCents: number }>): void {
+  const cutoffPrior = Date.now() - WEEK_DAYS * 2 * 24 * 60 * 60 * 1000;
+  const last14 = orders.filter((o) => o.placedAt.getTime() >= cutoffPrior);
+
+  last14.sort((a, b) => b.totalCents - a.totalCents);
+  last14.forEach((o, i) => {
+    o.placedAt = i % 2 === 0
+      ? randomDateInDayRange(0, 6)
+      : randomDateInDayRange(7, 13);
+  });
+}
+
+function buildOrderDates(config: ProfileConfig): Date[] {
+  const dates: Date[] = [];
+
+  for (let dayAgo = 0; dayAgo < WINDOW_DAYS; dayAgo++) {
+    const todayCount = perDayForBucket(config, dayAgo);
+
+    for (let i = 0; i < todayCount; i++) {
+      const hour = Math.random() < 0.45 ? 12 + Math.random() * 3 : 19 + Math.random() * 4;
+      const past = Date.now() - dayAgo * 24 * 60 * 60 * 1000;
+      const date = new Date(past);
+
+      date.setHours(Math.floor(hour), Math.floor(Math.random() * 60), 0, 0);
+      dates.push(date);
+    }
+  }
+
+  return dates;
 }
 
 async function cleanup(): Promise<void> {
@@ -341,12 +392,34 @@ async function seedRestaurant(restaurantId: string, seed: RestaurantSeed): Promi
   await db.insert(clientsTable).values(clientRows);
 
   const allDishes = dishRows;
-  const orderCount = 120;
+  const profileConfig = PROFILE_CONFIGS[seed.profile];
+  const orderDates = buildOrderDates(profileConfig);
+  const orderCount = orderDates.length;
+
+  interface BuiltOrder {
+    id: string;
+    status: OrderStatus;
+    placedAt: Date;
+    clientId: string | null;
+    tableId: string | null;
+    totalCents: number;
+    items: Array<{
+      id: string;
+      orderId: string;
+      menuId: null;
+      dishId: string;
+      nameSnapshot: string;
+      unitPriceCents: number;
+      quantity: number;
+    }>;
+  }
+
+  const builtOrders: BuiltOrder[] = [];
 
   for (let i = 0; i < orderCount; i++) {
     const orderId = crypto.randomUUID();
-    const status = pickStatus();
-    const placedAt = randomRecentDate();
+    const status = pickStatus(profileConfig);
+    const placedAt = orderDates[i]!;
     const useClient = Math.random() > 0.3;
     const useTable = Math.random() > 0.2;
     const itemCount = 1 + Math.floor(Math.random() * 4);
@@ -368,23 +441,39 @@ async function seedRestaurant(restaurantId: string, seed: RestaurantSeed): Promi
 
     const totalCents = items.reduce((sum, it) => sum + it.unitPriceCents * it.quantity, 0);
 
-    await db.insert(ordersTable).values({
+    builtOrders.push({
       id: orderId,
-      restaurantId,
+      status,
+      placedAt,
       clientId: useClient ? pick(clientRows).id : null,
       tableId: useTable ? pick(tables).id : null,
-      status,
       totalCents,
-      notes: null,
-      placedAt,
-      createdAt: placedAt,
-      updatedAt: placedAt
+      items
     });
-
-    await db.insert(orderItemsTable).values(items);
   }
 
-  console.log(`  ✓ ${seed.name}: ${tableCount} tables, ${dishRows.length} dishes, ${seed.menus.length} menus, ${clientCount} clients, ${orderCount} orders`);
+  if (seed.profile === "average") {
+    balanceFlatWeeks(builtOrders);
+  }
+
+  for (const o of builtOrders) {
+    await db.insert(ordersTable).values({
+      id: o.id,
+      restaurantId,
+      clientId: o.clientId,
+      tableId: o.tableId,
+      status: o.status,
+      totalCents: o.totalCents,
+      notes: null,
+      placedAt: o.placedAt,
+      createdAt: o.placedAt,
+      updatedAt: o.placedAt
+    });
+
+    await db.insert(orderItemsTable).values(o.items);
+  }
+
+  console.log(`  ✓ ${seed.name} [${seed.profile}]: ${tableCount} tables, ${dishRows.length} dishes, ${seed.menus.length} menus, ${clientCount} clients, ${orderCount} orders`);
 }
 
 async function main(): Promise<void> {
@@ -398,7 +487,7 @@ async function main(): Promise<void> {
 
   await db.insert(organizationsTable).values({
     id: orgId,
-    name: `Groupe Ody Demo ${Date.now()}`,
+    name: "Group Ody",
     ownerId: userId
   });
 

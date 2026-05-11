@@ -36,8 +36,7 @@ const buildState = (breakpoint: Breakpoint): BreakpointState => ({
 
 export function useBreakpoint(): BreakpointState {
   const [state, setState] = React.useState<BreakpointState>(() =>
-    buildState(typeof window === "undefined" ? BREAKPOINT.DESKTOP : resolveBreakpoint(window.innerWidth))
-  );
+    buildState(typeof window === "undefined" ? BREAKPOINT.DESKTOP : resolveBreakpoint(window.innerWidth)));
 
   React.useEffect(() => {
     const onResize = (): void => {
@@ -54,4 +53,5 @@ export function useBreakpoint(): BreakpointState {
 }
 
 export { BREAKPOINT };
+
 export type { Breakpoint, BreakpointState };

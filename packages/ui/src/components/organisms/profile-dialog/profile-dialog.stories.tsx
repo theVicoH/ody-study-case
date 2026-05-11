@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 
-import { Button } from "@/components/ui/button";
 
 import { ProfileDialog } from "./profile-dialog.organism";
 
 import type { Meta, StoryObj } from "@storybook/react";
+
+import { Button } from "@/components/ui/button";
 
 const meta: Meta<typeof ProfileDialog> = {
   title: "Components/Organisms/ProfileDialog",

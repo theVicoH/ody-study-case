@@ -1,8 +1,8 @@
-import { DishInvalidDataError } from "@/errors/dish/dish-invalid-data/dish-invalid-data.error";
+import type { RestaurantId } from "@/value-objects/restaurant/restaurant-id/restaurant-id.value-object";
+import type { Money } from "@/value-objects/shared/money/money.value-object";
 
+import { DishInvalidDataError } from "@/errors/dish/dish-invalid-data/dish-invalid-data.error";
 import { DishId } from "@/value-objects/dish/dish-id/dish-id.value-object";
-import { Money } from "@/value-objects/shared/money/money.value-object";
-import { RestaurantId } from "@/value-objects/restaurant/restaurant-id/restaurant-id.value-object";
 
 export interface DishProps {
   name: string;

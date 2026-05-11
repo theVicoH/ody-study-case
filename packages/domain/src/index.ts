@@ -129,13 +129,13 @@ export type {
   TopItemSnapshot
 } from "@/value-objects/restaurant-stats/restaurant-stats/restaurant-stats.value-object";
 
-export { restaurantStatsCalculator } from "@/services/restaurant-stats/restaurant-stats.calculator";
+export { restaurantStatsCalculator } from "@/services/restaurant-stats/restaurant-stats.service";
 
 export type {
   RestaurantStatsCalculatorInput,
   StatsOrderInput,
   StatsOrderItemInput
-} from "@/services/restaurant-stats/restaurant-stats.calculator";
+} from "@/services/restaurant-stats/restaurant-stats.service";
 
 export type {
   IRestaurantStatsRepository,

@@ -170,37 +170,39 @@ const CustomersTable = ({
       }
     },
     ...(onEdit ?? onDelete
-      ? [{
-        id: "actions",
-        header: labels.colActions ?? "",
-        align: "end" as const,
-        cell: (c: RestaurantCustomer) => (
-          <div className="gap-xs flex items-center justify-end">
-            {onEdit ? (
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                aria-label={labels.edit ?? ""}
-                onClick={() => onEdit(c)}
-              >
-                <PencilIcon size={ACTION_ICON_SIZE} />
-              </Button>
-            ) : null}
-            {onDelete ? (
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                aria-label={labels.delete ?? ""}
-                onClick={() => onDelete(c)}
-              >
-                <TrashIcon size={ACTION_ICON_SIZE} />
-              </Button>
-            ) : null}
-          </div>
-        )
-      }]
+      ? [
+        {
+          id: "actions",
+          header: labels.colActions ?? "",
+          align: "end" as const,
+          cell: (c: RestaurantCustomer) => (
+            <div className="gap-xs flex items-center justify-end">
+              {onEdit ? (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  aria-label={labels.edit ?? ""}
+                  onClick={() => onEdit(c)}
+                >
+                  <PencilIcon size={ACTION_ICON_SIZE} />
+                </Button>
+              ) : null}
+              {onDelete ? (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  aria-label={labels.delete ?? ""}
+                  onClick={() => onDelete(c)}
+                >
+                  <TrashIcon size={ACTION_ICON_SIZE} />
+                </Button>
+              ) : null}
+            </div>
+          )
+        }
+      ]
       : [])
   ];
 

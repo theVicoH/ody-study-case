@@ -1,4 +1,4 @@
-import type { MenuResponseDTO } from "@/dtos/menu/menu.dtos";
+import type { MenuResponseDTO } from "@/dtos/menu/menu.dto";
 import type { Menu } from "@workspace/domain";
 
 export class MenuMapper {

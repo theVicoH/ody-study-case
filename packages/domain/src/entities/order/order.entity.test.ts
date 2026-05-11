@@ -1,13 +1,16 @@
 import { describe, expect, test } from "vitest";
 
-import { Order, ORDER_STATUS } from "@/entities/order/order.entity";
 import { OrderItem } from "@/entities/order/order-item.entity";
+import { Order, ORDER_STATUS } from "@/entities/order/order.entity";
 import { OrderInvalidDataError } from "@/errors/order/order-invalid-data/order-invalid-data.error";
 import { DishId } from "@/value-objects/dish/dish-id/dish-id.value-object";
-import { Money } from "@/value-objects/shared/money/money.value-object";
 import { RestaurantId } from "@/value-objects/restaurant/restaurant-id/restaurant-id.value-object";
+import { Money } from "@/value-objects/shared/money/money.value-object";
 
 const restaurantId = RestaurantId.generate();
+const PRICE_A = 1500;
+const PRICE_B = 700;
+const QTY_A = 2;
 
 const buildItem = (cents: number, qty = 1): OrderItem =>
   OrderItem.create({
@@ -25,10 +28,10 @@ describe("Order", () => {
       status: ORDER_STATUS.PENDING,
       notes: null,
       placedAt: new Date(),
-      items: [buildItem(1500, 2), buildItem(700, 1)]
+      items: [buildItem(PRICE_A, QTY_A), buildItem(PRICE_B, 1)]
     });
 
-    expect(o.total().toCents()).toBe(1500 * 2 + 700);
+    expect(o.total().toCents()).toBe(PRICE_A * QTY_A + PRICE_B);
   });
 
   test("rejects empty items", () => {
@@ -40,8 +43,7 @@ describe("Order", () => {
         notes: null,
         placedAt: new Date(),
         items: []
-      })
-    ).toThrow(OrderInvalidDataError);
+      })).toThrow(OrderInvalidDataError);
   });
 
   test("changes status", () => {
@@ -69,8 +71,7 @@ describe("OrderItem", () => {
         nameSnapshot: "X",
         unitPrice: Money.fromCents(100),
         quantity: 0
-      })
-    ).toThrow(OrderInvalidDataError);
+      })).toThrow(OrderInvalidDataError);
   });
 
   test("computes line total", () => {

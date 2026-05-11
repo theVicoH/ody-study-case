@@ -14,8 +14,8 @@ import { menusRouter } from "./routes/menus/menus.routes";
 import { ordersRouter } from "./routes/orders/orders.routes";
 import { organizationsRouter } from "./routes/organizations/organizations.routes";
 import { restaurantOpeningHoursRouter } from "./routes/restaurant-opening-hours/restaurant-opening-hours.routes";
-import { restaurantTablesRouter } from "./routes/restaurant-tables/restaurant-tables.routes";
 import { groupStatsRouter, restaurantStatsRouter } from "./routes/restaurant-stats/restaurant-stats.routes";
+import { restaurantTablesRouter } from "./routes/restaurant-tables/restaurant-tables.routes";
 import { restaurantsRouter } from "./routes/restaurants/restaurants.routes";
 import { usersRouter } from "./routes/users/users.routes";
 
@@ -76,6 +76,7 @@ export type AppType = typeof app;
 
 export default {
   port: Number(process.env["PORT"] ?? process.env["API_PORT"] ?? 3001),
+  hostname: "0.0.0.0",
   fetch(req: Request, server: Bun.Server<undefined>): Response | Promise<Response> {
     const ip = server.requestIP(req)?.address;
 

@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from "react";
+import type { ComponentProps } from "react";
 
 import { useClientsMulti, useCreateClient, useOrdersMulti } from "@workspace/client";
 import { SheetCrm } from "@workspace/ui/components/organisms/sheet-crm/sheet-crm.organism";
@@ -7,7 +8,6 @@ import { Skeleton } from "@workspace/ui/components/ui/skeleton";
 import type { ApiClient, ApiOrder, RestaurantCustomer } from "@workspace/client";
 import type { NewCustomerFormValues } from "@workspace/ui/components/organisms/new-customer-dialog/new-customer-dialog.organism";
 import type { RestaurantPickerDialogLabels, RestaurantPickerOption } from "@workspace/ui/components/organisms/restaurant-picker-dialog/restaurant-picker-dialog.organism";
-import type { ComponentProps } from "react";
 
 import { NewCustomerDialog } from "@/components/organisms/new-customer-dialog/new-customer-dialog.organism";
 import { RestaurantPickerDialog } from "@/components/organisms/restaurant-picker-dialog/restaurant-picker-dialog.organism";
@@ -122,13 +122,13 @@ const ConnectedGroupCrm = ({
       <>
         <div className="gap-sm grid shrink-0 grid-cols-3">
           {Array.from({ length: 3 }).map((_, i) => (
-            <Skeleton key={i} className="h-20 rounded-lg" />
+            <Skeleton key={i} className="h-4xl rounded-lg" />
           ))}
         </div>
-        <Skeleton className="h-9 w-full shrink-0" />
-        <div className="min-h-0 flex-1 space-y-2">
+        <Skeleton className="h-4xl w-full shrink-0" />
+        <div className="space-y-xl min-h-0 flex-1">
           {Array.from({ length: 6 }).map((_, i) => (
-            <Skeleton key={i} className="h-12 w-full rounded-md" />
+            <Skeleton key={i} className="h-4xl w-full rounded-md" />
           ))}
         </div>
       </>

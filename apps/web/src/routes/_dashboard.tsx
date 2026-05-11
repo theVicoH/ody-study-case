@@ -24,6 +24,14 @@ import { BrandMark } from "@workspace/ui/components/atoms/brand-mark/brand-mark.
 import { FivePetalSpiralLoader } from "@workspace/ui/components/atoms/five-petal-spiral-loader/five-petal-spiral-loader.atom";
 import { KbdKey } from "@workspace/ui/components/atoms/kbd-key/kbd-key.atom";
 import { H3, Muted, Overline } from "@workspace/ui/components/atoms/typography/typography.atom";
+import { ConnectedCrm } from "@workspace/ui/components/connected/connected-crm/connected-crm.organism";
+import { ConnectedGroupCrm } from "@workspace/ui/components/connected/connected-group-crm/connected-group-crm.organism";
+import { ConnectedGroupMenu } from "@workspace/ui/components/connected/connected-group-menu/connected-group-menu.organism";
+import { ConnectedGroupOrders } from "@workspace/ui/components/connected/connected-group-orders/connected-group-orders.organism";
+import { ConnectedMenu } from "@workspace/ui/components/connected/connected-menu/connected-menu.organism";
+import { ConnectedOrders } from "@workspace/ui/components/connected/connected-orders/connected-orders.organism";
+import { ConnectedOverview } from "@workspace/ui/components/connected/connected-overview/connected-overview.organism";
+import { ConnectedGroupStats, ConnectedStats } from "@workspace/ui/components/connected/connected-stats/connected-stats.organism";
 import { MenuIcon } from "@workspace/ui/components/icons/menu/menu.icon";
 import { SearchIcon } from "@workspace/ui/components/icons/search/search.icon";
 import { DashboardLayout } from "@workspace/ui/components/layouts/dashboard-layout/dashboard-layout.layout";
@@ -37,9 +45,6 @@ import { RestaurantSheet } from "@workspace/ui/components/organisms/restaurant-s
 import { RestaurantSidebar } from "@workspace/ui/components/organisms/restaurant-sidebar/restaurant-sidebar.organism";
 import { SheetGroupOverview } from "@workspace/ui/components/organisms/sheet-group-overview/sheet-group-overview.organism";
 import { SheetOrganizationSettings } from "@workspace/ui/components/organisms/sheet-organization-settings/sheet-organization-settings.organism";
-import { ConnectedOverview } from "@workspace/ui/components/connected/connected-overview/connected-overview.organism";
-import { ConnectedGroupStats, ConnectedStats } from "@workspace/ui/components/connected/connected-stats/connected-stats.organism";
-import { useBreakpoint } from "@workspace/ui/hooks/use-breakpoint/use-breakpoint.hook";
 import { Avatar, AvatarFallback } from "@workspace/ui/components/ui/avatar";
 import { Button } from "@workspace/ui/components/ui/button";
 import {
@@ -49,27 +54,9 @@ import {
   DialogTitle
 } from "@workspace/ui/components/ui/dialog";
 import { Input } from "@workspace/ui/components/ui/input";
+import { useBreakpoint } from "@workspace/ui/hooks/use-breakpoint/use-breakpoint.hook";
 import { animate, AnimatePresence, motion } from "motion/react";
 import { useTranslation } from "react-i18next";
-
-import { ConnectedCrm } from "@workspace/ui/components/connected/connected-crm/connected-crm.organism";
-import { ConnectedGroupCrm } from "@workspace/ui/components/connected/connected-group-crm/connected-group-crm.organism";
-import { ConnectedGroupMenu } from "@workspace/ui/components/connected/connected-group-menu/connected-group-menu.organism";
-import { ConnectedGroupOrders } from "@workspace/ui/components/connected/connected-group-orders/connected-group-orders.organism";
-import { ConnectedMenu } from "@workspace/ui/components/connected/connected-menu/connected-menu.organism";
-import { ConnectedOrders } from "@workspace/ui/components/connected/connected-orders/connected-orders.organism";
-import { RestaurantSettingsPanel } from "@/components/restaurant-settings-panel/restaurant-settings-panel.organism";
-import { signOut, updateUser, useSession } from "@/lib/auth/auth.client";
-
-import restaurantsCss from "./_dashboard/restaurants.css?url";
-
-import type {
-  Restaurant,
-  RestaurantPerformance
-} from "@workspace/client";
-import type { RestaurantSceneApi } from "@workspace/threejs";
-import type { SidebarNavItem } from "@workspace/ui/components/organisms/restaurant-sidebar/restaurant-sidebar.organism";
-import type { RestaurantSummaryItem } from "@workspace/ui/components/organisms/sheet-group-overview/sheet-group-overview.organism";
 
 import {
   DEFAULT_VIEWPORT_WIDTH,
@@ -99,6 +86,21 @@ import {
   type SheetGeometry,
   type SplitDragState
 } from "./_dashboard/dashboard-shell.types";
+import restaurantsCss from "./_dashboard/restaurants.css?url";
+
+import type {
+  Restaurant,
+  RestaurantPerformance
+} from "@workspace/client";
+import type { RestaurantSceneApi } from "@workspace/threejs";
+import type { SidebarNavItem } from "@workspace/ui/components/organisms/restaurant-sidebar/restaurant-sidebar.organism";
+import type { RestaurantSummaryItem } from "@workspace/ui/components/organisms/sheet-group-overview/sheet-group-overview.organism";
+
+import { RestaurantSettingsPanel } from "@/components/restaurant-settings-panel/restaurant-settings-panel.organism";
+import { signOut, updateUser, useSession } from "@/lib/auth/auth.client";
+
+
+
 
 const clamp = (min: number, max: number, v: number): number =>
   Math.max(min, Math.min(max, v));
@@ -447,6 +449,7 @@ const Layout = (): React.JSX.Element => {
     const currentRight = sheetRight ?? SHEET_DEFAULT_RIGHT;
     const currentWidth = sheetWidth ?? SHEET_DEFAULT_WIDTH;
     const spaceLeft = vw - SIDEBAR_RESERVED - currentRight - currentWidth;
+
     setSplitNewSide(spaceLeft >= currentRight ? "left" : "right");
     setSplitDialogOpen(true);
   }, [compareMode, setCompareMode, sheetRight, sheetWidth]);
@@ -1166,9 +1169,7 @@ const Layout = (): React.JSX.Element => {
     }
   }, [createOrganization]);
 
-  const handleSubmitRestaurant = useCallback(async (
-    values: { name: string; address: string; phone: string; maxCovers: number; modelId: string; openingHours: ReadonlyArray<{ dayOfWeek: number; isOpen: boolean; openTime: string; closeTime: string }> }
-  ): Promise<void> => {
+  const handleSubmitRestaurant = useCallback(async (values: { name: string; address: string; phone: string; maxCovers: number; modelId: string; openingHours: ReadonlyArray<{ dayOfWeek: number; isOpen: boolean; openTime: string; closeTime: string }> }): Promise<void> => {
     setCreateSubmitting(true);
     setCreateError(null);
     try {
@@ -1584,6 +1585,7 @@ const Layout = (): React.JSX.Element => {
                     }}
                   />
                 );
+
                 return (
                   <SheetGroupOverview
                     labels={groupOverviewLabels}
@@ -1597,13 +1599,16 @@ const Layout = (): React.JSX.Element => {
                   />
                 );
               }
+
               return secondary ? renderRestaurantTab(secondary, tab) : null;
             };
 
             const isSwapped = splitNewSide === "left";
             const handlePrimarySelect = (id: string | null): void => {
               if (!id) return;
-              if (id === "__group") { handleSelectGroup(); return; }
+              if (id === "__group") { handleSelectGroup();
+
+                return; }
               handleSelectRestaurantById(id);
             };
 

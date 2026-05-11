@@ -1,10 +1,12 @@
+/* eslint-disable custom/enforce-file-suffix */
 import { createRoute, OpenAPIHono } from "@hono/zod-openapi";
 import { HttpStatus } from "@workspace/shared";
+
+import type { AppEnv } from "@/types/app-env.types";
 
 import { container } from "@/infrastructure/container/container";
 import { userResponseSchema } from "@/routes/users/users.schemas";
 
-import type { AppEnv } from "@/types/app-env.types";
 
 const tags = ["Auth"];
 

@@ -1,4 +1,5 @@
 const DEFAULT_API_URL = "http://localhost:3001";
+const HTTP_NO_CONTENT = 204;
 
 interface ImportMetaWithEnv {
   env?: Record<string, string | undefined>;
@@ -32,7 +33,7 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
     credentials: "include"
   });
 
-  if (response.status === 204) {
+  if (response.status === HTTP_NO_CONTENT) {
     return undefined as T;
   }
 

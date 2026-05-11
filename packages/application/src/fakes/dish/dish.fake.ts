@@ -21,9 +21,7 @@ export class FakeDishRepository implements IDishRepository {
   }
 
   async findByRestaurant(restaurantId: RestaurantId, params: PaginationParams): Promise<PaginatedResult<Dish>> {
-    const all = Array.from(this.dishes.values()).filter(
-      (d) => d.restaurantId.toString() === restaurantId.toString()
-    );
+    const all = Array.from(this.dishes.values()).filter((d) => d.restaurantId.toString() === restaurantId.toString());
 
     return this.paginate(all, params);
   }

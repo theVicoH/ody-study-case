@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 
+const SELECT_SIDE_OFFSET = 4;
+
 import { StatusDot } from "@/components/atoms/status-dot/status-dot.atom";
 import { Button } from "@/components/ui/button";
 import {
@@ -60,9 +62,7 @@ const CreateSplitDialog = ({
   labels,
   onSubmit
 }: CreateSplitDialogProps): React.JSX.Element => {
-  const [restaurantId, setRestaurantId] = useState<string>(
-    defaultRestaurantId ?? restaurants[0]?.id ?? ""
-  );
+  const [restaurantId, setRestaurantId] = useState<string>(defaultRestaurantId ?? restaurants[0]?.id ?? "");
   const [pageId, setPageId] = useState<string>(defaultPageId ?? pages[0]?.id ?? "");
   const prevOpenRef = useRef(open);
 
@@ -94,7 +94,7 @@ const CreateSplitDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="gap-md w-[26rem]">
+      <DialogContent className="gap-md w-full">
         <DialogHeader>
           <DialogTitle>{labels.title}</DialogTitle>
           <DialogDescription>{labels.description}</DialogDescription>
@@ -111,7 +111,7 @@ const CreateSplitDialog = ({
                   {(id: string) => restaurants.find((it) => it.id === id)?.name ?? ""}
                 </SelectValue>
               </SelectTrigger>
-              <SelectContent align="start" sideOffset={4} alignItemWithTrigger={false}>
+              <SelectContent align="start" sideOffset={SELECT_SIDE_OFFSET} alignItemWithTrigger={false}>
                 {restaurants.map((r) => (
                   <SelectItem key={r.id} value={r.id} label={r.name}>
                     <StatusDot status={r.status} size="sm" />
@@ -129,7 +129,7 @@ const CreateSplitDialog = ({
                   {(id: string) => pages.find((p) => p.id === id)?.label ?? id}
                 </SelectValue>
               </SelectTrigger>
-              <SelectContent align="start" sideOffset={4} alignItemWithTrigger={false}>
+              <SelectContent align="start" sideOffset={SELECT_SIDE_OFFSET} alignItemWithTrigger={false}>
                 {pages.map((p) => (
                   <SelectItem key={p.id} value={p.id} label={p.label}>
                     {p.label}

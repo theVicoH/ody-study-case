@@ -29,10 +29,12 @@ interface CrmPageProps {
   searchQuery?: string;
 }
 
+const CENTS_PER_EURO = 100;
+
 const formatPrice = (cents?: number): string => {
   if (cents === undefined) return "—";
 
-  return `${(cents / 100).toFixed(2)} €`;
+  return `${(cents / CENTS_PER_EURO).toFixed(2)} €`;
 };
 
 const CrmPage = ({ clients, labels, searchQuery }: CrmPageProps): React.JSX.Element => {

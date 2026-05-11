@@ -1,7 +1,7 @@
-import { ClientInvalidDataError } from "@/errors/client/client-invalid-data/client-invalid-data.error";
+import type { RestaurantId } from "@/value-objects/restaurant/restaurant-id/restaurant-id.value-object";
 
+import { ClientInvalidDataError } from "@/errors/client/client-invalid-data/client-invalid-data.error";
 import { ClientId } from "@/value-objects/client/client-id/client-id.value-object";
-import { RestaurantId } from "@/value-objects/restaurant/restaurant-id/restaurant-id.value-object";
 
 export type ClientTag = "New" | "Regular" | "VIP";
 

@@ -1,8 +1,9 @@
 import React from "react";
 
+import type { Meta, StoryObj } from "@storybook/react";
+
 import { RegisterForm } from "@/components/organisms/register-form/register-form.organism";
 
-import type { Meta, StoryObj } from "@storybook/react";
 
 const meta: Meta<typeof RegisterForm> = {
   title: "Components/Organisms/RegisterForm",

@@ -16,17 +16,13 @@ export class FakeOrderRepository implements IOrderRepository {
   }
 
   async findByRestaurant(restaurantId: RestaurantId, params: PaginationParams): Promise<PaginatedResult<Order>> {
-    const all = Array.from(this.orders.values()).filter(
-      (o) => o.restaurantId.toString() === restaurantId.toString()
-    );
+    const all = Array.from(this.orders.values()).filter((o) => o.restaurantId.toString() === restaurantId.toString());
 
     return this.paginate(all, params);
   }
 
   async findByClient(clientId: ClientId, params: PaginationParams): Promise<PaginatedResult<Order>> {
-    const all = Array.from(this.orders.values()).filter(
-      (o) => o.props.clientId?.toString() === clientId.toString()
-    );
+    const all = Array.from(this.orders.values()).filter((o) => o.props.clientId?.toString() === clientId.toString());
 
     return this.paginate(all, params);
   }

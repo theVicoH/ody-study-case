@@ -47,13 +47,11 @@ const createBody = z.object({
   notes: z.string().nullable().optional(),
   placedAt: z.string().datetime().optional(),
   items: z
-    .array(
-      z.object({
-        kind: z.enum(["menu", "dish"]),
-        refId: z.string().uuid(),
-        quantity: z.number().int().positive()
-      })
-    )
+    .array(z.object({
+      kind: z.enum(["menu", "dish"]),
+      refId: z.string().uuid(),
+      quantity: z.number().int().positive()
+    }))
     .min(1)
 });
 
@@ -64,7 +62,7 @@ const orderIdParams = z.object({ restaurantId: z.string().uuid(), id: z.string()
 
 const listQuery = paginationQuery.extend({ clientId: z.string().uuid().optional() });
 
-const serialize = (o: OrderResponseDTO) => ({
+const serialize = (o: OrderResponseDTO): Omit<OrderResponseDTO, "placedAt" | "createdAt" | "updatedAt"> & { placedAt: string; createdAt: string; updatedAt: string } => ({
   ...o,
   placedAt: o.placedAt.toISOString(),
   createdAt: o.createdAt.toISOString(),

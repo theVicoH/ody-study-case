@@ -1,4 +1,4 @@
-import type { StatsOrderInput } from "@/services/restaurant-stats/restaurant-stats.calculator";
+import type { StatsOrderInput } from "@/services/restaurant-stats/restaurant-stats.service";
 import type { RestaurantId } from "@/value-objects/restaurant/restaurant-id/restaurant-id.value-object";
 
 export interface RestaurantStatsRawData {

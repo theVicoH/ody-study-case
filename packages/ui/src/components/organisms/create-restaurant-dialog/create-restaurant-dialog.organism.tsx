@@ -156,7 +156,7 @@ const CreateRestaurantDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="w-[36rem] max-w-[calc(100vw_-_2rem)] max-h-[calc(100vh_-_2rem)] overflow-y-auto">
+      <DialogContent className="scrollbar-hidden max-h-screen w-full max-w-full overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{labels.title}</DialogTitle>
           <DialogDescription>{labels.description}</DialogDescription>
@@ -213,7 +213,7 @@ const CreateRestaurantDialog = ({
 
           <div className="gap-xs flex flex-col">
             <Label>{labels.modelLabel}</Label>
-            <div className="gap-sm grid grid-cols-2 sm:grid-cols-4">
+            <div className="gap-sm grid grid-cols-3">
               {models.map((model) => {
                 const selected = model.id === modelId;
 
@@ -262,14 +262,14 @@ const CreateRestaurantDialog = ({
                       disabled={!h.isOpen}
                       value={h.openTime}
                       onChange={(e) => updateHour(h.dayOfWeek, { openTime: e.target.value })}
-                      className="w-28 [color-scheme:dark]"
+                      className="w-4xl [color-scheme:dark]"
                     />
                     <Input
                       type="time"
                       disabled={!h.isOpen}
                       value={h.closeTime}
                       onChange={(e) => updateHour(h.dayOfWeek, { closeTime: e.target.value })}
-                      className="w-28 [color-scheme:dark]"
+                      className="w-4xl [color-scheme:dark]"
                     />
                   </div>
                 ))}

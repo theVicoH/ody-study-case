@@ -1,6 +1,6 @@
 import * as THREE from "three";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { MeshoptDecoder } from "three/examples/jsm/libs/meshopt_decoder.module.js";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 
 const loader = new GLTFLoader();
 
@@ -33,7 +33,19 @@ export function loadModel(url: string): Promise<THREE.Group> {
 }
 
 export function instantiateModel(source: THREE.Group): THREE.Group {
-  return source.clone(true);
+  const clone = source.clone(true);
+
+  clone.traverse((obj) => {
+    if (obj instanceof THREE.Mesh) {
+      if (Array.isArray(obj.material)) {
+        obj.material = obj.material.map((m: THREE.Material) => m.clone());
+      } else {
+        obj.material = obj.material.clone();
+      }
+    }
+  });
+
+  return clone;
 }
 
 export function fitModel(model: THREE.Group, dimensions: ModelDimensions, baseTopY: number): void {

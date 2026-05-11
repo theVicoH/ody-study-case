@@ -1,8 +1,8 @@
 import React from "react";
 
-import { PanelRightIcon } from "@/components/icons/panel-right/panel-right.icon";
 import type { NavIconComponent } from "@/components/molecules/sidebar-nav/sidebar-nav.molecule";
 
+import { PanelRightIcon } from "@/components/icons/panel-right/panel-right.icon";
 import { cn } from "@/lib/utils";
 
 

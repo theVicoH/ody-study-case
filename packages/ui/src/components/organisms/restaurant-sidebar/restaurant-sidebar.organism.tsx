@@ -126,163 +126,163 @@ const RestaurantSidebar = ({
           transition={{ duration: 0.2 }}
           onClick={onRequestClose}
           aria-hidden="true"
-          className="fixed inset-0 z-[54] bg-black/40 backdrop-blur-sm"
+          className="bg-foreground/40 fixed inset-0 z-[54] backdrop-blur-sm"
         />
       ) : null}
-    <motion.aside
-      initial={false}
-      animate={open ? "open" : "closed"}
-      variants={{
-        open: { x: 0, opacity: 1 },
-        closed: { x: "calc(-100% - 2rem)", opacity: 0 }
-      }}
-      transition={{
-        duration: open ? SHELL_OPEN_DURATION : SHELL_CLOSE_DURATION,
-        ease: SHELL_EASE
-      }}
-      style={{ pointerEvents: open ? "auto" : "none" }}
-      className={cn(
-        "glass-strong fixed md:absolute",
-        "top-sm bottom-sm left-sm rounded-xl",
-        isMobileOrTablet ? "z-[55] w-[min(20rem,calc(100vw-5rem))]" : "z-30 w-60",
-        className
-      )}
-    >
-      <div className="p-xs flex h-full min-h-0 flex-col gap-0 overflow-hidden">
-        <div className="shrink-0">
-          <div className="px-2xs pb-2xs flex items-center justify-between">
-            <BrandMark size="sm" className="h-md" />
-            {onToggleCompare && (
-              <Button
-                variant={compareMode ? "tertiary" : "ghost"}
-                size="icon-sm"
-                className="rounded-md"
-                onClick={onToggleCompare}
-                aria-label={compareLabel}
-                aria-pressed={compareMode}
-              >
-                <PlusIcon size={COMPARE_ICON_SIZE} />
-              </Button>
-            )}
-          </div>
-          <AnimatePresence mode="wait" initial={false}>
-            <motion.div
-              key={`mini-${selectionKey}-${miniSecondarySlot ? "split" : "single"}`}
-              initial={{ opacity: 0, y: CONTENT_OFFSET }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -CONTENT_OFFSET }}
-              transition={{ duration: CONTENT_DURATION, ease: SHELL_EASE }}
-            >
-              {miniSecondarySlot ? (
-                <div className="gap-2xs flex aspect-[4/3]">
-                  <div className="glass relative isolate flex-1 overflow-hidden rounded-lg">
-                    {miniSlot}
-                  </div>
-                  <div className="glass relative isolate flex-1 overflow-hidden rounded-lg">
-                    {miniSecondarySlot}
-                  </div>
-                </div>
-              ) : (
-                <div className="glass relative isolate aspect-[4/3] overflow-hidden rounded-lg">
-                  {miniSlot}
-                </div>
-              )}
-              <div className="px-sm">
-                <H4 className="text-foreground mt-md scroll-m-0 truncate">{miniName}</H4>
-                <div className="mt-xs gap-xs flex items-center">
-                  <StatusDot status={miniStatus} size="sm" />
-                  <Overline className="text-muted-foreground">{miniCaption}</Overline>
-                </div>
-              </div>
-            </motion.div>
-          </AnimatePresence>
-
-          <SidebarNav
-            items={navItems}
-            activeId={activeTabId}
-            secondaryActiveId={secondaryTabId}
-            onSelect={onTabChange}
-            className="mt-md gap-3xs flex flex-col"
-          />
-        </div>
-
-        <Separator className="my-md opacity-40" />
-
-        <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
-          <div className="pl-sm pb-sm flex shrink-0 items-center justify-between">
-            <Overline className="text-foreground/70">{countLabel}</Overline>
-            <div className="gap-3xs flex items-center">
-              {onAddRestaurant && (
+      <motion.aside
+        initial={false}
+        animate={open ? "open" : "closed"}
+        variants={{
+          open: { x: 0, opacity: 1 },
+          closed: { x: "calc(-100% - 2rem)", opacity: 0 }
+        }}
+        transition={{
+          duration: open ? SHELL_OPEN_DURATION : SHELL_CLOSE_DURATION,
+          ease: SHELL_EASE
+        }}
+        style={{ pointerEvents: open ? "auto" : "none" }}
+        className={cn(
+          "glass-strong fixed md:absolute",
+          "top-sm bottom-sm left-sm rounded-xl",
+          isMobileOrTablet ? "z-[55] w-[min(20rem,calc(100vw-5rem))]" : "z-30 w-60",
+          className
+        )}
+      >
+        <div className="p-xs flex h-full min-h-0 flex-col gap-0 overflow-hidden">
+          <div className="shrink-0">
+            <div className="px-2xs pb-2xs flex items-center justify-between">
+              <BrandMark size="sm" className="h-md" />
+              {onToggleCompare && (
                 <Button
-                  variant="ghost"
+                  variant={compareMode ? "tertiary" : "ghost"}
                   size="icon-sm"
                   className="rounded-md"
-                  onClick={onAddRestaurant}
-                  aria-label={addRestaurantLabel}
+                  onClick={onToggleCompare}
+                  aria-label={compareLabel}
+                  aria-pressed={compareMode}
                 >
                   <PlusIcon size={COMPARE_ICON_SIZE} />
                 </Button>
               )}
-              <Button
-                variant="ghost"
-                size="icon-sm"
-                className="rounded-md"
-                onClick={onViewAll}
-                aria-label={viewAllLabel}
-              >
-                <ArrowRightIcon size={COMPARE_ICON_SIZE} />
-              </Button>
             </div>
-          </div>
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.div
+                key={`mini-${selectionKey}-${miniSecondarySlot ? "split" : "single"}`}
+                initial={{ opacity: 0, y: CONTENT_OFFSET }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -CONTENT_OFFSET }}
+                transition={{ duration: CONTENT_DURATION, ease: SHELL_EASE }}
+              >
+                {miniSecondarySlot ? (
+                  <div className="gap-2xs flex aspect-[4/3]">
+                    <div className="glass relative isolate flex-1 overflow-hidden rounded-lg">
+                      {miniSlot}
+                    </div>
+                    <div className="glass relative isolate flex-1 overflow-hidden rounded-lg">
+                      {miniSecondarySlot}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="glass relative isolate aspect-[4/3] overflow-hidden rounded-lg">
+                    {miniSlot}
+                  </div>
+                )}
+                <div className="px-sm">
+                  <H4 className="text-foreground mt-md scroll-m-0 truncate">{miniName}</H4>
+                  <div className="mt-xs gap-xs flex items-center">
+                    <StatusDot status={miniStatus} size="sm" />
+                    <Overline className="text-muted-foreground">{miniCaption}</Overline>
+                  </div>
+                </div>
+              </motion.div>
+            </AnimatePresence>
 
-          <div className="pb-xs shrink-0">
-            <SearchInput
-              value={query}
-              onChange={setQuery}
-              placeholder={searchPlaceholder}
+            <SidebarNav
+              items={navItems}
+              activeId={activeTabId}
+              secondaryActiveId={secondaryTabId}
+              onSelect={onTabChange}
+              className="mt-md gap-3xs flex flex-col"
             />
           </div>
 
-          <div className="gap-3xs flex min-h-0 flex-1 flex-col overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-            <RestaurantListItem
-              name={groupLabel}
-              caption={groupOverview}
-              status="disabled"
-              tone="group"
-              active={isGroupActive}
-              onClick={onSelectGroup ?? undefined}
-            />
-            {filtered.map((r) => {
-              const isPrimary = r.id === activeRestaurantId;
-              const isSecondary =
+          <Separator className="my-md opacity-40" />
+
+          <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
+            <div className="pl-sm pb-sm flex shrink-0 items-center justify-between">
+              <Overline className="text-foreground/70">{countLabel}</Overline>
+              <div className="gap-3xs flex items-center">
+                {onAddRestaurant && (
+                  <Button
+                    variant="ghost"
+                    size="icon-sm"
+                    className="rounded-md"
+                    onClick={onAddRestaurant}
+                    aria-label={addRestaurantLabel}
+                  >
+                    <PlusIcon size={COMPARE_ICON_SIZE} />
+                  </Button>
+                )}
+                <Button
+                  variant="ghost"
+                  size="icon-sm"
+                  className="rounded-md"
+                  onClick={onViewAll}
+                  aria-label={viewAllLabel}
+                >
+                  <ArrowRightIcon size={COMPARE_ICON_SIZE} />
+                </Button>
+              </div>
+            </div>
+
+            <div className="pb-xs shrink-0">
+              <SearchInput
+                value={query}
+                onChange={setQuery}
+                placeholder={searchPlaceholder}
+              />
+            </div>
+
+            <div className="gap-3xs flex min-h-0 flex-1 flex-col overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+              <RestaurantListItem
+                name={groupLabel}
+                caption={groupOverview}
+                status="disabled"
+                tone="group"
+                active={isGroupActive}
+                onClick={onSelectGroup ?? undefined}
+              />
+              {filtered.map((r) => {
+                const isPrimary = r.id === activeRestaurantId;
+                const isSecondary =
                 secondaryActiveRestaurantId !== undefined &&
                 secondaryActiveRestaurantId !== null &&
                 r.id === secondaryActiveRestaurantId;
-              const showCompareBadges = secondaryActiveRestaurantId != null;
-              const badge = showCompareBadges
-                ? isPrimary
-                  ? "1"
-                  : isSecondary
-                    ? "2"
-                    : undefined
-                : undefined;
+                const showCompareBadges = secondaryActiveRestaurantId != null;
+                const badge = showCompareBadges
+                  ? isPrimary
+                    ? "1"
+                    : isSecondary
+                      ? "2"
+                      : undefined
+                  : undefined;
 
-              return (
-                <RestaurantListItem
-                  key={r.id}
-                  name={r.name}
-                  caption={r.caption}
-                  status={r.status}
-                  active={isPrimary || isSecondary}
-                  badge={badge}
-                  onClick={() => onSelectRestaurant(r.id)}
-                />
-              );
-            })}
+                return (
+                  <RestaurantListItem
+                    key={r.id}
+                    name={r.name}
+                    caption={r.caption}
+                    status={r.status}
+                    active={isPrimary || isSecondary}
+                    badge={badge}
+                    onClick={() => onSelectRestaurant(r.id)}
+                  />
+                );
+              })}
+            </div>
           </div>
         </div>
-      </div>
-    </motion.aside>
+      </motion.aside>
     </>
   );
 };

@@ -1,21 +1,10 @@
-FROM oven/bun:1.3.11-alpine AS base
+FROM oven/bun:1.3.11-alpine AS builder
 RUN apk add --no-cache libc6-compat curl
-RUN bun install -g turbo
 WORKDIR /app
 COPY . .
-RUN turbo prune web --docker
-
-FROM oven/bun:1.3.11-alpine AS installer
-RUN apk add --no-cache libc6-compat
-WORKDIR /app
-COPY --from=base /app/out/json/ .
-COPY --from=base /app/out/bun.lock ./bun.lock
-COPY --from=base /app/bunfig.toml ./bunfig.toml
-RUN bun install --frozen-lockfile
-
-FROM installer AS builder
-COPY --from=base /app/out/full/ .
-RUN bun run build --filter=web
+RUN bun install
+WORKDIR /app/apps/web
+RUN bun run build
 
 FROM oven/bun:1.3.11-alpine AS prod
 RUN apk add --no-cache libc6-compat curl

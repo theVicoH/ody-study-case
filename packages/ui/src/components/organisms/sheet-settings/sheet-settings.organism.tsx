@@ -44,6 +44,7 @@ import { cn } from "@/lib/utils";
 
 const SAVE_FEEDBACK_DURATION_MS = 2000;
 const ICON_SIZE = 14;
+const ADD_ICON_SIZE = 12;
 const DAYS_IN_WEEK = 7;
 
 const ZONES: ReadonlyArray<TableZone> = ["salle", "terrasse", "bar", "vip"];
@@ -137,13 +138,13 @@ const TableDialog = ({
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState<TableFormState>(initial
     ? {
-        number: String(initial.number),
-        name: initial.name ?? "",
-        capacity: String(initial.capacity),
-        zone: initial.zone,
-        status: initial.status,
-        isActive: initial.isActive
-      }
+      number: String(initial.number),
+      name: initial.name ?? "",
+      capacity: String(initial.capacity),
+      zone: initial.zone,
+      status: initial.status,
+      isActive: initial.isActive
+    }
     : DEFAULT_FORM);
 
   const handleOpen = (v: boolean): void => {
@@ -458,14 +459,14 @@ const OpeningHoursEditor = ({ labels, hours, onChange }: OpeningHoursEditorProps
             disabled={!h.isOpen}
             value={h.openTime}
             onChange={(e) => updateDay(h.dayOfWeek, { openTime: e.target.value })}
-            className="w-28 [color-scheme:dark]"
+            className="w-4xl [color-scheme:dark]"
           />
           <Input
             type="time"
             disabled={!h.isOpen}
             value={h.closeTime}
             onChange={(e) => updateDay(h.dayOfWeek, { closeTime: e.target.value })}
-            className="w-28 [color-scheme:dark]"
+            className="w-4xl [color-scheme:dark]"
           />
         </div>
       ))}
@@ -552,9 +553,7 @@ const SheetSettings = ({
     setTestMode(settings.testMode);
   }, [settings]);
 
-  const [localTables, setLocalTables] = useState<ReadonlyArray<SettingsTableValue>>(
-    fallbackTablesToValues(legacyTables)
-  );
+  const [localTables, setLocalTables] = useState<ReadonlyArray<SettingsTableValue>>(fallbackTablesToValues(legacyTables));
   const tablesSource: ReadonlyArray<SettingsTableValue> = tablesPaged ?? localTables;
 
   const handleSave = async (): Promise<void> => {
@@ -630,7 +629,6 @@ const SheetSettings = ({
     confirm: labels.confirm,
     zoneLabels,
     statusLabels
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }), [labels]);
 
   const currentPage = tablesPage ?? 1;
@@ -648,7 +646,7 @@ const SheetSettings = ({
               onClick={() => { void handleSave(); }}
               disabled={!isGeneralDirty && !saved}
               className={cn(
-                "px-sm py-2xs typo-caption rounded-md transition-all disabled:opacity-40 disabled:cursor-not-allowed",
+                "px-sm py-2xs typo-caption rounded-md transition-all disabled:cursor-not-allowed disabled:opacity-40",
                 saved
                   ? "bg-status-good/20 text-status-good"
                   : "bg-primary text-primary-foreground hover:opacity-90"
@@ -685,7 +683,7 @@ const SheetSettings = ({
             </div>
           </div>
 
-          <div className="gap-sm border-border flex flex-col border-t pt-4">
+          <div className="gap-sm border-border pt-3xl flex flex-col border-t">
             <div className="flex items-center justify-between">
               <div className="gap-xs flex flex-col">
                 <p className="text-foreground typo-button">{labels.openingHours}</p>
@@ -696,7 +694,7 @@ const SheetSettings = ({
                 onClick={() => { void handleSaveHours(); }}
                 disabled={!isHoursDirty && !hoursSaved}
                 className={cn(
-                  "px-sm py-2xs typo-caption rounded-md transition-all disabled:opacity-40 disabled:cursor-not-allowed",
+                  "px-sm py-2xs typo-caption rounded-md transition-all disabled:cursor-not-allowed disabled:opacity-40",
                   hoursSaved
                     ? "bg-status-good/20 text-status-good"
                     : "border-border text-foreground hover:bg-muted/50 border bg-transparent"
@@ -737,7 +735,7 @@ const SheetSettings = ({
                   type="button"
                   className="bg-primary text-primary-foreground gap-2xs px-sm py-2xs typo-caption inline-flex items-center rounded-md transition-all hover:opacity-90"
                 >
-                  <PlusIcon size={12} />
+                  <PlusIcon size={ADD_ICON_SIZE} />
                   {labels.addTable}
                 </button>
               }

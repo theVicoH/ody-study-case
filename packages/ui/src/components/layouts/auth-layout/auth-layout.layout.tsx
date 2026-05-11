@@ -6,6 +6,7 @@ interface AuthLayoutProps {
   children: React.ReactNode;
 }
 
+/* eslint-disable custom/enforce-spacing-tokens */
 const AuthLayout = ({ children }: AuthLayoutProps): React.JSX.Element => {
   return (
     <div className="bg-background relative min-h-svh w-full overflow-hidden">
@@ -31,7 +32,10 @@ const AuthLayout = ({ children }: AuthLayoutProps): React.JSX.Element => {
         `}
       />
 
-      <div className="relative z-10 mx-auto flex min-h-svh w-[24rem] max-w-[calc(100%-3rem)] flex-col items-stretch justify-center gap-10 py-12">
+      <div className={`
+        relative z-10 mx-auto flex min-h-svh w-[24rem] max-w-[calc(100%-3rem)]
+        flex-col items-stretch justify-center gap-10 py-12
+      `}>
         <div className="flex justify-center">
           <BrandMark />
         </div>
@@ -40,6 +44,7 @@ const AuthLayout = ({ children }: AuthLayoutProps): React.JSX.Element => {
     </div>
   );
 };
+/* eslint-enable custom/enforce-spacing-tokens */
 
 export { AuthLayout };
 

@@ -4,7 +4,7 @@ import { FakeRestaurantStatsRepository } from "@/fakes/restaurant-stats/restaura
 import {
   GetGroupStatsUseCase,
   GetRestaurantStatsUseCase
-} from "@/use-cases/restaurant-stats/restaurant-stats.use-cases";
+} from "@/use-cases/restaurant-stats/restaurant-stats.use-case";
 
 const RESTAURANT_A = "11111111-1111-1111-1111-111111111111";
 const RESTAURANT_B = "22222222-2222-2222-2222-222222222222";

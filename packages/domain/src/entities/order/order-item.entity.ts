@@ -1,8 +1,9 @@
-import { OrderInvalidDataError } from "@/errors/order/order-invalid-data/order-invalid-data.error";
 
-import { DishId } from "@/value-objects/dish/dish-id/dish-id.value-object";
-import { MenuId } from "@/value-objects/menu/menu-id/menu-id.value-object";
-import { Money } from "@/value-objects/shared/money/money.value-object";
+import type { DishId } from "@/value-objects/dish/dish-id/dish-id.value-object";
+import type { MenuId } from "@/value-objects/menu/menu-id/menu-id.value-object";
+import type { Money } from "@/value-objects/shared/money/money.value-object";
+
+import { OrderInvalidDataError } from "@/errors/order/order-invalid-data/order-invalid-data.error";
 import { OrderItemId } from "@/value-objects/order/order-item-id/order-item-id.value-object";
 
 export type OrderItemRef =

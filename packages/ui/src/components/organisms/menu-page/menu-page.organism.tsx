@@ -40,7 +40,9 @@ interface MenuPageProps {
   searchQuery?: string;
 }
 
-const formatPrice = (cents: number): string => `${(cents / 100).toFixed(2)} €`;
+const CENTS_PER_EURO = 100;
+
+const formatPrice = (cents: number): string => `${(cents / CENTS_PER_EURO).toFixed(2)} €`;
 
 const MenuPage = ({ menus, dishes, labels, searchQuery }: MenuPageProps): React.JSX.Element => {
   const menuColumns = useMemo<ReadonlyArray<DataTableColumn<MenuPageMenu>>>(
@@ -78,9 +80,9 @@ const MenuPage = ({ menus, dishes, labels, searchQuery }: MenuPageProps): React.
   );
 
   return (
-    <div className="flex h-full flex-col gap-4">
+    <div className="gap-3xl flex h-full flex-col">
       <section className="flex min-h-0 flex-1 flex-col">
-        <h3 className="typo-overline text-muted-foreground mb-2">{labels.sectionMenus}</h3>
+        <h3 className="typo-overline text-muted-foreground mb-xl">{labels.sectionMenus}</h3>
         <DataTable<MenuPageMenu>
           data={menus}
           columns={menuColumns}
@@ -91,7 +93,7 @@ const MenuPage = ({ menus, dishes, labels, searchQuery }: MenuPageProps): React.
         />
       </section>
       <section className="flex min-h-0 flex-1 flex-col">
-        <h3 className="typo-overline text-muted-foreground mb-2">{labels.sectionDishes}</h3>
+        <h3 className="typo-overline text-muted-foreground mb-xl">{labels.sectionDishes}</h3>
         <DataTable<MenuPageDish>
           data={dishes}
           columns={dishColumns}

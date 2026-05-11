@@ -94,7 +94,7 @@ export {
   ListClientsUseCase,
   UpdateClientUseCase,
   DeleteClientUseCase
-} from "@/use-cases/client/client.use-cases";
+} from "@/use-cases/client/client.use-case";
 
 export type {
   ClientResponseDTO,
@@ -104,7 +104,7 @@ export type {
   DeleteClientDTO,
   ListClientsDTO,
   PaginatedClientsResponseDTO
-} from "@/dtos/client/client.dtos";
+} from "@/dtos/client/client.dto";
 
 export { ClientMapper } from "@/mappers/client/client.mapper";
 
@@ -116,7 +116,7 @@ export {
   ListDishesUseCase,
   UpdateDishUseCase,
   DeleteDishUseCase
-} from "@/use-cases/dish/dish.use-cases";
+} from "@/use-cases/dish/dish.use-case";
 
 export type {
   DishResponseDTO,
@@ -126,7 +126,7 @@ export type {
   DeleteDishDTO,
   ListDishesDTO,
   PaginatedDishesResponseDTO
-} from "@/dtos/dish/dish.dtos";
+} from "@/dtos/dish/dish.dto";
 
 export { DishMapper } from "@/mappers/dish/dish.mapper";
 
@@ -138,7 +138,7 @@ export {
   ListMenusUseCase,
   UpdateMenuUseCase,
   DeleteMenuUseCase
-} from "@/use-cases/menu/menu.use-cases";
+} from "@/use-cases/menu/menu.use-case";
 
 export type {
   MenuResponseDTO,
@@ -148,7 +148,7 @@ export type {
   DeleteMenuDTO,
   ListMenusDTO,
   PaginatedMenusResponseDTO
-} from "@/dtos/menu/menu.dtos";
+} from "@/dtos/menu/menu.dto";
 
 export { MenuMapper } from "@/mappers/menu/menu.mapper";
 
@@ -160,7 +160,7 @@ export {
   ListOrdersUseCase,
   UpdateOrderStatusUseCase,
   DeleteOrderUseCase
-} from "@/use-cases/order/order.use-cases";
+} from "@/use-cases/order/order.use-case";
 
 export type {
   OrderResponseDTO,
@@ -172,7 +172,7 @@ export type {
   DeleteOrderDTO,
   ListOrdersDTO,
   PaginatedOrdersResponseDTO
-} from "@/dtos/order/order.dtos";
+} from "@/dtos/order/order.dto";
 
 export { OrderMapper } from "@/mappers/order/order.mapper";
 
@@ -181,14 +181,14 @@ export { FakeOrderRepository } from "@/fakes/order/order.fake";
 export {
   GetRestaurantStatsUseCase,
   GetGroupStatsUseCase
-} from "@/use-cases/restaurant-stats/restaurant-stats.use-cases";
+} from "@/use-cases/restaurant-stats/restaurant-stats.use-case";
 
 export type {
   GetRestaurantStatsDTO,
   GetGroupStatsDTO,
   RestaurantStatsResponseDTO,
   TopItemResponseDTO
-} from "@/dtos/restaurant-stats/restaurant-stats.dtos";
+} from "@/dtos/restaurant-stats/restaurant-stats.dto";
 
 export { RestaurantStatsMapper } from "@/mappers/restaurant-stats/restaurant-stats.mapper";
 

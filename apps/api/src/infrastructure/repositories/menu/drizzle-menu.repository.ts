@@ -40,10 +40,10 @@ export class DrizzleMenuRepository implements IMenuRepository {
     const ids = rows.map((r) => r.id);
     const links = ids.length
       ? await this.db
-          .select()
-          .from(menuDishesTable)
-          .where(inArray(menuDishesTable.menuId, ids))
-          .orderBy(menuDishesTable.position)
+        .select()
+        .from(menuDishesTable)
+        .where(inArray(menuDishesTable.menuId, ids))
+        .orderBy(menuDishesTable.position)
       : [];
 
     const dishesByMenu = new Map<string, string[]>();
@@ -95,13 +95,11 @@ export class DrizzleMenuRepository implements IMenuRepository {
       await tx.delete(menuDishesTable).where(eq(menuDishesTable.menuId, id));
 
       if (menu.props.dishIds.length > 0) {
-        await tx.insert(menuDishesTable).values(
-          menu.props.dishIds.map((dishId, index) => ({
-            menuId: id,
-            dishId: dishId.toString(),
-            position: index
-          }))
-        );
+        await tx.insert(menuDishesTable).values(menu.props.dishIds.map((dishId, index) => ({
+          menuId: id,
+          dishId: dishId.toString(),
+          position: index
+        })));
       }
     });
   }
